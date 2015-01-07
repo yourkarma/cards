@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		A19D72CC1A5B3E7D003DDC63 /* Cards.h in Headers */ = {isa = PBXBuildFile; fileRef = A19D72CB1A5B3E7D003DDC63 /* Cards.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A19D72D21A5B3E7D003DDC63 /* Cards.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A19D72C61A5B3E7D003DDC63 /* Cards.framework */; };
-		A19D73331A5B40C6003DDC63 /* CardStackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19D73321A5B40C6003DDC63 /* CardStackViewController.swift */; };
-		A19D73371A5B42C4003DDC63 /* CardStackViewControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19D73361A5B42C4003DDC63 /* CardStackViewControllerTest.swift */; };
+		A19D73331A5B40C6003DDC63 /* CardStackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19D73321A5B40C6003DDC63 /* CardStackController.swift */; };
+		A19D73371A5B42C4003DDC63 /* CardStackControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19D73361A5B42C4003DDC63 /* CardStackControllerTest.swift */; };
 		A1CF81261A5DA2350086F847 /* CardStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1CF81251A5DA2350086F847 /* CardStack.swift */; };
 		A1CF81281A5DC9820086F847 /* CardStackTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1CF81271A5DC9820086F847 /* CardStackTest.swift */; };
 /* End PBXBuildFile section */
@@ -31,8 +31,8 @@
 		A19D72CB1A5B3E7D003DDC63 /* Cards.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cards.h; sourceTree = "<group>"; };
 		A19D72D11A5B3E7D003DDC63 /* CardsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CardsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A19D72D71A5B3E7D003DDC63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A19D73321A5B40C6003DDC63 /* CardStackViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardStackViewController.swift; sourceTree = "<group>"; };
-		A19D73361A5B42C4003DDC63 /* CardStackViewControllerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardStackViewControllerTest.swift; sourceTree = "<group>"; };
+		A19D73321A5B40C6003DDC63 /* CardStackController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardStackController.swift; sourceTree = "<group>"; };
+		A19D73361A5B42C4003DDC63 /* CardStackControllerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardStackControllerTest.swift; sourceTree = "<group>"; };
 		A1CF81251A5DA2350086F847 /* CardStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardStack.swift; sourceTree = "<group>"; };
 		A1CF81271A5DC9820086F847 /* CardStackTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardStackTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -79,7 +79,7 @@
 			children = (
 				A19D72C91A5B3E7D003DDC63 /* Supporting Files */,
 				A19D72CB1A5B3E7D003DDC63 /* Cards.h */,
-				A19D73321A5B40C6003DDC63 /* CardStackViewController.swift */,
+				A19D73321A5B40C6003DDC63 /* CardStackController.swift */,
 				A1CF81251A5DA2350086F847 /* CardStack.swift */,
 			);
 			path = Cards;
@@ -97,7 +97,7 @@
 			isa = PBXGroup;
 			children = (
 				A19D72D61A5B3E7D003DDC63 /* Supporting Files */,
-				A19D73361A5B42C4003DDC63 /* CardStackViewControllerTest.swift */,
+				A19D73361A5B42C4003DDC63 /* CardStackControllerTest.swift */,
 				A1CF81271A5DC9820086F847 /* CardStackTest.swift */,
 			);
 			path = CardsTests;
@@ -219,7 +219,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1CF81261A5DA2350086F847 /* CardStack.swift in Sources */,
-				A19D73331A5B40C6003DDC63 /* CardStackViewController.swift in Sources */,
+				A19D73331A5B40C6003DDC63 /* CardStackController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,7 +228,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1CF81281A5DC9820086F847 /* CardStackTest.swift in Sources */,
-				A19D73371A5B42C4003DDC63 /* CardStackViewControllerTest.swift in Sources */,
+				A19D73371A5B42C4003DDC63 /* CardStackControllerTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

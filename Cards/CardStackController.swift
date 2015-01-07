@@ -1,4 +1,4 @@
-// CardStackViewController.Swift
+// CardStackController.Swift
 //
 // Copyright (c) 2015 Karma Mobility Inc. (https://yourkarma.com)
 //
@@ -22,7 +22,7 @@
 
 import UIKit
 
-public class CardStackViewController: UIViewController {
+public class CardStackController: UIViewController {
 
     public let cardStack: CardStack = CardStack()
 
@@ -45,5 +45,4 @@ public class CardStackViewController: UIViewController {
         view.addSubview(cardStack)
         self.view = view
     }
-
 }

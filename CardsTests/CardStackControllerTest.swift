@@ -1,4 +1,4 @@
-// CardStackViewControllerTest.Swift
+// CardStackControllerTest.Swift
 //
 // Copyright (c) 2015 Karma Mobility Inc. (https://yourkarma.com)
 //
@@ -38,10 +38,10 @@ class ViewController: UIViewController {
     }
 }
 
-class CardStackViewControllerTest: XCTestCase {
+class CardStackControllerTest: XCTestCase {
 
     func testViewControllersAreAddedAsChildControllers() {
-        let stackViewController = CardStackViewController()
+        let stackViewController = CardStackController()
 
         stackViewController.addViewController(UIViewController())
 
@@ -50,7 +50,7 @@ class CardStackViewControllerTest: XCTestCase {
     }
 
     func testViewControllerViewIsAddedAsACard() {
-        let stackViewController = CardStackViewController()
+        let stackViewController = CardStackController()
 
         let viewController = UIViewController()
         viewController.view = UIView()
@@ -60,7 +60,7 @@ class CardStackViewControllerTest: XCTestCase {
     }
 
     func testViewControllerDidMoveToParentViewControllerIsCalled() {
-        let stackViewController = CardStackViewController()
+        let stackViewController = CardStackController()
 
         let childController = ViewController()
         stackViewController.addViewController(childController)
@@ -74,7 +74,7 @@ class CardStackViewControllerTest: XCTestCase {
     }
 
     func testRemovingViewControllersRemovesTheChildControllerRelationship() {
-        let stackViewController = CardStackViewController()
+        let stackViewController = CardStackController()
 
         stackViewController.removeViewController(UIViewController())
 
@@ -83,7 +83,7 @@ class CardStackViewControllerTest: XCTestCase {
     }
 
     func testWillMoveToParentViewControllerIsCalledWhenViewControllersAreRemoved() {
-        let stackViewController = CardStackViewController()
+        let stackViewController = CardStackController()
 
         let childController = ViewController()
         stackViewController.addViewController(childController)
@@ -93,7 +93,7 @@ class CardStackViewControllerTest: XCTestCase {
     }
 
     func testViewControllerCardIsRemovedWhenRemovingTheViewController() {
-        let stackViewController = CardStackViewController()
+        let stackViewController = CardStackController()
 
         let childController = ViewController()
         let view = UIView()
