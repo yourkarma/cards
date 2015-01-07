@@ -11,7 +11,7 @@ import Cards
 
 class ViewController: UIViewController {
 
-    let cardsViewController = CardStackViewController()
+    let cardStackController = CardStackController()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,11 +34,11 @@ class ViewController: UIViewController {
         viewController4.view = UIView()
         viewController4.view.backgroundColor = UIColor.cyanColor()
 
-        self.presentViewController(cardsViewController, animated: false, completion: nil)
-        self.cardsViewController.addViewController(viewController1)
-        self.cardsViewController.addViewController(viewController2)
-        self.cardsViewController.addViewController(viewController3)
-        self.cardsViewController.addViewController(viewController4)
+        self.presentViewController(cardStackController, animated: false, completion: nil)
+        self.cardStackController.addViewController(viewController1)
+        self.cardStackController.addViewController(viewController2)
+        self.cardStackController.addViewController(viewController3)
+        self.cardStackController.addViewController(viewController4)
     }
 
     override func didReceiveMemoryWarning() {
