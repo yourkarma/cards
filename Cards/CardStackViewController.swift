@@ -24,26 +24,25 @@ import UIKit
 
 public class CardStackViewController: UIViewController {
 
-    public var viewControllers: [UIViewController] = [] {
-        willSet(newViewControllers) {
-            for viewController: UIViewController in self.childViewControllers as [UIViewController] {
-                viewController.willMoveToParentViewController(nil)
-                viewController.view.removeFromSuperview()
-                viewController.removeFromParentViewController()
-            }
+    public let cardStack: CardStack = CardStack()
 
-            for viewController in newViewControllers {
-                self.addChildViewController(viewController)
-                viewController.view.frame = self.view.bounds
-                self.view.addSubview(viewController.view)
-                viewController.didMoveToParentViewController(self)
-            }
-        }
+    public func addViewController(viewController: UIViewController) {
+        self.addChildViewController(viewController)
+        self.cardStack.addCard(viewController.view)
+        viewController.didMoveToParentViewController(self)
+    }
+
+    public func removeViewController(viewController: UIViewController) {
+        viewController.willMoveToParentViewController(nil)
+        self.cardStack.removeCard(viewController.view)
+        viewController.removeFromParentViewController()
     }
 
     public override func loadView() {
         let view = UIView()
         view.frame = UIScreen.mainScreen().bounds
+        cardStack.frame = view.bounds
+        view.addSubview(cardStack)
         self.view = view
     }
 

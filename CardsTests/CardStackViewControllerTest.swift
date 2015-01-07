@@ -43,30 +43,28 @@ class CardStackViewControllerTest: XCTestCase {
     func testViewControllersAreAddedAsChildControllers() {
         let stackViewController = CardStackViewController()
 
-        let childControllers = [UIViewController()]
-        stackViewController.viewControllers = childControllers
+        stackViewController.addViewController(UIViewController())
 
-        XCTAssertEqual(childControllers.count, stackViewController.childViewControllers.count,
+        XCTAssertEqual(stackViewController.childViewControllers.count, 1,
             "View controllers should be added as child controllers")
     }
 
-    func testViewControllerViewIsAddedAsSubview() {
+    func testViewControllerViewIsAddedAsACard() {
         let stackViewController = CardStackViewController()
 
         let viewController = UIViewController()
-        let view = UIView()
-        viewController.view = view
+        viewController.view = UIView()
+        stackViewController.addViewController(viewController)
 
-        stackViewController.viewControllers = [viewController]
-
-        XCTAssertTrue(view.isDescendantOfView(stackViewController.view), "View controller's view should be added as a subview of the stack")
+        XCTAssertTrue(contains(stackViewController.cardStack.cards, viewController.view), "Card stack should contain the view")
     }
 
     func testViewControllerDidMoveToParentViewControllerIsCalled() {
         let stackViewController = CardStackViewController()
 
         let childController = ViewController()
-        stackViewController.viewControllers = [childController]
+        stackViewController.addViewController(childController)
+        stackViewController.addViewController(childController)
 
         if (childController.didMoveToParentViewControllerArgument == nil) {
             XCTFail("didMoveToParentViewController should have been called")
@@ -75,37 +73,35 @@ class CardStackViewControllerTest: XCTestCase {
         XCTAssertEqual(childController.didMoveToParentViewControllerArgument!, stackViewController)
     }
 
-    func testChildViewControllersAreRemovedWhenSettingNewChildren() {
+    func testRemovingViewControllersRemovesTheChildControllerRelationship() {
         let stackViewController = CardStackViewController()
 
-        stackViewController.viewControllers = [UIViewController(), UIViewController()]
-        let childControllers = [UIViewController()]
-        stackViewController.viewControllers = childControllers;
+        stackViewController.removeViewController(UIViewController())
 
-        XCTAssertEqual(childControllers.count, stackViewController.childViewControllers.count,
-            "View controllers should be added as child controllers")
+        XCTAssertEqual(stackViewController.childViewControllers.count, 0,
+            "View controllers should be removed as child controllers")
     }
 
-    func testWillMoveToParentViewControllerIsCalledWhenSettingNewChildren() {
+    func testWillMoveToParentViewControllerIsCalledWhenViewControllersAreRemoved() {
         let stackViewController = CardStackViewController()
 
         let childController = ViewController()
-        stackViewController.viewControllers = [childController]
-        stackViewController.viewControllers = [UIViewController()]
+        stackViewController.addViewController(childController)
+        stackViewController.removeViewController(childController)
 
         XCTAssertNil(childController.willMoveToParentViewControllerArgument, "willMoveToParentViewController should have been called with nil argument")
     }
 
-    func testViewControllerViewIsRemovedWhenSettingNewChildren() {
+    func testViewControllerCardIsRemovedWhenRemovingTheViewController() {
         let stackViewController = CardStackViewController()
 
         let childController = ViewController()
         let view = UIView()
         childController.view = view
-        stackViewController.viewControllers = [childController]
-        stackViewController.viewControllers = [UIViewController()]
+        stackViewController.addViewController(childController)
+        stackViewController.removeViewController(childController)
 
-        XCTAssertFalse(view.isDescendantOfView(stackViewController.view), "View controller's view should be removed as a subview of the stack")
+        XCTAssertFalse(contains(stackViewController.cardStack.cards, view))
     }
 }
 

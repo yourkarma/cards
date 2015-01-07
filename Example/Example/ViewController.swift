@@ -26,8 +26,19 @@ class ViewController: UIViewController {
         viewController2.view = UIView()
         viewController2.view.backgroundColor = UIColor.blueColor()
 
+        let viewController3 = UIViewController()
+        viewController3.view = UIView()
+        viewController3.view.backgroundColor = UIColor.greenColor()
+
+        let viewController4 = UIViewController()
+        viewController4.view = UIView()
+        viewController4.view.backgroundColor = UIColor.cyanColor()
+
         self.presentViewController(cardsViewController, animated: false, completion: nil)
-        self.cardsViewController.viewControllers = [viewController1, viewController2]
+        self.cardsViewController.addViewController(viewController1)
+        self.cardsViewController.addViewController(viewController2)
+        self.cardsViewController.addViewController(viewController3)
+        self.cardsViewController.addViewController(viewController4)
     }
 
     override func didReceiveMemoryWarning() {

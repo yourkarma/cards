@@ -370,6 +370,7 @@
 				A162B1D41A5C80C800C7B01C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
