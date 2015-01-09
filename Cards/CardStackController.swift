@@ -39,10 +39,6 @@ public class CardStackController: UIViewController {
     }
 
     public override func loadView() {
-        let view = UIView()
-        view.frame = UIScreen.mainScreen().bounds
-        cardStack.frame = view.bounds
-        view.addSubview(cardStack)
-        self.view = view
+        self.view = cardStack
     }
 }

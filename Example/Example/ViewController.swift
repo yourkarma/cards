@@ -25,7 +25,7 @@ import Cards
 
 class ViewController: UIViewController {
 
-    let cardStackController = CardStackController()
+    var cardStackController: CardStackController!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,18 +48,15 @@ class ViewController: UIViewController {
         viewController4.view = UIView()
         viewController4.view.backgroundColor = UIColor.cyanColor()
 
-        self.presentViewController(cardStackController, animated: false, completion: nil)
         self.cardStackController.addViewController(viewController1)
         self.cardStackController.addViewController(viewController2)
         self.cardStackController.addViewController(viewController3)
         self.cardStackController.addViewController(viewController4)
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        cardStackController = segue.destinationViewController as CardStackController
     }
-
 
 }
 

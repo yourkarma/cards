@@ -27,6 +27,7 @@ import Cards
 
 class ViewController: UIViewController {
     var willMoveToParentViewControllerArgument: UIViewController?
+    @IBOutlet weak var containerView: UIView!
     var didMoveToParentViewControllerArgument: UIViewController?
 
     override func willMoveToParentViewController(parent: UIViewController?) {
