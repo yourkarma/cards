@@ -27,36 +27,23 @@ class ViewController: UIViewController {
 
     var cardStackController: CardStackController!
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-
-    override func viewDidAppear(animated: Bool) {
-        let viewController1 = UIViewController()
-        viewController1.view = UIView()
-        viewController1.view.backgroundColor = UIColor.yellowColor()
-
-        let viewController2 = UIViewController()
-        viewController2.view = UIView()
-        viewController2.view.backgroundColor = UIColor.blueColor()
-
-        let viewController3 = UIViewController()
-        viewController3.view = UIView()
-        viewController3.view.backgroundColor = UIColor.greenColor()
-
-        let viewController4 = UIViewController()
-        viewController4.view = UIView()
-        viewController4.view.backgroundColor = UIColor.cyanColor()
-
-        self.cardStackController.pushViewController(viewController1)
-        self.cardStackController.pushViewController(viewController2)
-        self.cardStackController.pushViewController(viewController3)
-        self.cardStackController.pushViewController(viewController4)
-    }
-
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         cardStackController = segue.destinationViewController as CardStackController
     }
 
+    @IBAction func pushViewController() {
+        let viewController = UIViewController()
+        viewController.view = UIView()
+        viewController.view.backgroundColor = randomColor
+        cardStackController.pushViewController(viewController)
+    }
+
+    @IBAction func popViewController() {
+        cardStackController.popViewController()
+    }
+
+    var randomColor: UIColor {
+        return UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 1.0)
+    }
 }
 

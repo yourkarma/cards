@@ -32,7 +32,18 @@
                             <constraint firstItem="pHG-RT-riB" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-16" id="lNG-6w-KXd"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="8jF-WX-iFW"/>
+                    <navigationItem key="navigationItem" id="8jF-WX-iFW">
+                        <barButtonItem key="leftBarButtonItem" title="Push" id="VBe-of-RGW">
+                            <connections>
+                                <action selector="pushViewController" destination="BYZ-38-t0r" id="GDr-qC-a2z"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Pop" id="81G-62-lXM">
+                            <connections>
+                                <action selector="popViewController" destination="BYZ-38-t0r" id="4aU-n3-kND"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
@@ -41,10 +52,10 @@
         <!--Card Stack Controller-->
         <scene sceneID="bR3-J0-1sA">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Qfq-0j-4iz" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController automaticallyAdjustsScrollViewInsets="NO" id="CoB-Sc-w8Y" customClass="CardStackController" customModule="Cards" sceneMemberID="viewController">
                     <toolbarItems/>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Qfq-0j-4iz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1902" y="617"/>
         </scene>
