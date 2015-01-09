@@ -62,6 +62,20 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
     let topBackTransitionDamping = CGFloat(0.3)
 
 
+    func rubberBandDistance(offset: CGFloat, dimension: CGFloat) -> CGFloat {
+        let constant = CGFloat(0.05)
+        let result = (constant * abs(offset) * dimension) / (dimension + constant * abs(offset));
+        return offset < 0.0 ? -result : result;
+    }
+
+    var shouldRubberBand: Bool {
+        return cards.count == 1
+    }
+
+    func shouldTransition(velocity: CGPoint) -> Bool {
+        return cards.count > 1 && velocity.y > velocityTreshold
+    }
+
     func handlePan(pan: UIPanGestureRecognizer) {
         if let card = topCard {
             if pan.state == UIGestureRecognizerState.Began {
@@ -71,13 +85,24 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
             } else if pan.state == UIGestureRecognizerState.Changed {
 
                 let translation: CGPoint = pan.translationInView(self)
+                var newOriginY = CGFloat(startY + translation.y)
+
+                if shouldRubberBand {
+                    let minOriginY = CGFloat(0.0)
+                    let maxOriginY = CGFloat(0.0)
+                    let constrainedOriginY = max(minOriginY, min(newOriginY, maxOriginY));
+                    let rubberBandY = rubberBandDistance(newOriginY - constrainedOriginY, dimension: bounds.height)
+                    newOriginY = constrainedOriginY + rubberBandY
+                }
+
+
                 let frame = card.frame
-                card.frame = CGRect(x: frame.origin.x, y: startY! + translation.y, width: frame.size.width, height: frame.size.height)
+                card.frame = CGRect(x: frame.origin.x, y: newOriginY, width: frame.size.width, height: frame.size.height)
 
             } else if pan.state == UIGestureRecognizerState.Ended {
 
                 let velocity = pan.velocityInView(self)
-                if velocity.y > velocityTreshold {
+                if shouldTransition(velocity) {
                     let dynamicBehavior = UIDynamicItemBehavior(items: [card])
                     dynamicBehavior.allowsRotation = false
                     dynamicBehavior.addLinearVelocity(CGPoint(x: 0.0, y: velocity.y), forItem: card)
