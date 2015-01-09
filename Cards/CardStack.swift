@@ -1,11 +1,24 @@
+// CardStack.swift
 //
-//  CardStack.swift
-//  Cards
+// Copyright (c) 2015 Karma Mobility Inc. (https://yourkarma.com)
 //
-//  Created by Klaas Pieter Annema on 07/01/15.
-//  Copyright (c) 2015 Klaas Pieter Annema. All rights reserved.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 import UIKit
 
 public class CardStack: UIView, UIDynamicAnimatorDelegate {
@@ -34,30 +47,30 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate {
     }
 
     func handlePan(pan: UIPanGestureRecognizer) {
-        let card = _cards.last!
+        if let card = topCard {
+            if pan.state == UIGestureRecognizerState.Began {
+                animator.removeAllBehaviors()
+                startY  = card.frame.minY
+            } else if pan.state == UIGestureRecognizerState.Changed {
 
-        if pan.state == UIGestureRecognizerState.Began {
-            animator.removeAllBehaviors()
-            startY  = card.frame.minY
-        } else if pan.state == UIGestureRecognizerState.Changed {
+                let translation: CGPoint = pan.translationInView(self)
+                let frame = card.frame
+                card.frame = CGRect(x: frame.origin.x, y: startY! + translation.y, width: frame.size.width, height: frame.size.height)
 
-            let translation: CGPoint = pan.translationInView(self)
-            let frame = card.frame
-            card.frame = CGRect(x: frame.origin.x, y: startY! + translation.y, width: frame.size.width, height: frame.size.height)
+            } else if pan.state == UIGestureRecognizerState.Ended {
 
-        } else if pan.state == UIGestureRecognizerState.Ended {
+                if card.frame.minY > center.y {
+                    // This is where the card is supposed to move down and slide to the back
+                } else {
 
-            if card.frame.minY > center.y {
-                // This is where the card is supposed to move down and slide to the back
-            } else {
+                    let dynamicBehavior = UIDynamicItemBehavior(items: [card])
+                    dynamicBehavior.allowsRotation = false
+                    animator.addBehavior(dynamicBehavior)
 
-                let dynamicBehavior = UIDynamicItemBehavior(items: [card])
-                dynamicBehavior.allowsRotation = false
-                animator.addBehavior(dynamicBehavior)
-
-                let snapBehavior = UISnapBehavior(item: card, snapToPoint: CGPoint(x: card.center.x, y: frameForCardAtIndex(3).midY))
-                snapBehavior.damping = 0.35
-                animator.addBehavior(snapBehavior)
+                    let snapBehavior = UISnapBehavior(item: card, snapToPoint: CGPoint(x: card.center.x, y: frameForCardAtIndex(3).midY))
+                    snapBehavior.damping = 0.35
+                    animator.addBehavior(snapBehavior)
+                }
             }
         }
     }
@@ -65,10 +78,16 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate {
     public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
         if gestureRecognizer == panGestureRecognizer {
             // Only accept touches that are inside the top card
-            return _cards.last!.frame.contains(touch.locationInView(self))
+            if let card = topCard {
+                return card.frame.contains(touch.locationInView(self))
+            }
         }
 
         return true
+    }
+
+    public var topCard: UIView? {
+        return _cards.last
     }
 
     public func addCard(card: UIView) {
