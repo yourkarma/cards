@@ -26,16 +26,18 @@ public class CardStackController: UIViewController {
 
     public let cardStack: CardStack = CardStack()
 
-    public func addViewController(viewController: UIViewController) {
+    public func pushViewController(viewController: UIViewController) {
         self.addChildViewController(viewController)
-        self.cardStack.addCard(viewController.view)
+        self.cardStack.pushCard(viewController.view)
         viewController.didMoveToParentViewController(self)
     }
 
-    public func removeViewController(viewController: UIViewController) {
-        viewController.willMoveToParentViewController(nil)
-        self.cardStack.removeCard(viewController.view)
-        viewController.removeFromParentViewController()
+    public func popViewController() {
+        if let viewController = childViewControllers.last as? UIViewController {
+            viewController.willMoveToParentViewController(nil)
+            self.cardStack.popCard()
+            viewController.removeFromParentViewController()
+        }
     }
 
     public override func loadView() {

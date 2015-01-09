@@ -121,15 +121,15 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
         return _cards.last
     }
 
-    public func addCard(card: UIView) {
+    public func pushCard(card: UIView) {
         _cards.append(card)
         addSubview(card)
         setNeedsLayout()
     }
 
-    public func removeCard(card: UIView) {
-        if let index = find(_cards, card) {
-            _cards.removeAtIndex(index)
+    public func popCard() {
+        if let card = topCard {
+            _cards.removeLast()
             card.removeFromSuperview()
             setNeedsLayout()
         }

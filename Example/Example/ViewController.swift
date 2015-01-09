@@ -48,10 +48,10 @@ class ViewController: UIViewController {
         viewController4.view = UIView()
         viewController4.view.backgroundColor = UIColor.cyanColor()
 
-        self.cardStackController.addViewController(viewController1)
-        self.cardStackController.addViewController(viewController2)
-        self.cardStackController.addViewController(viewController3)
-        self.cardStackController.addViewController(viewController4)
+        self.cardStackController.pushViewController(viewController1)
+        self.cardStackController.pushViewController(viewController2)
+        self.cardStackController.pushViewController(viewController3)
+        self.cardStackController.pushViewController(viewController4)
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

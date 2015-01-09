@@ -29,7 +29,7 @@ class CardStackTest: XCTestCase {
         let stack = CardStack()
 
         let view = UIView()
-        stack.addCard(view)
+        stack.pushCard(view)
 
         XCTAssertTrue(view.isDescendantOfView(stack), "Card should be a subview of the stack")
     }
@@ -38,8 +38,8 @@ class CardStackTest: XCTestCase {
         let stack = CardStack()
 
         let view = UIView()
-        stack.addCard(view)
-        stack.removeCard(view)
+        stack.pushCard(view)
+        stack.popCard()
 
         XCTAssertFalse(view.isDescendantOfView(stack), "Card should not be a subview of the stack")
     }
@@ -47,8 +47,8 @@ class CardStackTest: XCTestCase {
     func testLastAddedCardIsTopCard() {
         let stack = CardStack()
         let view = UIView()
-        stack.addCard(UIView())
-        stack.addCard(view)
+        stack.pushCard(UIView())
+        stack.pushCard(view)
 
         XCTAssertEqual(stack.topCard!, view, "The last added view should be the top card")
     }

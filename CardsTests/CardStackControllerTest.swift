@@ -44,7 +44,7 @@ class CardStackControllerTest: XCTestCase {
     func testViewControllersAreAddedAsChildControllers() {
         let stackViewController = CardStackController()
 
-        stackViewController.addViewController(UIViewController())
+        stackViewController.pushViewController(UIViewController())
 
         XCTAssertEqual(stackViewController.childViewControllers.count, 1,
             "View controllers should be added as child controllers")
@@ -55,7 +55,7 @@ class CardStackControllerTest: XCTestCase {
 
         let viewController = UIViewController()
         viewController.view = UIView()
-        stackViewController.addViewController(viewController)
+        stackViewController.pushViewController(viewController)
 
         XCTAssertTrue(contains(stackViewController.cardStack.cards, viewController.view), "Card stack should contain the view")
     }
@@ -64,8 +64,8 @@ class CardStackControllerTest: XCTestCase {
         let stackViewController = CardStackController()
 
         let childController = ViewController()
-        stackViewController.addViewController(childController)
-        stackViewController.addViewController(childController)
+        stackViewController.pushViewController(childController)
+        stackViewController.pushViewController(childController)
 
         if (childController.didMoveToParentViewControllerArgument == nil) {
             XCTFail("didMoveToParentViewController should have been called")
@@ -77,7 +77,7 @@ class CardStackControllerTest: XCTestCase {
     func testRemovingViewControllersRemovesTheChildControllerRelationship() {
         let stackViewController = CardStackController()
 
-        stackViewController.removeViewController(UIViewController())
+        stackViewController.popViewController()
 
         XCTAssertEqual(stackViewController.childViewControllers.count, 0,
             "View controllers should be removed as child controllers")
@@ -87,8 +87,8 @@ class CardStackControllerTest: XCTestCase {
         let stackViewController = CardStackController()
 
         let childController = ViewController()
-        stackViewController.addViewController(childController)
-        stackViewController.removeViewController(childController)
+        stackViewController.pushViewController(childController)
+        stackViewController.popViewController()
 
         XCTAssertNil(childController.willMoveToParentViewControllerArgument, "willMoveToParentViewController should have been called with nil argument")
     }
@@ -99,8 +99,8 @@ class CardStackControllerTest: XCTestCase {
         let childController = ViewController()
         let view = UIView()
         childController.view = view
-        stackViewController.addViewController(childController)
-        stackViewController.removeViewController(childController)
+        stackViewController.pushViewController(childController)
+        stackViewController.popViewController()
 
         XCTAssertFalse(contains(stackViewController.cardStack.cards, view))
     }
