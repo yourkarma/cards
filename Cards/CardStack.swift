@@ -39,6 +39,29 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
         addGestureRecognizer(panGestureRecognizer)
     }
 
+    /*
+    The speed the top card needs to be moving at to move down and to the back
+    */
+    let velocityTreshold = CGFloat(1500.0)
+
+    /*
+    The number of points of each that is visible above the cards in front of it.
+    */
+    let cardHeaderHeight = CGFloat(40.0)
+
+    /*
+    The damping applied when the velocity treshold isn't reached
+    and the top card is snapped back to it's original position
+    */
+    let snapBackDamping = CGFloat(0.35)
+
+    /*
+    The damping applied when moving the top card to the back
+    and up to the back card position
+    */
+    let topBackTransitionDamping = CGFloat(0.3)
+
+
     func handlePan(pan: UIPanGestureRecognizer) {
         if let card = topCard {
             if pan.state == UIGestureRecognizerState.Began {
@@ -54,7 +77,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
             } else if pan.state == UIGestureRecognizerState.Ended {
 
                 let velocity = pan.velocityInView(self)
-                if velocity.y > 1500.0 {
+                if velocity.y > velocityTreshold {
                     let dynamicBehavior = UIDynamicItemBehavior(items: [card])
                     dynamicBehavior.allowsRotation = false
                     dynamicBehavior.addLinearVelocity(CGPoint(x: 0.0, y: velocity.y), forItem: card)
@@ -76,7 +99,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
                     animator.addBehavior(dynamicBehavior)
 
                     let snapBehavior = UISnapBehavior(item: card, snapToPoint: CGPoint(x: card.center.x, y: frameForCardAtIndex(3).midY))
-                    snapBehavior.damping = 0.35
+                    snapBehavior.damping = snapBackDamping
                     animator.addBehavior(snapBehavior)
                 }
             }
@@ -123,7 +146,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
     }
 
     func frameForCardAtIndex(index: Int) -> CGRect {
-        return CGRectMake(0.0, CGFloat(index * 40), CGRectGetWidth(bounds), CGRectGetHeight(bounds))
+        return CGRectMake(0.0, CGFloat(index) * cardHeaderHeight, CGRectGetWidth(bounds), CGRectGetHeight(bounds))
     }
 
     public func dynamicAnimatorDidPause(animator: UIDynamicAnimator) {
@@ -147,7 +170,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
                 let frame = frameForCardAtIndex(index)
 
                 let snapBehavior = UISnapBehavior(item: card, snapToPoint: CGPoint(x: frame.midX, y: frame.midY))
-                snapBehavior.damping = 0.3
+                snapBehavior.damping = topBackTransitionDamping
                 animator.addBehavior(snapBehavior)
             }
         }
