@@ -124,21 +124,22 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
     public func addCard(card: UIView) {
         _cards.append(card)
         addSubview(card)
-        layoutCards()
+        setNeedsLayout()
     }
 
     public func removeCard(card: UIView) {
         if let index = find(_cards, card) {
             _cards.removeAtIndex(index)
             card.removeFromSuperview()
-            layoutCards()
+            setNeedsLayout()
         }
     }
 
-    // Using layout subviews here causes problems when moving the top card to the back because
-    // moving views around causes layoutSubviews to be called. Instead of keeping track of some sort
-    // of animating state, we simply do layout in another method.
-    public func layoutCards() {
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+
+        animator.removeAllBehaviors()
+
         for index in (0..<_cards.count) {
             let card = _cards[index]
             card.frame = frameForCardAtIndex(index)
@@ -159,6 +160,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
         if let card = topCard {
             sendSubviewToBack(card)
             _cards.removeLast()
+            self.layoutIfNeeded()
             _cards.insert(card, atIndex: 0)
 
             let dynamicBehavior = UIDynamicItemBehavior(items: cards)
