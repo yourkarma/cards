@@ -68,8 +68,8 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
         return offset < 0.0 ? -result : result;
     }
 
-    var shouldRubberBand: Bool {
-        return cards.count == 1
+    func shouldRubberBand(atPosition position: CGPoint) -> Bool {
+        return cards.count == 1 || position.y < 0.0
     }
 
     func shouldTransition(velocity: CGPoint) -> Bool {
@@ -85,19 +85,19 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
             } else if pan.state == UIGestureRecognizerState.Changed {
 
                 let translation: CGPoint = pan.translationInView(self)
-                var newOriginY = CGFloat(startY + translation.y)
+                var newPosition = CGPoint(x: frame.minX, y: CGFloat(startY + translation.y))
 
-                if shouldRubberBand {
-                    let minOriginY = CGFloat(0.0)
-                    let maxOriginY = CGFloat(0.0)
-                    let constrainedOriginY = max(minOriginY, min(newOriginY, maxOriginY));
-                    let rubberBandY = rubberBandDistance(newOriginY - constrainedOriginY, dimension: bounds.height)
-                    newOriginY = constrainedOriginY + rubberBandY
+                let minOriginY = CGFloat(0.0)
+                let maxOriginY = CGFloat(0.0)
+
+
+                if shouldRubberBand(atPosition: newPosition) {
+                    let constrainedOriginY = max(minOriginY, min(newPosition.y, maxOriginY));
+                    let rubberBandY = rubberBandDistance(newPosition.y - constrainedOriginY, dimension: bounds.height)
+                    newPosition.y = constrainedOriginY + rubberBandY
                 }
 
-
-                let frame = card.frame
-                card.frame = CGRect(x: frame.origin.x, y: newOriginY, width: frame.size.width, height: frame.size.height)
+                card.frame.origin = newPosition
 
             } else if pan.state == UIGestureRecognizerState.Ended {
 
