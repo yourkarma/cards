@@ -72,6 +72,13 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
         return cards.count == 1 || position.y < 0.0
     }
 
+    func snapBehavior(forCard card: UIView) -> UISnapBehavior {
+        let point = CGPoint(x: card.center.x, y: cardRectForBounds(bounds, atIndex: cards.count - 1).midY)
+        let snapBehavior = UISnapBehavior(item: card, snapToPoint: point)
+        snapBehavior.damping = snapBackDamping
+        return snapBehavior
+    }
+
     func shouldTransition(velocity: CGPoint) -> Bool {
         return cards.count > 1 && velocity.y > velocityTreshold
     }
@@ -90,7 +97,6 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
                 let minOriginY = CGFloat(0.0)
                 let maxOriginY = CGFloat(0.0)
 
-
                 if shouldRubberBand(atPosition: newPosition) {
                     let constrainedOriginY = max(minOriginY, min(newPosition.y, maxOriginY));
                     let rubberBandY = rubberBandDistance(newPosition.y - constrainedOriginY, dimension: bounds.height)
@@ -108,10 +114,6 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
                     dynamicBehavior.addLinearVelocity(CGPoint(x: 0.0, y: velocity.y), forItem: card)
                     animator.addBehavior(dynamicBehavior)
 
-                    let topCollisionBehavior = UICollisionBehavior(items: [card])
-                    topCollisionBehavior.addBoundaryWithIdentifier("top", fromPoint: CGPoint(x: 0.0, y: 0.0), toPoint: CGPoint(x: bounds.maxX, y: 0.0))
-                    animator.addBehavior(topCollisionBehavior)
-
                     let bottomCollisionBehavior = UICollisionBehavior(items: [card])
                     bottomCollisionBehavior.addBoundaryWithIdentifier("bottom", fromPoint: CGPoint(x: 0.0, y: bounds.maxY + card.frame.height), toPoint: CGPoint(x: bounds.maxX, y: bounds.maxY + card.frame.height))
                     bottomCollisionBehavior.collisionDelegate = self
@@ -122,10 +124,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
                     let dynamicBehavior = UIDynamicItemBehavior(items: [card])
                     dynamicBehavior.allowsRotation = false
                     animator.addBehavior(dynamicBehavior)
-
-                    let snapBehavior = UISnapBehavior(item: card, snapToPoint: CGPoint(x: card.center.x, y: cardRectForBounds(bounds, atIndex: cards.count - 1).midY))
-                    snapBehavior.damping = snapBackDamping
-                    animator.addBehavior(snapBehavior)
+                    animator.addBehavior(snapBehavior(forCard: card))
                 }
             }
         }
