@@ -114,6 +114,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
         cards.map { self.addSubview($0) }
         _cards = cards
         layoutIfNeeded()
+        completion?()
     }
 }
 

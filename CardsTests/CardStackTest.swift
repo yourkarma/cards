@@ -99,4 +99,17 @@ class CardStackTest: XCTestCase {
 
         XCTAssertFalse(view.isDescendantOfView(stack), "Card should have been removed as a subview")
     }
+
+    func testSettingMultipleCardsWithoutAnimationTriggersCompletionBlock() {
+        let stack = CardStack()
+        let expectation = expectationWithDescription("Completion block")
+
+        stack.setCards([UIView()], animated: false) {
+            expectation.fulfill()
+        }
+
+        waitForExpectationsWithTimeout(0.0) { error in
+            XCTAssertNil(error, "Completion block should have been called")
+        }
+    }
 }

@@ -50,8 +50,10 @@ public class CardStackController: UIViewController {
 
     public func setViewControllers(viewControllers: [UIViewController], animated: Bool, completion: (() -> Void)?) {
         viewControllers.map { self.addChildViewController($0) }
-        cardStack.setCards(viewControllers.map { $0.view }, animated: animated, completion: completion)
-        viewControllers.map { $0.didMoveToParentViewController(self) }
+        cardStack.setCards(viewControllers.map { $0.view }, animated: animated) {
+            viewControllers.map { $0.didMoveToParentViewController(self) }
+            completion?()
+        }
     }
 
     public override func loadView() {
