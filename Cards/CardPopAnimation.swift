@@ -57,12 +57,12 @@ class CardPopAnimation: NSObject, CardAnimation {
 
     func stop() {
         dynamicAnimator.removeAllBehaviors()
+        completion?()
     }
 }
 
 extension CardPopAnimation: UIDynamicAnimatorDelegate {
     func dynamicAnimatorDidPause(animator: UIDynamicAnimator) {
         stop()
-        completion?()
     }
 }

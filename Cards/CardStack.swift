@@ -113,7 +113,7 @@ extension CardStack: UIGestureRecognizerDelegate {
     func handlePan(pan: UIPanGestureRecognizer) {
         if let card = topCard {
             if pan.state == UIGestureRecognizerState.Began {
-                animator?.removeAllBehaviors()
+                stopAllAnimations()
                 startY  = card.frame.minY
 
             } else if pan.state == UIGestureRecognizerState.Changed {
@@ -191,6 +191,12 @@ extension CardStack {
     func startAnimation(animation: CardAnimation) {
         animations.append(animation)
         animation.start()
+    }
+
+    func stopAllAnimations() {
+        animations.map { $0.stop() }
+        animations = []
+        animator?.removeAllBehaviors()
     }
 
     public func dynamicAnimatorDidPause(animator: UIDynamicAnimator) {

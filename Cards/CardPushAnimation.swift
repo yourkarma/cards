@@ -59,12 +59,12 @@ class CardPushAnimation: NSObject, CardAnimation {
 
     func stop() {
         dynamicAnimator.removeAllBehaviors()
+        completion?()
     }
 }
 
 extension CardPushAnimation: UIDynamicAnimatorDelegate {
     func dynamicAnimatorDidPause(animator: UIDynamicAnimator) {
-        completion?()
         stop()
     }
 }
