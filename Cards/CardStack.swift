@@ -28,7 +28,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
         return _cards
     }
 
-    var animator: UIDynamicAnimator!
+    var animator: UIDynamicAnimator?
     var panGestureRecognizer: UIPanGestureRecognizer!
     var startY: CGFloat!
 
@@ -36,7 +36,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
 
     override public func willMoveToSuperview(newSuperview: UIView?) {
         animator = UIDynamicAnimator(referenceView: self)
-        animator.delegate = self
+        animator?.delegate = self
 
         panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePan:")
         panGestureRecognizer.delegate = self
@@ -82,7 +82,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
     func handlePan(pan: UIPanGestureRecognizer) {
         if let card = topCard {
             if pan.state == UIGestureRecognizerState.Began {
-                stopAnimations()
+                animator?.removeAllBehaviors()
                 startY  = card.frame.minY
 
             } else if pan.state == UIGestureRecognizerState.Changed {
@@ -108,19 +108,19 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
                     let dynamicBehavior = UIDynamicItemBehavior(items: [card])
                     dynamicBehavior.allowsRotation = false
                     dynamicBehavior.addLinearVelocity(CGPoint(x: 0.0, y: velocity.y), forItem: card)
-                    animator.addBehavior(dynamicBehavior)
+                    animator?.addBehavior(dynamicBehavior)
 
                     let bottomCollisionBehavior = UICollisionBehavior(items: [card])
                     bottomCollisionBehavior.addBoundaryWithIdentifier("bottom", fromPoint: CGPoint(x: 0.0, y: bounds.maxY + card.frame.height), toPoint: CGPoint(x: bounds.maxX, y: bounds.maxY + card.frame.height))
                     bottomCollisionBehavior.collisionDelegate = self
-                    animator.addBehavior(bottomCollisionBehavior)
+                    animator?.addBehavior(bottomCollisionBehavior)
 
                 } else {
 
                     let dynamicBehavior = UIDynamicItemBehavior(items: [card])
                     dynamicBehavior.allowsRotation = false
-                    animator.addBehavior(dynamicBehavior)
-                    animator.addBehavior(snapBehavior(forCard: card))
+                    animator?.addBehavior(dynamicBehavior)
+                    animator?.addBehavior(snapBehavior(forCard: card))
                 }
             }
         }
@@ -184,15 +184,11 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
         animation.start()
     }
 
-    func stopAnimations() {
-        animator?.removeAllBehaviors()
-        animations.map({ $0.stop() })
-    }
-
     public override func layoutSubviews() {
         super.layoutSubviews()
 
-        stopAnimations()
+        animator?.removeAllBehaviors()
+        animations.filter { $0.isRunning }
 
         for index in (0..<_cards.count) {
             let card = _cards[index]
@@ -205,7 +201,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
     }
 
     public func dynamicAnimatorDidPause(animator: UIDynamicAnimator) {
-        stopAnimations()
+        animator.removeAllBehaviors()
     }
 
     func snapBehavior(forCard card: UIView) -> UISnapBehavior {
@@ -216,7 +212,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
     }
 
     public func collisionBehavior(behavior: UICollisionBehavior, beganContactForItem item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying, atPoint p: CGPoint) {
-        stopAnimations()
+        animator?.removeAllBehaviors()
 
         if let card = topCard {
             sendSubviewToBack(card)
@@ -226,7 +222,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
 
             let dynamicBehavior = UIDynamicItemBehavior(items: cards)
             dynamicBehavior.allowsRotation = false
-            animator.addBehavior(dynamicBehavior)
+            animator?.addBehavior(dynamicBehavior)
 
             for index in (0..<cards.count) {
                 let card = _cards[index]
@@ -234,7 +230,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
 
                 let snapBehavior = UISnapBehavior(item: card, snapToPoint: CGPoint(x: frame.midX, y: frame.midY))
                 snapBehavior.damping = topBackTransitionDamping
-                animator.addBehavior(snapBehavior)
+                animator?.addBehavior(snapBehavior)
             }
         }
 
