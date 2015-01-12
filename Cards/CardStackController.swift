@@ -32,8 +32,10 @@ public class CardStackController: UIViewController {
 
     public func pushViewController(viewController: UIViewController, animated: Bool, completion: (() -> Void)?) {
         self.addChildViewController(viewController)
-        self.cardStack.pushCard(viewController.view, animated: animated, completion: completion)
-        viewController.didMoveToParentViewController(self)
+        self.cardStack.pushCard(viewController.view, animated: animated) {
+            viewController.didMoveToParentViewController(self)
+            completion?()
+        }
     }
 
     public func popViewController() {
@@ -43,8 +45,11 @@ public class CardStackController: UIViewController {
     public func popViewController(#animated: Bool, completion: (() -> Void)?) {
         if let viewController = childViewControllers.last as? UIViewController {
             viewController.willMoveToParentViewController(nil)
-            self.cardStack.popCard(animated: animated, completion: completion)
-            viewController.removeFromParentViewController()
+            self.cardStack.popCard(animated: animated) {
+                viewController.removeFromParentViewController()
+                completion?()
+            }
+
         }
     }
 
