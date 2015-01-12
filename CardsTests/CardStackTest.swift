@@ -80,4 +80,23 @@ class CardStackTest: XCTestCase {
             XCTAssertNil(error, "Completion block should have been called")
         }
     }
+
+    func testMultipleCardsCanBetSetSimultanously() {
+        let stack = CardStack()
+
+        let view = UIView()
+        stack.setCards([view], animated: false, completion: nil)
+
+        XCTAssertTrue(view.isDescendantOfView(stack), "Card should have been added as a subview")
+    }
+
+    func testOldCardsAreRemovedWhenSettingNew() {
+        let stack = CardStack()
+
+        let view = UIView()
+        stack.setCards([view], animated: false, completion: nil)
+        stack.setCards([], animated: false, completion: nil)
+
+        XCTAssertFalse(view.isDescendantOfView(stack), "Card should have been removed as a subview")
+    }
 }

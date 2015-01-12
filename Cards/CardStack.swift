@@ -106,6 +106,15 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
             }
         }
     }
+
+    public func setCards(cards: [UIView], animated: Bool, completion: (() -> Void)?) {
+        while topCard != nil {
+            popCard()
+        }
+        cards.map { self.addSubview($0) }
+        _cards = cards
+        layoutIfNeeded()
+    }
 }
 
 // Gestures

@@ -105,5 +105,36 @@ class CardStackControllerTest: XCTestCase {
 
         XCTAssertFalse(contains(stackViewController.cardStack.cards, view))
     }
+
+    func testCanSetMultipleViewControllersAtOnce() {
+        let stackViewController = CardStackController()
+
+        stackViewController.setViewControllers([ViewController(), ViewController()], animated: false, completion: nil)
+
+        XCTAssert(stackViewController.childViewControllers.count == 2, "Two view controllers should have been added")
+    }
+
+    func testThatEachViewControllersViewIsAddedAsASubview() {
+        let stackViewController = CardStackController()
+        let viewController = UIViewController()
+        let view = UIView()
+        viewController.view = view
+        stackViewController.setViewControllers([viewController], animated: false, completion: nil)
+
+        XCTAssertTrue(contains(stackViewController.cardStack.cards, view), "View should have been added as a subview")
+    }
+
+    func testThatDidMoveToParentViewControllerIsCalled() {
+        let stackViewController = CardStackController()
+
+        let childController = ViewController()
+        stackViewController.setViewControllers([childController], animated: false, completion: nil)
+
+        if (childController.didMoveToParentViewControllerArgument == nil) {
+            XCTFail("didMoveToParentViewController should have been called")
+            return
+        }
+        XCTAssertEqual(childController.didMoveToParentViewControllerArgument!, stackViewController)
+    }
 }
 
