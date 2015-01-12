@@ -64,9 +64,6 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
     */
     let topBackTransitionDamping = CGFloat(0.3)
 
-    var completionBlock: (() -> Void)? = nil
-
-
     func rubberBandDistance(offset: CGFloat, dimension: CGFloat) -> CGFloat {
         let constant = CGFloat(0.05)
         let result = (constant * abs(offset) * dimension) / (dimension + constant * abs(offset));
@@ -84,7 +81,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
     func handlePan(pan: UIPanGestureRecognizer) {
         if let card = topCard {
             if pan.state == UIGestureRecognizerState.Began {
-                animator.removeAllBehaviors()
+                stopAnimations()
                 startY  = card.frame.minY
 
             } else if pan.state == UIGestureRecognizerState.Changed {
@@ -163,10 +160,14 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
         popCard(animated: false, completion: nil)
     }
 
-
     func startAnimation(animation: CardAnimation) {
         animations.append(animation)
         animation.start()
+    }
+
+    func stopAnimations() {
+        animator?.removeAllBehaviors()
+        animations.map({ $0.stop() })
     }
 
     public func popCard(#animated: Bool, completion: (() -> Void)?) {
@@ -190,9 +191,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
     public override func layoutSubviews() {
         super.layoutSubviews()
 
-        if let animator = self.animator {
-            animator.removeAllBehaviors()
-        }
+        stopAnimations()
 
         for index in (0..<_cards.count) {
             let card = _cards[index]
@@ -205,14 +204,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
     }
 
     public func dynamicAnimatorDidPause(animator: UIDynamicAnimator) {
-        animator.removeAllBehaviors()
-
-        // Flawed behavior, but good enough for now.
-        // The completion block is only called when the last animation completes, not very any intermediate animations.
-        if let completion = completionBlock {
-            completionBlock = nil
-            completion()
-        }
+        stopAnimations()
     }
 
     func snapBehavior(forCard card: UIView) -> UISnapBehavior {
@@ -223,7 +215,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
     }
 
     public func collisionBehavior(behavior: UICollisionBehavior, beganContactForItem item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying, atPoint p: CGPoint) {
-        animator.removeAllBehaviors()
+        stopAnimations()
 
         if let card = topCard {
             sendSubviewToBack(card)

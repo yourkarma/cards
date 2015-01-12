@@ -56,11 +56,15 @@ class CardPushAnimation: NSObject, CardAnimation {
         snapBehavior.damping = 0.35
         dynamicAnimator.addBehavior(snapBehavior)
     }
+
+    func stop() {
+        dynamicAnimator.removeAllBehaviors()
+    }
 }
 
 extension CardPushAnimation: UIDynamicAnimatorDelegate {
     func dynamicAnimatorDidPause(animator: UIDynamicAnimator) {
-        animator.removeAllBehaviors()
+        stop()
         completion?()
     }
 }

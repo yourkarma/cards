@@ -27,4 +27,5 @@ protocol CardAnimation {
     init(cardStack: CardStack, card: UIView, completion: CompletionBlock?)
     var isRunning: Bool { get }
     func start()
+    func stop()
 }

@@ -54,11 +54,15 @@ class CardPopAnimation: NSObject, CardAnimation {
         let snapBehavior = UISnapBehavior(item: card, snapToPoint: CGPoint(x: card.center.x, y: frame.midY))
         dynamicAnimator.addBehavior(snapBehavior)
     }
+
+    func stop() {
+        dynamicAnimator.removeAllBehaviors()
+    }
 }
 
 extension CardPopAnimation: UIDynamicAnimatorDelegate {
     func dynamicAnimatorDidPause(animator: UIDynamicAnimator) {
-        animator.removeAllBehaviors()
+        stop()
         completion?()
     }
 }
