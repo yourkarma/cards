@@ -22,7 +22,7 @@
 
 import UIKit
 
-public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDelegate {
+public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDelegate, UIGestureRecognizerDelegate {
     private var _cards: [UIView] = []
     public var cards: [UIView] {
         return _cards
@@ -39,6 +39,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
         animator.delegate = self
 
         panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePan:")
+        panGestureRecognizer.delegate = self
         addGestureRecognizer(panGestureRecognizer)
     }
 
