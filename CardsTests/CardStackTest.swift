@@ -39,9 +39,9 @@ class CardStackTest: XCTestCase {
 
         let view = UIView()
         stack.pushCard(view)
-        stack.popCard()
+        stack.popCard(animated: false, completion: nil)
 
-        XCTAssertFalse(view.isDescendantOfView(stack), "Card should not be a subview of the stack")
+            XCTAssertFalse(view.isDescendantOfView(stack), "Card should not be a subview of the stack")
     }
 
     func testLastAddedCardIsTopCard() {

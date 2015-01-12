@@ -41,7 +41,9 @@ class ViewController: UIViewController {
     }
 
     @IBAction func popViewController() {
-        cardStackController.popViewController()
+        cardStackController.popViewController(animated: true) {
+            println("Pop completed")
+        }
     }
 
     var randomColor: UIColor {

@@ -37,9 +37,13 @@ public class CardStackController: UIViewController {
     }
 
     public func popViewController() {
+        popViewController(animated: false, completion: nil)
+    }
+
+    public func popViewController(#animated: Bool, completion: (() -> Void)?) {
         if let viewController = childViewControllers.last as? UIViewController {
             viewController.willMoveToParentViewController(nil)
-            self.cardStack.popCard()
+            self.cardStack.popCard(animated: animated, completion: completion)
             viewController.removeFromParentViewController()
         }
     }

@@ -89,7 +89,7 @@ class CardStackControllerTest: XCTestCase {
 
         let childController = ViewController()
         stackViewController.pushViewController(childController)
-        stackViewController.popViewController()
+        stackViewController.popViewController(animated: false, completion: nil)
 
         XCTAssertNil(childController.willMoveToParentViewControllerArgument, "willMoveToParentViewController should have been called with nil argument")
     }

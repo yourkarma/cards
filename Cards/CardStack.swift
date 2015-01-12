@@ -164,17 +164,50 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
     }
 
     public func popCard() {
+        popCard(animated: false, completion: nil)
+    }
+
+    public func popCard(#animated: Bool, completion: (() -> Void)?) {
         if let card = topCard {
-            _cards.removeLast()
-            card.removeFromSuperview()
-            setNeedsLayout()
+
+            if (animated) {
+                let dynamicBehavior = UIDynamicItemBehavior(items: [card])
+                dynamicBehavior.allowsRotation = false
+                animator.addBehavior(dynamicBehavior)
+
+                var frame = card.frame
+                frame.origin.y = bounds.maxY
+
+                println(frame)
+                let snapBehavior = UISnapBehavior(item: card, snapToPoint: CGPoint(x: card.center.x, y: frame.midY))
+                animator.addBehavior(snapBehavior)
+
+                completionBlock = {
+                    card.removeFromSuperview()
+                    self._cards.removeLast()
+
+                    if let c = completion {
+                        c()
+                    }
+                }
+            } else {
+                card.removeFromSuperview()
+                _cards.removeLast()
+                layoutIfNeeded()
+
+                if let c = completion {
+                    c()
+                }
+            }
         }
     }
 
     public override func layoutSubviews() {
         super.layoutSubviews()
 
-        animator.removeAllBehaviors()
+        if let animator = self.animator {
+            animator.removeAllBehaviors()
+        }
 
         for index in (0..<_cards.count) {
             let card = _cards[index]
