@@ -152,23 +152,13 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
 
         if animated {
             startAnimation(CardPushAnimation(cardStack: self, card: card, completion: completion))
-        } else if let c = completion {
-            c()
+        } else {
+            completion?()
         }
     }
 
     public func popCard() {
         popCard(animated: false, completion: nil)
-    }
-
-    func startAnimation(animation: CardAnimation) {
-        animations.append(animation)
-        animation.start()
-    }
-
-    func stopAnimations() {
-        animator?.removeAllBehaviors()
-        animations.map({ $0.stop() })
     }
 
     public func popCard(#animated: Bool, completion: (() -> Void)?) {
@@ -187,6 +177,16 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
                 finishPop()
             }
         }
+    }
+
+    func startAnimation(animation: CardAnimation) {
+        animations.append(animation)
+        animation.start()
+    }
+
+    func stopAnimations() {
+        animator?.removeAllBehaviors()
+        animations.map({ $0.stop() })
     }
 
     public override func layoutSubviews() {

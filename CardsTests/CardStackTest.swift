@@ -34,6 +34,20 @@ class CardStackTest: XCTestCase {
         XCTAssertTrue(view.isDescendantOfView(stack), "Card should be a subview of the stack")
     }
 
+    func testPushingCardsWithoutAnimationCallsCompletionBlock() {
+        let stack = CardStack()
+        let view = UIView()
+
+        let expectation = expectationWithDescription("Completion block")
+        stack.pushCard(view, animated: false) {
+            expectation.fulfill()
+        }
+
+        waitForExpectationsWithTimeout(0.0) { error in
+            XCTAssertNil(error, "Completion block should have been called")
+        }
+    }
+
     func testCardsAreRemovedAsSubviews()    {
         let stack = CardStack()
 
@@ -51,5 +65,19 @@ class CardStackTest: XCTestCase {
         stack.pushCard(view)
 
         XCTAssertEqual(stack.topCard!, view, "The last added view should be the top card")
+    }
+
+    func testPopCardsWithoutAnimationCallsCompletionBlock() {
+        let stack = CardStack()
+
+        let expectation = expectationWithDescription("Completion block")
+        stack.pushCard(UIView())
+        stack.popCard(animated: false) {
+            expectation.fulfill()
+        }
+
+        waitForExpectationsWithTimeout(0.0) { error in
+            XCTAssertNil(error, "Completion block should have been called")
+        }
     }
 }
