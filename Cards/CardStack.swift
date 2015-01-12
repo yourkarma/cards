@@ -19,6 +19,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 import UIKit
 
 public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDelegate {
@@ -30,6 +31,8 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
     var animator: UIDynamicAnimator!
     var panGestureRecognizer: UIPanGestureRecognizer!
     var startY: CGFloat!
+
+    var animations: [CardAnimation] = []
 
     override public func willMoveToSuperview(newSuperview: UIView?) {
         animator = UIDynamicAnimator(referenceView: self)
@@ -150,14 +153,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
         layoutIfNeeded()
 
         if animated {
-            card.frame.origin.y = bounds.maxY
-
-            let dynamicBehavior = UIDynamicItemBehavior(items: [card])
-            dynamicBehavior.allowsRotation = false
-            animator.addBehavior(dynamicBehavior)
-            animator.addBehavior(snapBehavior(forCard: card))
-
-            completionBlock = completion
+            startAnimation(CardPushAnimation(cardStack: self, card: card, completion: completion))
         } else if let c = completion {
             c()
         }
@@ -167,37 +163,26 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
         popCard(animated: false, completion: nil)
     }
 
+
+    func startAnimation(animation: CardAnimation) {
+        animations.append(animation)
+        animation.start()
+    }
+
     public func popCard(#animated: Bool, completion: (() -> Void)?) {
         if let card = topCard {
+            self._cards.removeLast()
+
+            let finishPop: (() -> Void) = {
+                card.removeFromSuperview()
+                self.layoutIfNeeded()
+                completion?()
+            }
 
             if (animated) {
-                let dynamicBehavior = UIDynamicItemBehavior(items: [card])
-                dynamicBehavior.allowsRotation = false
-                animator.addBehavior(dynamicBehavior)
-
-                var frame = card.frame
-                frame.origin.y = bounds.maxY
-
-                println(frame)
-                let snapBehavior = UISnapBehavior(item: card, snapToPoint: CGPoint(x: card.center.x, y: frame.midY))
-                animator.addBehavior(snapBehavior)
-
-                completionBlock = {
-                    card.removeFromSuperview()
-                    self._cards.removeLast()
-
-                    if let c = completion {
-                        c()
-                    }
-                }
+                startAnimation(CardPopAnimation(cardStack: self, card: card, completion: finishPop))
             } else {
-                card.removeFromSuperview()
-                _cards.removeLast()
-                layoutIfNeeded()
-
-                if let c = completion {
-                    c()
-                }
+                finishPop()
             }
         }
     }

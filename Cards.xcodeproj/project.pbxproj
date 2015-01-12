@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A13548801A644EC8009D3A26 /* CardPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A135487F1A644EC8009D3A26 /* CardPopAnimation.swift */; };
+		A13548841A645485009D3A26 /* CardPushAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13548831A645485009D3A26 /* CardPushAnimation.swift */; };
+		A13548861A646560009D3A26 /* CardAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13548851A646560009D3A26 /* CardAnimation.swift */; };
 		A19D72CC1A5B3E7D003DDC63 /* Cards.h in Headers */ = {isa = PBXBuildFile; fileRef = A19D72CB1A5B3E7D003DDC63 /* Cards.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A19D72D21A5B3E7D003DDC63 /* Cards.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A19D72C61A5B3E7D003DDC63 /* Cards.framework */; };
 		A19D73331A5B40C6003DDC63 /* CardStackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19D73321A5B40C6003DDC63 /* CardStackController.swift */; };
@@ -26,6 +29,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A135487F1A644EC8009D3A26 /* CardPopAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPopAnimation.swift; sourceTree = "<group>"; };
+		A13548831A645485009D3A26 /* CardPushAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPushAnimation.swift; sourceTree = "<group>"; };
+		A13548851A646560009D3A26 /* CardAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardAnimation.swift; sourceTree = "<group>"; };
 		A19D72C61A5B3E7D003DDC63 /* Cards.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Cards.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A19D72CA1A5B3E7D003DDC63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A19D72CB1A5B3E7D003DDC63 /* Cards.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cards.h; sourceTree = "<group>"; };
@@ -56,6 +62,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A13548871A64669E009D3A26 /* Animation */ = {
+			isa = PBXGroup;
+			children = (
+				A13548851A646560009D3A26 /* CardAnimation.swift */,
+				A135487F1A644EC8009D3A26 /* CardPopAnimation.swift */,
+				A13548831A645485009D3A26 /* CardPushAnimation.swift */,
+			);
+			name = Animation;
+			sourceTree = "<group>";
+		};
 		A19D72BC1A5B3E7D003DDC63 = {
 			isa = PBXGroup;
 			children = (
@@ -77,6 +93,7 @@
 		A19D72C81A5B3E7D003DDC63 /* Cards */ = {
 			isa = PBXGroup;
 			children = (
+				A13548871A64669E009D3A26 /* Animation */,
 				A19D72C91A5B3E7D003DDC63 /* Supporting Files */,
 				A19D72CB1A5B3E7D003DDC63 /* Cards.h */,
 				A19D73321A5B40C6003DDC63 /* CardStackController.swift */,
@@ -218,6 +235,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A13548861A646560009D3A26 /* CardAnimation.swift in Sources */,
+				A13548841A645485009D3A26 /* CardPushAnimation.swift in Sources */,
+				A13548801A644EC8009D3A26 /* CardPopAnimation.swift in Sources */,
 				A1CF81261A5DA2350086F847 /* CardStack.swift in Sources */,
 				A19D73331A5B40C6003DDC63 /* CardStackController.swift in Sources */,
 			);

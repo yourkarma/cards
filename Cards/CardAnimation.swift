@@ -1,5 +1,6 @@
-// CardStackTest.Swift
 //
+// CardAnimation.swift
+
 // Copyright (c) 2015 Karma Mobility Inc. (https://yourkarma.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,38 +19,12 @@
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.Kit
+// THE SOFTWARE.
 
-import XCTest
-import Cards
+typealias CompletionBlock = (() -> Void)
 
-class CardStackTest: XCTestCase {
-
-    func testCardsAreAddedAsSubviews() {
-        let stack = CardStack()
-
-        let view = UIView()
-        stack.pushCard(view, animated: false, completion: nil)
-
-        XCTAssertTrue(view.isDescendantOfView(stack), "Card should be a subview of the stack")
-    }
-
-    func testCardsAreRemovedAsSubviews()    {
-        let stack = CardStack()
-
-        let view = UIView()
-        stack.pushCard(view)
-        stack.popCard(animated: false, completion: nil)
-
-        XCTAssertFalse(view.isDescendantOfView(stack), "Card should not be a subview of the stack")
-    }
-
-    func testLastAddedCardIsTopCard() {
-        let stack = CardStack()
-        let view = UIView()
-        stack.pushCard(UIView())
-        stack.pushCard(view)
-
-        XCTAssertEqual(stack.topCard!, view, "The last added view should be the top card")
-    }
+protocol CardAnimation {
+    init(cardStack: CardStack, card: UIView, completion: CompletionBlock?)
+    var isRunning: Bool { get }
+    func start()
 }
