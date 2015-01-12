@@ -22,14 +22,13 @@
 
 import UIKit
 
-public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDelegate, UIGestureRecognizerDelegate {
+public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDelegate {
     private var _cards: [UIView] = []
     public var cards: [UIView] {
         return _cards
     }
 
     var animator: UIDynamicAnimator?
-    var panGestureRecognizer: UIPanGestureRecognizer!
     var startY: CGFloat!
 
     var animations: [CardAnimation] = []
@@ -38,7 +37,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
         animator = UIDynamicAnimator(referenceView: self)
         animator?.delegate = self
 
-        panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePan:")
+        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePan:")
         panGestureRecognizer.delegate = self
         addGestureRecognizer(panGestureRecognizer)
     }
@@ -65,20 +64,52 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
     */
     let topBackTransitionDamping = CGFloat(0.3)
 
-    func rubberBandDistance(offset: CGFloat, dimension: CGFloat) -> CGFloat {
-        let constant = CGFloat(0.05)
-        let result = (constant * abs(offset) * dimension) / (dimension + constant * abs(offset));
-        return offset < 0.0 ? -result : result;
+
+    public var topCard: UIView? {
+        return _cards.last
     }
 
-    func shouldRubberBand(atPosition position: CGPoint) -> Bool {
-        return cards.count == 1 || position.y < 0.0
+    public func pushCard(card: UIView) {
+        pushCard(card, animated: false, nil)
     }
 
-    func shouldTransition(velocity: CGPoint) -> Bool {
-        return cards.count > 1 && velocity.y > velocityTreshold
+    public func pushCard(card: UIView, animated: Bool, completion: (() -> Void)?) {
+        _cards.append(card)
+        addSubview(card)
+        layoutIfNeeded()
+
+        if animated {
+            startAnimation(CardPushAnimation(cardStack: self, card: card, completion: completion))
+        } else {
+            completion?()
+        }
     }
 
+    public func popCard() {
+        popCard(animated: false, completion: nil)
+    }
+
+    public func popCard(#animated: Bool, completion: (() -> Void)?) {
+        if let card = topCard {
+            self._cards.removeLast()
+
+            let finishPop: (() -> Void) = {
+                card.removeFromSuperview()
+                self.layoutIfNeeded()
+                completion?()
+            }
+
+            if (animated) {
+                startAnimation(CardPopAnimation(cardStack: self, card: card, completion: finishPop))
+            } else {
+                finishPop()
+            }
+        }
+    }
+}
+
+// Gestures
+extension CardStack: UIGestureRecognizerDelegate {
     func handlePan(pan: UIPanGestureRecognizer) {
         if let card = topCard {
             if pan.state == UIGestureRecognizerState.Began {
@@ -127,63 +158,17 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
     }
 
     public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
-        if gestureRecognizer == panGestureRecognizer {
-            // Only accept touches that are inside the top card
-            if let card = topCard {
-                return card.frame.contains(touch.locationInView(self))
-            }
-        }
-
-        return true
-    }
-
-    public var topCard: UIView? {
-        return _cards.last
-    }
-
-    public func pushCard(card: UIView) {
-        pushCard(card, animated: false, nil)
-    }
-
-    public func pushCard(card: UIView, animated: Bool, completion: (() -> Void)?) {
-        _cards.append(card)
-        addSubview(card)
-        layoutIfNeeded()
-
-        if animated {
-            startAnimation(CardPushAnimation(cardStack: self, card: card, completion: completion))
-        } else {
-            completion?()
-        }
-    }
-
-    public func popCard() {
-        popCard(animated: false, completion: nil)
-    }
-
-    public func popCard(#animated: Bool, completion: (() -> Void)?) {
+        // Only accept touches that are inside the top card
         if let card = topCard {
-            self._cards.removeLast()
-
-            let finishPop: (() -> Void) = {
-                card.removeFromSuperview()
-                self.layoutIfNeeded()
-                completion?()
-            }
-
-            if (animated) {
-                startAnimation(CardPopAnimation(cardStack: self, card: card, completion: finishPop))
-            } else {
-                finishPop()
-            }
+            return card.frame.contains(touch.locationInView(self))
         }
-    }
 
-    func startAnimation(animation: CardAnimation) {
-        animations.append(animation)
-        animation.start()
+        return false
     }
+}
 
+// Layout
+extension CardStack {
     public override func layoutSubviews() {
         super.layoutSubviews()
 
@@ -198,6 +183,14 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
 
     func cardRectForBounds(bounds: CGRect, atIndex index: Int) -> CGRect {
         return CGRectMake(0.0, CGFloat(index) * cardHeaderHeight, CGRectGetWidth(bounds), CGRectGetHeight(bounds))
+    }
+}
+
+// Animation
+extension CardStack {
+    func startAnimation(animation: CardAnimation) {
+        animations.append(animation)
+        animation.start()
     }
 
     public func dynamicAnimatorDidPause(animator: UIDynamicAnimator) {
@@ -233,8 +226,19 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
                 animator?.addBehavior(snapBehavior)
             }
         }
+    }
 
+    func rubberBandDistance(offset: CGFloat, dimension: CGFloat) -> CGFloat {
+        let constant = CGFloat(0.05)
+        let result = (constant * abs(offset) * dimension) / (dimension + constant * abs(offset));
+        return offset < 0.0 ? -result : result;
+    }
 
+    func shouldRubberBand(atPosition position: CGPoint) -> Bool {
+        return cards.count == 1 || position.y < 0.0
+    }
 
+    func shouldTransition(velocity: CGPoint) -> Bool {
+        return cards.count > 1 && velocity.y > velocityTreshold
     }
 }
