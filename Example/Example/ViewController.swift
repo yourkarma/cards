@@ -35,7 +35,9 @@ class ViewController: UIViewController {
         let viewController = UIViewController()
         viewController.view = UIView()
         viewController.view.backgroundColor = randomColor
-        cardStackController.pushViewController(viewController)
+        cardStackController.pushViewController(viewController, animated: true) {
+            println("Push completed")
+        }
     }
 
     @IBAction func popViewController() {

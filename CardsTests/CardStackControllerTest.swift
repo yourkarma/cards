@@ -44,7 +44,8 @@ class CardStackControllerTest: XCTestCase {
     func testViewControllersAreAddedAsChildControllers() {
         let stackViewController = CardStackController()
 
-        stackViewController.pushViewController(UIViewController())
+        stackViewController.pushViewController(UIViewController(), animated: false, completion: nil)
+
 
         XCTAssertEqual(stackViewController.childViewControllers.count, 1,
             "View controllers should be added as child controllers")

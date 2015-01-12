@@ -27,8 +27,12 @@ public class CardStackController: UIViewController {
     public let cardStack: CardStack = CardStack()
 
     public func pushViewController(viewController: UIViewController) {
+        self.pushViewController(viewController, animated: false, completion: nil)
+    }
+
+    public func pushViewController(viewController: UIViewController, animated: Bool, completion: (() -> Void)?) {
         self.addChildViewController(viewController)
-        self.cardStack.pushCard(viewController.view)
+        self.cardStack.pushCard(viewController.view, animated: animated, completion: completion)
         viewController.didMoveToParentViewController(self)
     }
 

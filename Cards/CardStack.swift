@@ -61,6 +61,8 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
     */
     let topBackTransitionDamping = CGFloat(0.3)
 
+    var completionBlock: (() -> Void)? = nil
+
 
     func rubberBandDistance(offset: CGFloat, dimension: CGFloat) -> CGFloat {
         let constant = CGFloat(0.05)
@@ -70,13 +72,6 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
 
     func shouldRubberBand(atPosition position: CGPoint) -> Bool {
         return cards.count == 1 || position.y < 0.0
-    }
-
-    func snapBehavior(forCard card: UIView) -> UISnapBehavior {
-        let point = CGPoint(x: card.center.x, y: cardRectForBounds(bounds, atIndex: cards.count - 1).midY)
-        let snapBehavior = UISnapBehavior(item: card, snapToPoint: point)
-        snapBehavior.damping = snapBackDamping
-        return snapBehavior
     }
 
     func shouldTransition(velocity: CGPoint) -> Bool {
@@ -146,9 +141,26 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
     }
 
     public func pushCard(card: UIView) {
+        pushCard(card, animated: false, nil)
+    }
+
+    public func pushCard(card: UIView, animated: Bool, completion: (() -> Void)?) {
         _cards.append(card)
         addSubview(card)
-        setNeedsLayout()
+        layoutIfNeeded()
+
+        if animated {
+            card.frame.origin.y = bounds.maxY
+
+            let dynamicBehavior = UIDynamicItemBehavior(items: [card])
+            dynamicBehavior.allowsRotation = false
+            animator.addBehavior(dynamicBehavior)
+            animator.addBehavior(snapBehavior(forCard: card))
+
+            completionBlock = completion
+        } else if let c = completion {
+            c()
+        }
     }
 
     public func popCard() {
@@ -176,6 +188,20 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
 
     public func dynamicAnimatorDidPause(animator: UIDynamicAnimator) {
         animator.removeAllBehaviors()
+
+        // Flawed behavior, but good enough for now.
+        // The completion block is only called when the last animation completes, not very any intermediate animations.
+        if let completion = completionBlock {
+            completionBlock = nil
+            completion()
+        }
+    }
+
+    func snapBehavior(forCard card: UIView) -> UISnapBehavior {
+        let point = CGPoint(x: card.center.x, y: cardRectForBounds(bounds, atIndex: cards.count - 1).midY)
+        let snapBehavior = UISnapBehavior(item: card, snapToPoint: point)
+        snapBehavior.damping = snapBackDamping
+        return snapBehavior
     }
 
     public func collisionBehavior(behavior: UICollisionBehavior, beganContactForItem item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying, atPoint p: CGPoint) {

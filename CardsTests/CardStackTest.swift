@@ -29,7 +29,7 @@ class CardStackTest: XCTestCase {
         let stack = CardStack()
 
         let view = UIView()
-        stack.pushCard(view)
+        stack.pushCard(view, animated: false, completion: nil)
 
         XCTAssertTrue(view.isDescendantOfView(stack), "Card should be a subview of the stack")
     }
