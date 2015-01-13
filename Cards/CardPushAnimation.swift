@@ -24,7 +24,7 @@ import UIKit
 
 class CardPushAnimation: NSObject, CardAnimation {
     let cardStack: CardStack
-    let card: UIView
+    var card: UIView
     let dynamicAnimator: UIDynamicAnimator
     let completion: CompletionBlock?
 
@@ -32,9 +32,13 @@ class CardPushAnimation: NSObject, CardAnimation {
         return dynamicAnimator.behaviors.count > 0
     }
 
-    required init(cardStack: CardStack, card: UIView, completion: CompletionBlock?) {
+    convenience init(cardStack: CardStack, card: UIView, completion: CompletionBlock?) {
+        self.init(cardStack: cardStack, cards: [card], completion: completion)
+    }
+
+    required init(cardStack: CardStack, cards: [UIView], completion: CompletionBlock?) {
         self.cardStack = cardStack
-        self.card = card
+        self.card = cards.first!
         self.dynamicAnimator = UIDynamicAnimator(referenceView: cardStack)
         self.completion = completion
         super.init()

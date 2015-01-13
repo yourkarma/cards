@@ -1,4 +1,4 @@
-// CardPopAnimation.swift
+// CardsPushAnimation.swift
 //
 // Copyright (c) 2015 Karma Mobility Inc. (https://yourkarma.com)
 //
@@ -18,27 +18,23 @@
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.Kit
+// THE SOFTWARE.
 
 import UIKit
 
-class CardPopAnimation: NSObject, CardAnimation {
+class CardsPushAnimation: NSObject, CardAnimation {
     let cardStack: CardStack
-    let card: UIView
+    let cards: [UIView]
     let dynamicAnimator: UIDynamicAnimator
     let completion: CompletionBlock?
 
     var isRunning: Bool {
-        return dynamicAnimator.behaviors.count > 0
-    }
-
-    convenience init(cardStack: CardStack, card: UIView, completion: CompletionBlock?) {
-        self.init(cardStack: cardStack, cards: [card], completion: completion)
+        return dynamicAnimator.behaviors.count > 0 || pendingBehaviors.count > 0
     }
 
     required init(cardStack: CardStack, cards: [UIView], completion: CompletionBlock?) {
         self.cardStack = cardStack
-        self.card = cards.first!
+        self.cards = cards
         self.dynamicAnimator = UIDynamicAnimator(referenceView: cardStack)
         self.completion = completion
         super.init()
@@ -46,27 +42,56 @@ class CardPopAnimation: NSObject, CardAnimation {
         self.dynamicAnimator.delegate = self
     }
 
+    var pendingBehaviors: [UIDynamicBehavior] = []
+
+    func delay(delay: Double, behaviors: [UIDynamicBehavior], onCard card: UIView) {
+        pendingBehaviors += behaviors
+
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) {
+            for behavior in behaviors {
+                if let index = find(self.pendingBehaviors, behavior) {
+                    self.pendingBehaviors.removeAtIndex(index)
+
+                    if card.superview == self.cardStack {
+                        self.dynamicAnimator.addBehavior(behavior)
+                    }
+                }
+
+            }
+        }
+    }
+
     func start() {
         assert(!isRunning, "Attempt to start a \(self) that is already running")
 
-        let dynamicBehvaior = UIDynamicItemBehavior(items: [card])
-        dynamicBehvaior.allowsRotation = false
-        dynamicAnimator.addBehavior(dynamicBehvaior)
+        for index in (0..<cards.count) {
+            let card = cards[index]
 
-        var frame = card.frame
-        frame.origin.y = cardStack.bounds.maxY
-        let snapBehavior = UISnapBehavior(item: card, snapToPoint: CGPoint(x: card.center.x, y: frame.midY))
-        dynamicAnimator.addBehavior(snapBehavior)
+            let snapToPoint = card.center
+            card.center.y += self.cardStack.bounds.height
+
+            let dynamicBehavior = UIDynamicItemBehavior(items: [card])
+            dynamicBehavior.allowsRotation = false
+
+            let snapBehavior = UISnapBehavior(item: card, snapToPoint: snapToPoint)
+            snapBehavior.damping = 0.35
+            delay(0.2 * Double(index), behaviors: [dynamicBehavior, snapBehavior], onCard: card)
+        }
     }
 
     func stop() {
+        println("stop")
+        pendingBehaviors = []
         dynamicAnimator.removeAllBehaviors()
         completion?()
     }
 }
 
-extension CardPopAnimation: UIDynamicAnimatorDelegate {
+extension CardsPushAnimation: UIDynamicAnimatorDelegate {
     func dynamicAnimatorDidPause(animator: UIDynamicAnimator) {
-        stop()
+        println("pause")
+        if (pendingBehaviors.count <= 0) {
+            stop()
+        }
     }
 }

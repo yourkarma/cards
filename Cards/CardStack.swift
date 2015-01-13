@@ -114,7 +114,13 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
         cards.map { self.addSubview($0) }
         _cards = cards
         layoutIfNeeded()
-        completion?()
+
+        if animated {
+            stopAllAnimations()
+            startAnimation(CardsPushAnimation(cardStack: self, cards: cards, completion: completion))
+        } else {
+            completion?()
+        }
     }
 }
 
@@ -183,6 +189,7 @@ extension CardStack {
         super.layoutSubviews()
 
         animator?.removeAllBehaviors()
+
         animations.filter { $0.isRunning }
 
         for index in (0..<_cards.count) {

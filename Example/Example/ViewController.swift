@@ -31,11 +31,14 @@ class ViewController: UIViewController {
         cardStackController = segue.destinationViewController as CardStackController
     }
 
+//    @IBAction func pushViewController() {
+//        cardStackController.pushViewController(createViewController(), animated: true) {
+//            println("Push completed")
+//        }
+//    }
+
     @IBAction func pushViewController() {
-        let viewController = UIViewController()
-        viewController.view = UIView()
-        viewController.view.backgroundColor = randomColor
-        cardStackController.pushViewController(viewController, animated: true) {
+        cardStackController.setViewControllers([createViewController(), createViewController(), createViewController()], animated: true) {
             println("Push completed")
         }
     }
@@ -46,8 +49,16 @@ class ViewController: UIViewController {
         }
     }
 
-    var randomColor: UIColor {
+    func randomColor() -> UIColor {
         return UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 1.0)
     }
+
+    func createViewController() -> UIViewController {
+        let viewController = UIViewController()
+        viewController.view = UIView()
+        viewController.view.backgroundColor = randomColor()
+        return viewController
+    }
+
 }
 

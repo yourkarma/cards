@@ -24,7 +24,7 @@
 typealias CompletionBlock = (() -> Void)
 
 protocol CardAnimation {
-    init(cardStack: CardStack, card: UIView, completion: CompletionBlock?)
+    init(cardStack: CardStack, cards: [UIView], completion: CompletionBlock?)
     var isRunning: Bool { get }
     func start()
     func stop()
