@@ -62,11 +62,10 @@ public class CardStack: UIView {
     }
 
     private func insertCard(card: UIView, atIndex index: Int, animated: Bool, completion: (() -> Void)?) {
-        card.frame = self.cardRectForBounds(bounds, atIndex: index)
         self.insertSubview(card, atIndex: index)
         _cards.insert(card, atIndex: index)
+
         if animated {
-            startAnimation(CardPushAnimation(cardStack: self, card: card, completion: nil))
             startAnimation(CardPushDownAnimation(cardStack: self, cards: cards.filter { $0 !== card }, completion: nil))
         } else {
             self.layoutIfNeeded()

@@ -64,7 +64,6 @@ class CardPopWithVelocityAnimation: NSObject, CardAnimation, UICollisionBehavior
     }
 
     func finish() {
-        println("finish")
         completion?()
     }
 
