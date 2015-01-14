@@ -25,12 +25,9 @@ import UIKit
 class CardPopAnimation: NSObject, CardAnimation {
     let cardStack: CardStack
     let card: UIView
-    let dynamicAnimator: UIDynamicAnimator
     let completion: CompletionBlock?
 
-    var isRunning: Bool {
-        return dynamicAnimator.behaviors.count > 0
-    }
+    var isRunning: Bool = false
 
     convenience init(cardStack: CardStack, card: UIView, completion: CompletionBlock?) {
         self.init(cardStack: cardStack, cards: [card], completion: completion)
@@ -39,34 +36,35 @@ class CardPopAnimation: NSObject, CardAnimation {
     required init(cardStack: CardStack, cards: [UIView], completion: CompletionBlock?) {
         self.cardStack = cardStack
         self.card = cards.first!
-        self.dynamicAnimator = UIDynamicAnimator(referenceView: cardStack)
         self.completion = completion
         super.init()
-
-        self.dynamicAnimator.delegate = self
     }
 
     func start() {
         assert(!isRunning, "Attempt to start a \(self) that is already running")
+        self.isRunning = true
 
-        let dynamicBehvaior = UIDynamicItemBehavior(items: [card])
-        dynamicBehvaior.allowsRotation = false
-        dynamicAnimator.addBehavior(dynamicBehvaior)
+        UIView.animateKeyframesWithDuration(0.3, delay: 0.0, options: UIViewKeyframeAnimationOptions.CalculationModeLinear, animations: {
 
-        var frame = card.frame
-        frame.origin.y = cardStack.bounds.maxY
-        let snapBehavior = UISnapBehavior(item: card, snapToPoint: CGPoint(x: card.center.x, y: frame.midY))
-        dynamicAnimator.addBehavior(snapBehavior)
+            UIView.addKeyframeWithRelativeStartTime(0.0, relativeDuration: 0.3) {
+                self.card.frame.origin.y -= 20.0
+            }
+
+            UIView.addKeyframeWithRelativeStartTime(0.3, relativeDuration: 0.7) {
+                self.card.frame.origin.y = self.cardStack.bounds.maxY
+            }
+
+        }) { completed in
+            if let completion = self.completion {
+                self.isRunning = false
+                completion()
+            }
+        }
     }
 
     func stop() {
-        dynamicAnimator.removeAllBehaviors()
+        card.layer.removeAllAnimations()
+        isRunning = false
         completion?()
-    }
-}
-
-extension CardPopAnimation: UIDynamicAnimatorDelegate {
-    func dynamicAnimatorDidPause(animator: UIDynamicAnimator) {
-        stop()
     }
 }
