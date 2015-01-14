@@ -27,6 +27,7 @@ class CardPushAnimation: NSObject, CardAnimation {
     var card: UIView
     let completion: CompletionBlock?
 
+    var delay = 0.0
     var isRunning: Bool = false
 
     convenience init(cardStack: CardStack, card: UIView, completion: CompletionBlock?) {
@@ -46,7 +47,7 @@ class CardPushAnimation: NSObject, CardAnimation {
         let origin = card.frame.origin
         card.frame.origin.y += self.cardStack.bounds.height
 
-        UIView.animateWithDuration(0.3, delay: 0.0,usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: UIViewAnimationOptions.allZeros, animations: {
+        UIView.animateWithDuration(0.3, delay: self.delay, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: UIViewAnimationOptions.allZeros, animations: {
             self.card.frame.origin = origin
             }) { completed in
                 if let completion = self.completion {

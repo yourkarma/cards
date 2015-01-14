@@ -42,19 +42,14 @@ class CardsPushAnimation: NSObject, CardAnimation {
 
         for index in (0..<cards.count) {
             let card = cards[index]
-
-            let origin = card.frame.origin
-            card.frame.origin.y += self.cardStack.bounds.height
-
-            let delay = 0.2 * Double(index)
-            UIView.animateWithDuration(0.3, delay: delay,usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: UIViewAnimationOptions.allZeros, animations: {
-                card.frame.origin = origin
-            }) { completed in
-                if let completion = self.completion {
+            let animation = CardPushAnimation(cardStack: cardStack, card: card) {
+                if index >= self.cards.count - 1 {
                     self.isRunning = false
-                    completion()
+                    self.completion?()
                 }
             }
+            animation.delay = 0.2 * Double(index)
+            animation.start()
         }
     }
 
