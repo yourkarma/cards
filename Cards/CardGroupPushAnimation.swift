@@ -22,7 +22,7 @@
 
 import UIKit
 
-class CardsPushAnimation: NSObject, CardAnimation {
+class CardGroupPushAnimation: NSObject, CardAnimation {
     let cardStack: CardStack
     let cards: [UIView]
     let completion: CompletionBlock?

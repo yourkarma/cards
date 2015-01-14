@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A127192F1A64847800899E0A /* CardsPushAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A127192E1A64847800899E0A /* CardsPushAnimation.swift */; };
+		A127192F1A64847800899E0A /* CardGroupPushAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A127192E1A64847800899E0A /* CardGroupPushAnimation.swift */; };
 		A13548801A644EC8009D3A26 /* CardPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A135487F1A644EC8009D3A26 /* CardPopAnimation.swift */; };
 		A13548841A645485009D3A26 /* CardPushAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13548831A645485009D3A26 /* CardPushAnimation.swift */; };
 		A13548861A646560009D3A26 /* CardAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13548851A646560009D3A26 /* CardAnimation.swift */; };
@@ -30,7 +30,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		A127192E1A64847800899E0A /* CardsPushAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardsPushAnimation.swift; sourceTree = "<group>"; };
+		A127192E1A64847800899E0A /* CardGroupPushAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardGroupPushAnimation.swift; sourceTree = "<group>"; };
 		A135487F1A644EC8009D3A26 /* CardPopAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPopAnimation.swift; sourceTree = "<group>"; };
 		A13548831A645485009D3A26 /* CardPushAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPushAnimation.swift; sourceTree = "<group>"; };
 		A13548851A646560009D3A26 /* CardAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardAnimation.swift; sourceTree = "<group>"; };
@@ -70,7 +70,7 @@
 				A13548851A646560009D3A26 /* CardAnimation.swift */,
 				A135487F1A644EC8009D3A26 /* CardPopAnimation.swift */,
 				A13548831A645485009D3A26 /* CardPushAnimation.swift */,
-				A127192E1A64847800899E0A /* CardsPushAnimation.swift */,
+				A127192E1A64847800899E0A /* CardGroupPushAnimation.swift */,
 			);
 			name = Animation;
 			sourceTree = "<group>";
@@ -240,7 +240,7 @@
 			files = (
 				A13548861A646560009D3A26 /* CardAnimation.swift in Sources */,
 				A13548841A645485009D3A26 /* CardPushAnimation.swift in Sources */,
-				A127192F1A64847800899E0A /* CardsPushAnimation.swift in Sources */,
+				A127192F1A64847800899E0A /* CardGroupPushAnimation.swift in Sources */,
 				A13548801A644EC8009D3A26 /* CardPopAnimation.swift in Sources */,
 				A1CF81261A5DA2350086F847 /* CardStack.swift in Sources */,
 				A19D73331A5B40C6003DDC63 /* CardStackController.swift in Sources */,

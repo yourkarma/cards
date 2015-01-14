@@ -117,7 +117,7 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
 
         if animated {
             stopAllAnimations()
-            startAnimation(CardsPushAnimation(cardStack: self, cards: cards, completion: completion))
+            startAnimation(CardGroupPushAnimation(cardStack: self, cards: cards, completion: completion))
         } else {
             completion?()
         }
