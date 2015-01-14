@@ -56,14 +56,16 @@ class CardPopAnimation: NSObject, CardAnimation {
 
         }) { completed in
             if let completion = self.completion {
-                self.isRunning = false
-                completion()
+                self.finish()
             }
         }
     }
 
     func stop() {
         card.layer.removeAllAnimations()
+    }
+
+    func finish() {
         isRunning = false
         completion?()
     }

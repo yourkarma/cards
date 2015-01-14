@@ -49,16 +49,16 @@ class CardPushAnimation: NSObject, CardAnimation {
 
         UIView.animateWithDuration(0.3, delay: self.delay, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: UIViewAnimationOptions.allZeros, animations: {
             self.card.frame.origin = origin
-            }) { completed in
-                if let completion = self.completion {
-                    self.isRunning = false
-                    completion()
-                }
+        }) { completed in
+                self.finish()
         }
     }
 
     func stop() {
         card.layer.removeAllAnimations()
+    }
+
+    func finish() {
         isRunning = false
         completion?()
     }

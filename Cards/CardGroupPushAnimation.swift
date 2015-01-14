@@ -44,8 +44,7 @@ class CardGroupPushAnimation: NSObject, CardAnimation {
             let card = cards[index]
             let animation = CardPushAnimation(cardStack: cardStack, card: card) {
                 if index >= self.cards.count - 1 {
-                    self.isRunning = false
-                    self.completion?()
+                    self.finish()
                 }
             }
             animation.delay = 0.2 * Double(index)
@@ -55,6 +54,9 @@ class CardGroupPushAnimation: NSObject, CardAnimation {
 
     func stop() {
         cards.map { $0.layer.removeAllAnimations() }
+    }
+
+    func finish() {
         isRunning = false
         completion?()
     }

@@ -60,12 +60,12 @@ class CardPopWithVelocityAnimation: NSObject, CardAnimation, UICollisionBehavior
     }
 
     func stop() {
-        let wasRunning = isRunning
         dynamicAnimator.removeAllBehaviors()
+    }
 
-        if wasRunning {
-            completion?()
-        }
+    func finish() {
+        println("finish")
+        completion?()
     }
 
     func collisionBehavior(behavior: UICollisionBehavior, beganContactForItem item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying, atPoint p: CGPoint) {
@@ -73,7 +73,7 @@ class CardPopWithVelocityAnimation: NSObject, CardAnimation, UICollisionBehavior
     }
 
     func dynamicAnimatorDidPause(animator: UIDynamicAnimator) {
-        stop()
+        finish()
     }
 
 }
