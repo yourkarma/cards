@@ -22,7 +22,7 @@
 
 import UIKit
 
-public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDelegate {
+public class CardStack: UIView {
     private var _cards: [UIView] = []
     public var cards: [UIView] {
         return _cards
@@ -58,15 +58,26 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
     */
     let snapBackDamping = CGFloat(0.35)
 
-    /*
-    The damping applied when moving the top card to the back
-    and up to the back card position
-    */
-    let topBackTransitionDamping = CGFloat(0.3)
-
 
     public var topCard: UIView? {
         return _cards.last
+    }
+
+    private func addCardToBack(card: UIView, animated: Bool, completion: (() -> Void)?) {
+        insertCard(card, atIndex: 0, animated: animated, completion: completion)
+    }
+
+    private func insertCard(card: UIView, atIndex index: Int, animated: Bool, completion: (() -> Void)?) {
+        card.frame = self.cardRectForBounds(bounds, atIndex: index)
+        self.insertSubview(card, atIndex: index)
+        _cards.insert(card, atIndex: index)
+        if animated {
+            startAnimation(CardPushAnimation(cardStack: self, card: card, completion: nil))
+            startAnimation(CardPushDownAnimation(cardStack: self, cards: cards.filter { $0 !== card }, completion: nil))
+        } else {
+            self.layoutIfNeeded()
+            completion?()
+        }
     }
 
     public func pushCard(card: UIView) {
@@ -95,7 +106,6 @@ public class CardStack: UIView, UIDynamicAnimatorDelegate, UICollisionBehaviorDe
 
             let finishPop: (() -> Void) = {
                 card.removeFromSuperview()
-                self.layoutIfNeeded()
                 completion?()
             }
 
@@ -152,16 +162,13 @@ extension CardStack: UIGestureRecognizerDelegate {
 
                 let velocity = pan.velocityInView(self)
                 if shouldTransition(velocity) {
-                    let dynamicBehavior = UIDynamicItemBehavior(items: [card])
-                    dynamicBehavior.allowsRotation = false
-                    dynamicBehavior.addLinearVelocity(CGPoint(x: 0.0, y: velocity.y), forItem: card)
-                    animator?.addBehavior(dynamicBehavior)
-
-                    let bottomCollisionBehavior = UICollisionBehavior(items: [card])
-                    bottomCollisionBehavior.addBoundaryWithIdentifier("bottom", fromPoint: CGPoint(x: 0.0, y: bounds.maxY + card.frame.height), toPoint: CGPoint(x: bounds.maxX, y: bounds.maxY + card.frame.height))
-                    bottomCollisionBehavior.collisionDelegate = self
-                    animator?.addBehavior(bottomCollisionBehavior)
-
+                    let animation = CardPopWithVelocityAnimation(cardStack: self, cards: cards) {
+                        let card = self.topCard!
+                        self.popCard(animated: false, completion: nil)
+                        self.addCardToBack(card, animated: true, completion: nil)
+                    }
+                    animation.velocity = velocity
+                    startAnimation(animation)
                 } else {
 
                     let dynamicBehavior = UIDynamicItemBehavior(items: [card])
@@ -189,7 +196,6 @@ extension CardStack {
         super.layoutSubviews()
 
         animator?.removeAllBehaviors()
-
         animations.filter { $0.isRunning }
 
         for index in (0..<_cards.count) {
@@ -204,7 +210,7 @@ extension CardStack {
 }
 
 // Animation
-extension CardStack {
+extension CardStack: UIDynamicAnimatorDelegate {
     func startAnimation(animation: CardAnimation) {
         animations.append(animation)
         animation.start()
@@ -225,30 +231,6 @@ extension CardStack {
         let snapBehavior = UISnapBehavior(item: card, snapToPoint: point)
         snapBehavior.damping = snapBackDamping
         return snapBehavior
-    }
-
-    public func collisionBehavior(behavior: UICollisionBehavior, beganContactForItem item: UIDynamicItem, withBoundaryIdentifier identifier: NSCopying, atPoint p: CGPoint) {
-        animator?.removeAllBehaviors()
-
-        if let card = topCard {
-            sendSubviewToBack(card)
-            _cards.removeLast()
-            self.layoutIfNeeded()
-            _cards.insert(card, atIndex: 0)
-
-            let dynamicBehavior = UIDynamicItemBehavior(items: cards)
-            dynamicBehavior.allowsRotation = false
-            animator?.addBehavior(dynamicBehavior)
-
-            for index in (0..<cards.count) {
-                let card = _cards[index]
-                let frame = cardRectForBounds(bounds, atIndex: index)
-
-                let snapBehavior = UISnapBehavior(item: card, snapToPoint: CGPoint(x: frame.midX, y: frame.midY))
-                snapBehavior.damping = topBackTransitionDamping
-                animator?.addBehavior(snapBehavior)
-            }
-        }
     }
 
     func rubberBandDistance(offset: CGFloat, dimension: CGFloat) -> CGFloat {
