@@ -52,12 +52,6 @@ public class CardStack: UIView {
     */
     let cardHeaderHeight = CGFloat(40.0)
 
-    /*
-    The damping applied when the velocity treshold isn't reached
-    and the top card is snapped back to it's original position
-    */
-    let snapBackDamping = CGFloat(0.35)
-
 
     public var topCard: UIView? {
         return _cards.last
@@ -170,11 +164,7 @@ extension CardStack: UIGestureRecognizerDelegate {
                     animation.velocity = velocity
                     startAnimation(animation)
                 } else {
-
-                    let dynamicBehavior = UIDynamicItemBehavior(items: [card])
-                    dynamicBehavior.allowsRotation = false
-                    animator?.addBehavior(dynamicBehavior)
-                    animator?.addBehavior(snapBehavior(forCard: card))
+                    startAnimation(CardSnapBackAnimation(cardStack: self, card: card, completion: nil))
                 }
             }
         }
@@ -224,13 +214,6 @@ extension CardStack: UIDynamicAnimatorDelegate {
 
     public func dynamicAnimatorDidPause(animator: UIDynamicAnimator) {
         animator.removeAllBehaviors()
-    }
-
-    func snapBehavior(forCard card: UIView) -> UISnapBehavior {
-        let point = CGPoint(x: card.center.x, y: cardRectForBounds(bounds, atIndex: cards.count - 1).midY)
-        let snapBehavior = UISnapBehavior(item: card, snapToPoint: point)
-        snapBehavior.damping = snapBackDamping
-        return snapBehavior
     }
 
     func rubberBandDistance(offset: CGFloat, dimension: CGFloat) -> CGFloat {

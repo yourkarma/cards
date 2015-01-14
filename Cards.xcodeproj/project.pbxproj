@@ -17,6 +17,7 @@
 		A19D73371A5B42C4003DDC63 /* CardStackControllerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19D73361A5B42C4003DDC63 /* CardStackControllerTest.swift */; };
 		A1A132151A66D5BE0077EFFB /* CardPopWithVelocityAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A132141A66D5BE0077EFFB /* CardPopWithVelocityAnimation.swift */; };
 		A1A132171A66F5A20077EFFB /* CardPushDownAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A132161A66F5A20077EFFB /* CardPushDownAnimation.swift */; };
+		A1A132191A66F8140077EFFB /* CardSnapBackAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A132181A66F8140077EFFB /* CardSnapBackAnimation.swift */; };
 		A1CF81261A5DA2350086F847 /* CardStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1CF81251A5DA2350086F847 /* CardStack.swift */; };
 		A1CF81281A5DC9820086F847 /* CardStackTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1CF81271A5DC9820086F847 /* CardStackTest.swift */; };
 /* End PBXBuildFile section */
@@ -45,6 +46,7 @@
 		A19D73361A5B42C4003DDC63 /* CardStackControllerTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardStackControllerTest.swift; sourceTree = "<group>"; };
 		A1A132141A66D5BE0077EFFB /* CardPopWithVelocityAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPopWithVelocityAnimation.swift; sourceTree = "<group>"; };
 		A1A132161A66F5A20077EFFB /* CardPushDownAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPushDownAnimation.swift; sourceTree = "<group>"; };
+		A1A132181A66F8140077EFFB /* CardSnapBackAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardSnapBackAnimation.swift; sourceTree = "<group>"; };
 		A1CF81251A5DA2350086F847 /* CardStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardStack.swift; sourceTree = "<group>"; };
 		A1CF81271A5DC9820086F847 /* CardStackTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardStackTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -77,6 +79,7 @@
 				A127192E1A64847800899E0A /* CardGroupPushAnimation.swift */,
 				A1A132141A66D5BE0077EFFB /* CardPopWithVelocityAnimation.swift */,
 				A1A132161A66F5A20077EFFB /* CardPushDownAnimation.swift */,
+				A1A132181A66F8140077EFFB /* CardSnapBackAnimation.swift */,
 			);
 			name = Animation;
 			sourceTree = "<group>";
@@ -248,6 +251,7 @@
 				A13548861A646560009D3A26 /* CardAnimation.swift in Sources */,
 				A13548841A645485009D3A26 /* CardPushAnimation.swift in Sources */,
 				A127192F1A64847800899E0A /* CardGroupPushAnimation.swift in Sources */,
+				A1A132191A66F8140077EFFB /* CardSnapBackAnimation.swift in Sources */,
 				A1A132151A66D5BE0077EFFB /* CardPopWithVelocityAnimation.swift in Sources */,
 				A13548801A644EC8009D3A26 /* CardPopAnimation.swift in Sources */,
 				A1CF81261A5DA2350086F847 /* CardStack.swift in Sources */,
