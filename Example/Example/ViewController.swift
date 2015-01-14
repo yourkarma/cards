@@ -31,13 +31,28 @@ class ViewController: UIViewController {
         cardStackController = segue.destinationViewController as CardStackController
     }
 
-//    @IBAction func pushViewController() {
-//        cardStackController.pushViewController(createViewController(), animated: true) {
-//            println("Push completed")
-//        }
-//    }
+
+    func delay(delay: Double, closure: (() -> Void)) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delay * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) {
+            closure()
+        }
+    }
+
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+
+        delay(0.2) {
+            self.pushViewControllers()
+        }
+    }
 
     @IBAction func pushViewController() {
+        cardStackController.pushViewController(createViewController(), animated: true) {
+            println("Push completed")
+        }
+    }
+
+    func pushViewControllers() {
         cardStackController.setViewControllers([createViewController(), createViewController(), createViewController()], animated: true) {
             println("Push completed")
         }

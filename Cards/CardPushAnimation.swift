@@ -25,12 +25,9 @@ import UIKit
 class CardPushAnimation: NSObject, CardAnimation {
     let cardStack: CardStack
     var card: UIView
-    let dynamicAnimator: UIDynamicAnimator
     let completion: CompletionBlock?
 
-    var isRunning: Bool {
-        return dynamicAnimator.behaviors.count > 0
-    }
+    var isRunning: Bool = false
 
     convenience init(cardStack: CardStack, card: UIView, completion: CompletionBlock?) {
         self.init(cardStack: cardStack, cards: [card], completion: completion)
@@ -39,36 +36,29 @@ class CardPushAnimation: NSObject, CardAnimation {
     required init(cardStack: CardStack, cards: [UIView], completion: CompletionBlock?) {
         self.cardStack = cardStack
         self.card = cards.first!
-        self.dynamicAnimator = UIDynamicAnimator(referenceView: cardStack)
         self.completion = completion
         super.init()
-
-        self.dynamicAnimator.delegate = self
     }
 
     func start() {
         assert(!isRunning, "Attempt to start a \(self) that is already running")
 
-        let snapToPoint = card.center
-        card.center.y += cardStack.bounds.height
+        let origin = card.frame.origin
+        card.frame.origin.y += self.cardStack.bounds.height
 
-        let dynamicBehavior = UIDynamicItemBehavior(items: [card])
-        dynamicBehavior.allowsRotation = false
-        dynamicAnimator.addBehavior(dynamicBehavior)
-
-        let snapBehavior = UISnapBehavior(item: card, snapToPoint: snapToPoint)
-        snapBehavior.damping = 0.35
-        dynamicAnimator.addBehavior(snapBehavior)
+        UIView.animateWithDuration(0.3, delay: 0.0,usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: UIViewAnimationOptions.allZeros, animations: {
+            self.card.frame.origin = origin
+            }) { completed in
+                if let completion = self.completion {
+                    self.isRunning = false
+                    completion()
+                }
+        }
     }
 
     func stop() {
-        dynamicAnimator.removeAllBehaviors()
+        card.layer.removeAllAnimations()
+        isRunning = false
         completion?()
-    }
-}
-
-extension CardPushAnimation: UIDynamicAnimatorDelegate {
-    func dynamicAnimatorDidPause(animator: UIDynamicAnimator) {
-        stop()
     }
 }

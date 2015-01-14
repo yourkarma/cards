@@ -47,7 +47,7 @@ class CardsPushAnimation: NSObject, CardAnimation {
             card.frame.origin.y += self.cardStack.bounds.height
 
             let delay = 0.2 * Double(index)
-            UIView.animateWithDuration(0.3, delay: delay, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: UIViewAnimationOptions.allZeros, animations: {
+            UIView.animateWithDuration(0.3, delay: delay,usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: UIViewAnimationOptions.allZeros, animations: {
                 card.frame.origin = origin
             }) { completed in
                 if let completion = self.completion {
