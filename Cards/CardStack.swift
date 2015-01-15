@@ -29,17 +29,25 @@ public class CardStack: UIView {
     }
 
     var animator: UIDynamicAnimator?
+    var displayLink: CADisplayLink!
+
     var startY: CGFloat!
 
     var animations: [CardAnimation] = []
 
     override public func willMoveToSuperview(newSuperview: UIView?) {
-        animator = UIDynamicAnimator(referenceView: self)
-        animator?.delegate = self
+        if newSuperview != nil {
+            animator = UIDynamicAnimator(referenceView: self)
+            animator?.delegate = self
 
-        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePan:")
-        panGestureRecognizer.delegate = self
-        addGestureRecognizer(panGestureRecognizer)
+            let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePan:")
+            panGestureRecognizer.delegate = self
+            addGestureRecognizer(panGestureRecognizer)
+
+            displayLink = CADisplayLink(target: self, selector: "syncCardPositions")
+            displayLink.paused = true
+            displayLink.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSDefaultRunLoopMode)
+        }
     }
 
     /*
@@ -51,7 +59,6 @@ public class CardStack: UIView {
     The number of points of each that is visible above the cards in front of it.
     */
     let cardHeaderHeight = CGFloat(40.0)
-
 
     public var topCard: UIView? {
         return _cards.last
@@ -129,6 +136,21 @@ public class CardStack: UIView {
 
 // Gestures
 extension CardStack: UIGestureRecognizerDelegate {
+
+    func rubberBandDistance(offset: CGFloat, dimension: CGFloat) -> CGFloat {
+        let constant = CGFloat(0.05)
+        let result = (constant * abs(offset) * dimension) / (dimension + constant * abs(offset));
+        return offset < 0.0 ? -result : result;
+    }
+
+    func shouldRubberBand(atPosition position: CGPoint) -> Bool {
+        return cards.count == 1 || position.y < 0.0
+    }
+
+    func shouldTransition(velocity: CGPoint) -> Bool {
+        return cards.count > 1 && velocity.y > velocityTreshold
+    }
+
     func handlePan(pan: UIPanGestureRecognizer) {
         if let card = topCard {
             if pan.state == UIGestureRecognizerState.Began {
@@ -150,11 +172,13 @@ extension CardStack: UIGestureRecognizerDelegate {
                 }
 
                 card.frame.origin = newPosition
+                syncCardPositions()
 
             } else if pan.state == UIGestureRecognizerState.Ended {
 
                 let velocity = pan.velocityInView(self)
                 if shouldTransition(velocity) {
+                    displayLink.paused = true
                     let animation = CardPopWithVelocityAnimation(cardStack: self, cards: cards) {
                         let card = self.topCard!
                         self.popCard(animated: false, completion: nil)
@@ -163,7 +187,10 @@ extension CardStack: UIGestureRecognizerDelegate {
                     animation.velocity = velocity
                     startAnimation(animation)
                 } else {
-                    startAnimation(CardSnapBackAnimation(cardStack: self, card: card, completion: nil))
+                    displayLink.paused = false
+                    startAnimation(CardSnapBackAnimation(cardStack: self, card: card) {
+                        self.displayLink.paused = false
+                    })
                 }
             }
         }
@@ -176,6 +203,24 @@ extension CardStack: UIGestureRecognizerDelegate {
         }
 
         return false
+    }
+
+    func syncCardPositions() {
+        println("SYNC")
+
+        if let card = topCard {
+            let normalY = cardRectForBounds(bounds, atIndex: find(cards, card)!).minY
+            let currentY = card.frame.minY
+            let offsetY = currentY - normalY
+
+            let otherCards = cards.filter { $0 !== card }
+            for index in (0..<otherCards.count) {
+                let card = otherCards[index]
+                let normalY = cardRectForBounds(bounds, atIndex: find(cards, card)!).minY
+                let newY = normalY + ((offsetY / 20.0) * CGFloat(index + 1))
+                card.frame.origin.y = newY
+            }
+        }
     }
 }
 
@@ -213,19 +258,5 @@ extension CardStack: UIDynamicAnimatorDelegate {
 
     public func dynamicAnimatorDidPause(animator: UIDynamicAnimator) {
         animator.removeAllBehaviors()
-    }
-
-    func rubberBandDistance(offset: CGFloat, dimension: CGFloat) -> CGFloat {
-        let constant = CGFloat(0.05)
-        let result = (constant * abs(offset) * dimension) / (dimension + constant * abs(offset));
-        return offset < 0.0 ? -result : result;
-    }
-
-    func shouldRubberBand(atPosition position: CGPoint) -> Bool {
-        return cards.count == 1 || position.y < 0.0
-    }
-
-    func shouldTransition(velocity: CGPoint) -> Bool {
-        return cards.count > 1 && velocity.y > velocityTreshold
     }
 }

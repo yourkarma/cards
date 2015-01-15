@@ -47,7 +47,6 @@ class CardStackTest: XCTestCase {
             XCTAssertNil(error, "Completion block should have been called")
         }
     }
-
     func testCardsAreRemovedAsSubviews()    {
         let stack = CardStack()
 

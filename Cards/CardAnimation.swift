@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-typealias CompletionBlock = (() -> Void)
+public typealias CompletionBlock = (() -> Void)
 
 protocol CardAnimation {
     init(cardStack: CardStack, cards: [UIView], completion: CompletionBlock?)

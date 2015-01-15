@@ -1,0 +1,6 @@
+framework module FBSnapshotTestCase {
+  umbrella header "Pods-ExampleTests-FBSnapshotTestCase-umbrella.h"
+
+  export *
+  module * { export * }
+}
