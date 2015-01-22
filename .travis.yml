@@ -1,0 +1,9 @@
+osx_image: xcode611
+language: objective-c
+xcode_workspace: "Cards.xcworkspace"
+xcode_scheme: "Example"
+install: bundle install
+script: bundle exec rake test:ci
+cache:
+  - bundler
+  - cocoapods
