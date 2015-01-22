@@ -3,7 +3,7 @@ language: objective-c
 xcode_workspace: "Cards.xcworkspace"
 xcode_scheme: "Cards"
 install: bundle install
-script: bundle exec rake
+script: bundle exec rake test:ci
 cache:
   - bundler
   - cocoapods
