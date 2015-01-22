@@ -4,7 +4,7 @@ namespace :test do
   end
 
   task :ci do
-    sh "xcodebuild -destination 'OS=latest,name=iPhone 5s,platform=iOS Simulator' -workspace Cards.xcworkspace -scheme Example test"
+    sh "xcodebuild -sdk iphonesimulator -destination 'OS=latest,name=iPhone 5s,platform=iOS Simulator' -workspace Cards.xcworkspace -scheme Example test"
   end
 end
 
