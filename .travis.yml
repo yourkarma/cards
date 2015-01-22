@@ -7,3 +7,6 @@ script: bundle exec rake test:ci
 cache:
   - bundler
   - cocoapods
+notifications:
+  slack:
+    secure: "gGc1XxX9hiLuD2HbClgDXxfILVZhp/8J0BCe8oSrinHV29I7N7EQQdlnHp8KL//XWjBqISuzjlBPbf4d2MfDgzTg5l5tfroa3I9AL7q4EAP4RNSAYmvAHa0+7hpdqXv2DrIpnIVPM0Bc7eldpKkcDUjPL7zgv0S15VxbrQ4rZ1s="
