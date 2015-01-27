@@ -206,8 +206,6 @@ extension CardStack: UIGestureRecognizerDelegate {
     }
 
     func syncCardPositions() {
-        println("SYNC")
-
         if let card = topCard {
             let normalY = cardRectForBounds(bounds, atIndex: find(cards, card)!).minY
             let currentY = card.frame.minY
