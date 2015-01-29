@@ -25,7 +25,7 @@ import Cards
 
 class CardStackTest: XCTestCase {
 
-    func testCardsAreAddedAsSubviews() {
+    func test_cards_are_added_as_subviews() {
         let stack = CardStack()
 
         let view = UIView()
@@ -34,7 +34,7 @@ class CardStackTest: XCTestCase {
         XCTAssertTrue(view.isDescendantOfView(stack), "Card should be a subview of the stack")
     }
 
-    func testPushingCardsWithoutAnimationCallsCompletionBlock() {
+    func test_pushing_cards_without_animation_calls_completion_block() {
         let stack = CardStack()
         let view = UIView()
 
@@ -47,7 +47,7 @@ class CardStackTest: XCTestCase {
             XCTAssertNil(error, "Completion block should have been called")
         }
     }
-    func testCardsAreRemovedAsSubviews()    {
+    func test_cards_are_removed_as_subviews()    {
         let stack = CardStack()
 
         let view = UIView()
@@ -57,7 +57,7 @@ class CardStackTest: XCTestCase {
         XCTAssertFalse(view.isDescendantOfView(stack), "Card should not be a subview of the stack")
     }
 
-    func testLastAddedCardIsTopCard() {
+    func test_last_added_card_is_top_card() {
         let stack = CardStack()
         let view = UIView()
         stack.pushCard(UIView())
@@ -66,7 +66,7 @@ class CardStackTest: XCTestCase {
         XCTAssertEqual(stack.topCard!, view, "The last added view should be the top card")
     }
 
-    func testPopCardsWithoutAnimationCallsCompletionBlock() {
+    func test_pop_cards_without_animation_calls_completion_block() {
         let stack = CardStack()
 
         let expectation = expectationWithDescription("Completion block")
@@ -80,7 +80,7 @@ class CardStackTest: XCTestCase {
         }
     }
 
-    func testMultipleCardsCanBetSetSimultanously() {
+    func test_multiple_cards_can_bet_set_simultanously() {
         let stack = CardStack()
 
         let view = UIView()
@@ -89,7 +89,7 @@ class CardStackTest: XCTestCase {
         XCTAssertTrue(view.isDescendantOfView(stack), "Card should have been added as a subview")
     }
 
-    func testOldCardsAreRemovedWhenSettingNew() {
+    func test_old_cards_are_removed_when_setting_new() {
         let stack = CardStack()
 
         let view = UIView()
@@ -99,7 +99,7 @@ class CardStackTest: XCTestCase {
         XCTAssertFalse(view.isDescendantOfView(stack), "Card should have been removed as a subview")
     }
 
-    func testSettingMultipleCardsWithoutAnimationTriggersCompletionBlock() {
+    func test_setting_multiple_cards_without_animation_triggers_completion_block() {
         let stack = CardStack()
         let expectation = expectationWithDescription("Completion block")
 

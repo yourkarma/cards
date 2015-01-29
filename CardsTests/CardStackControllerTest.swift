@@ -41,7 +41,7 @@ class ViewController: UIViewController {
 
 class CardStackControllerTest: XCTestCase {
 
-    func testViewControllersAreAddedAsChildControllers() {
+    func test_push_view_controller_adds_view_controller_as_a_child_controller() {
         let stackViewController = CardStackController()
 
         stackViewController.pushViewController(UIViewController(), animated: false, completion: nil)
@@ -51,7 +51,7 @@ class CardStackControllerTest: XCTestCase {
             "View controllers should be added as child controllers")
     }
 
-    func testViewControllerViewIsAddedAsACard() {
+    func test_push_view_controller_adds_the_view_as_a_card() {
         let stackViewController = CardStackController()
 
         let viewController = UIViewController()
@@ -61,7 +61,7 @@ class CardStackControllerTest: XCTestCase {
         XCTAssertTrue(contains(stackViewController.cardStack.cards, viewController.view), "Card stack should contain the view")
     }
 
-    func testViewControllerDidMoveToParentViewControllerIsCalled() {
+    func test_push_view_controller_makes_itself_parent_of_the_view_controller() {
         let stackViewController = CardStackController()
 
         let childController = ViewController()
@@ -75,7 +75,7 @@ class CardStackControllerTest: XCTestCase {
         XCTAssertEqual(childController.didMoveToParentViewControllerArgument!, stackViewController)
     }
 
-    func testRemovingViewControllersRemovesTheChildControllerRelationship() {
+    func test_pop_view_controller_removes_the_child_controller_relationship() {
         let stackViewController = CardStackController()
 
         stackViewController.popViewController()
@@ -84,7 +84,7 @@ class CardStackControllerTest: XCTestCase {
             "View controllers should be removed as child controllers")
     }
 
-    func testWillMoveToParentViewControllerIsCalledWhenViewControllersAreRemoved() {
+    func test_pop_view_controller_removes_the_view_controller_from_its_parent() {
         let stackViewController = CardStackController()
 
         let childController = ViewController()
@@ -94,7 +94,7 @@ class CardStackControllerTest: XCTestCase {
         XCTAssertNil(childController.willMoveToParentViewControllerArgument, "willMoveToParentViewController should have been called with nil argument")
     }
 
-    func testViewControllerCardIsRemovedWhenRemovingTheViewController() {
+    func test_pop_view_controller_removes_the_view_controllers_view_as_a_card() {
         let stackViewController = CardStackController()
 
         let childController = ViewController()
@@ -106,7 +106,7 @@ class CardStackControllerTest: XCTestCase {
         XCTAssertFalse(contains(stackViewController.cardStack.cards, view))
     }
 
-    func testCanSetMultipleViewControllersAtOnce() {
+    func test_can_set_multiple_view_controllers_at_once() {
         let stackViewController = CardStackController()
 
         stackViewController.setViewControllers([ViewController(), ViewController()], animated: false, completion: nil)
@@ -114,7 +114,7 @@ class CardStackControllerTest: XCTestCase {
         XCTAssert(stackViewController.childViewControllers.count == 2, "Two view controllers should have been added")
     }
 
-    func testThatEachViewControllersViewIsAddedAsASubview() {
+    func test_set_view_controllers_adds_every_view_controllers_view_to_the_stack() {
         let stackViewController = CardStackController()
         let viewController = UIViewController()
         let view = UIView()
@@ -124,7 +124,7 @@ class CardStackControllerTest: XCTestCase {
         XCTAssertTrue(contains(stackViewController.cardStack.cards, view), "View should have been added as a subview")
     }
 
-    func testThatDidMoveToParentViewControllerIsCalled() {
+    func test_set_view_controllers_moves_each_view_controller_to_itself_as_parent() {
         let stackViewController = CardStackController()
 
         let childController = ViewController()

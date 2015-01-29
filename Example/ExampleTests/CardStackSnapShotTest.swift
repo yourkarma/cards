@@ -14,6 +14,7 @@ class CardStackSnapShotTest: FBSnapshotTestCase {
     func snapshotVerifyView(view: UIView, identifier: NSString) {
         var error: NSError? = nil
         let comparisonSuccess = compareSnapshotOfView(view, referenceImagesDirectory: Constants.facebookReferenceImageDir(), identifier: identifier, error: &error)
+
         XCTAssertTrue(comparisonSuccess, "Snapshot comparison failed: \(error)")
         XCTAssertFalse(recordMode, "Test ran in record mode. Reference image is now saved. Disable record mode to perform an actual snapshot comparison!")
     }
@@ -33,7 +34,7 @@ class CardStackSnapShotTest: FBSnapshotTestCase {
         return view
     }
 
-    func testThatCardsBecomeVisibleWhenSetWithAnimation() {
+    func test_that_cards_become_visible_when_set_with_animation() {
         let cards = [viewWithBackgroundColor(UIColor.redColor()),
             viewWithBackgroundColor(UIColor.greenColor()),
             viewWithBackgroundColor(UIColor.blueColor())]
@@ -49,7 +50,7 @@ class CardStackSnapShotTest: FBSnapshotTestCase {
         })
     }
 
-    func testCardsBecomeVisibleWhenSetWithoutAnimation() {
+    func test_cards_become_visible_when_set_without_animation() {
         let cards = [viewWithBackgroundColor(UIColor.redColor()),
             viewWithBackgroundColor(UIColor.greenColor()),
             viewWithBackgroundColor(UIColor.blueColor())]
@@ -65,7 +66,7 @@ class CardStackSnapShotTest: FBSnapshotTestCase {
         })
     }
 
-    func testCardsAreHiddenWhenPoppedWithAnimation() {
+    func test_cards_are_hidden_when_popped_with_animation() {
         let cards = [viewWithBackgroundColor(UIColor.redColor()),
             viewWithBackgroundColor(UIColor.greenColor()),
             viewWithBackgroundColor(UIColor.blueColor())]
@@ -83,7 +84,7 @@ class CardStackSnapShotTest: FBSnapshotTestCase {
         })
     }
 
-    func testCardsAreHiddenWhenPoppedWithoutAnimation() {
+    func test_cards_are_hidden_when_popped_without_animation() {
         let cards = [viewWithBackgroundColor(UIColor.redColor()),
             viewWithBackgroundColor(UIColor.greenColor()),
             viewWithBackgroundColor(UIColor.blueColor())]
