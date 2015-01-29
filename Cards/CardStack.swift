@@ -22,11 +22,16 @@
 
 import UIKit
 
+@objc public protocol CardStackDelegate {
+    optional func cardStackDidMoveCardToBack(cardStack: CardStack)
+}
+
 public class CardStack: UIView {
     private var _cards: [UIView] = []
     public var cards: [UIView] {
         return _cards
     }
+    public weak var delegate: CardStackDelegate? = nil
 
     var animator: UIDynamicAnimator?
     var displayLink: CADisplayLink!
@@ -182,7 +187,9 @@ extension CardStack: UIGestureRecognizerDelegate {
                     let animation = CardPopWithVelocityAnimation(cardStack: self, cards: cards) {
                         let card = self.topCard!
                         self.popCard(animated: false, completion: nil)
-                        self.addCardToBack(card, animated: true, completion: nil)
+                        self.addCardToBack(card, animated: true) {
+                            self.didMoveCardToBack()
+                        }
                     }
                     animation.velocity = velocity
                     startAnimation(animation)
@@ -194,6 +201,10 @@ extension CardStack: UIGestureRecognizerDelegate {
                 }
             }
         }
+    }
+
+    internal func didMoveCardToBack() {
+        self.delegate?.cardStackDidMoveCardToBack?(self)
     }
 
     public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
