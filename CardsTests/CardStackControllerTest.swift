@@ -161,5 +161,21 @@ class CardStackControllerTest: XCTestCase {
         stackViewController.setViewControllers(childControllers, animated: false, completion: nil)
         XCTAssertEqual(childControllers, stackViewController.viewControllers, "View controllers should have been added")
     }
+
+    func test_sets_itself_as_the_card_stack_delegate() {
+        let stackViewController = CardStackController()
+        XCTAssertTrue(stackViewController.cardStack.delegate === stackViewController, "It should be the card stack's delegate")
+    }
+
+    func test_moves_the_view_controller_when_the_view_moves_in_the_stack() {
+        let stackViewController = CardStackController()
+
+        let viewController1 = ViewController()
+        let viewController2 = ViewController()
+        stackViewController.setViewControllers([viewController1, viewController2], animated:false, completion: nil)
+
+        stackViewController.cardStack.delegate?.cardStackDidMoveCardToBack?(stackViewController.cardStack)
+        XCTAssertEqual([viewController2, viewController1], stackViewController.viewControllers, "View controllers should have moved")
+    }
 }
 

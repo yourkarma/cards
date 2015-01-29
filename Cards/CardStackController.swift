@@ -24,7 +24,16 @@ import UIKit
 
 public class CardStackController: UIViewController {
 
-    public let cardStack: CardStack = CardStack()
+    private var _cardStack: CardStack?
+    public var cardStack: CardStack {
+        if let cardStack = self._cardStack {
+            return cardStack
+        } else {
+            self._cardStack = CardStack()
+            self._cardStack?.delegate = self
+            return self._cardStack!
+        }
+    }
     public var viewControllers: [UIViewController] = []
 
     public func pushViewController(viewController: UIViewController) {
@@ -70,5 +79,14 @@ public class CardStackController: UIViewController {
 
     public override func loadView() {
         self.view = cardStack
+    }
+}
+
+extension CardStackController: CardStackDelegate {
+    public func cardStackDidMoveCardToBack(cardStack: CardStack) {
+        let viewController = self.viewControllers.removeLast()
+        self.viewControllers.insert(viewController, atIndex: 0)
+
+        println("moved: \(self.viewControllers)")
     }
 }
