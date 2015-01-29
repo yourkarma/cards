@@ -75,6 +75,15 @@ class CardStackControllerTest: XCTestCase {
         XCTAssertEqual(childController.didMoveToParentViewControllerArgument!, stackViewController)
     }
 
+    func test_push_view_controller_adds_a_view_controller() {
+        let stackViewController = CardStackController()
+
+        let childController = ViewController()
+        stackViewController.pushViewController(childController)
+
+        XCTAssertTrue(contains(stackViewController.viewControllers, childController), "View controller should have been added")
+    }
+
     func test_pop_view_controller_removes_the_child_controller_relationship() {
         let stackViewController = CardStackController()
 
@@ -106,6 +115,14 @@ class CardStackControllerTest: XCTestCase {
         XCTAssertFalse(contains(stackViewController.cardStack.cards, view))
     }
 
+    func test_pop_view_controllers_removes_the_view_controller() {
+        let stackViewController = CardStackController()
+        let childController = ViewController()
+        stackViewController.pushViewController(childController)
+        stackViewController.popViewController()
+        XCTAssertFalse(contains(stackViewController.viewControllers, childController), "View controller should have been removed")
+    }
+
     func test_can_set_multiple_view_controllers_at_once() {
         let stackViewController = CardStackController()
 
@@ -135,6 +152,14 @@ class CardStackControllerTest: XCTestCase {
             return
         }
         XCTAssertEqual(childController.didMoveToParentViewControllerArgument!, stackViewController)
+    }
+
+    func test_set_view_controllers_adds_each_view_controller() {
+        let stackViewController = CardStackController()
+
+        let childControllers = [ViewController(), ViewController()]
+        stackViewController.setViewControllers(childControllers, animated: false, completion: nil)
+        XCTAssertEqual(childControllers, stackViewController.viewControllers, "View controllers should have been added")
     }
 }
 

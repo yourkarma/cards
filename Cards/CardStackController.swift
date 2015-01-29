@@ -25,12 +25,15 @@ import UIKit
 public class CardStackController: UIViewController {
 
     public let cardStack: CardStack = CardStack()
+    public var viewControllers: [UIViewController] = []
 
     public func pushViewController(viewController: UIViewController) {
         self.pushViewController(viewController, animated: false, completion: nil)
     }
 
     public func pushViewController(viewController: UIViewController, animated: Bool, completion: (() -> Void)?) {
+        viewControllers.append(viewController)
+
         self.addChildViewController(viewController)
         self.cardStack.pushCard(viewController.view, animated: animated) {
             viewController.didMoveToParentViewController(self)
@@ -43,7 +46,9 @@ public class CardStackController: UIViewController {
     }
 
     public func popViewController(#animated: Bool, completion: (() -> Void)?) {
-        if let viewController = childViewControllers.last as? UIViewController {
+        if let viewController = self.viewControllers.last {
+            viewControllers.removeLast()
+
             viewController.willMoveToParentViewController(nil)
             self.cardStack.popCard(animated: animated) {
                 viewController.removeFromParentViewController()
@@ -54,6 +59,8 @@ public class CardStackController: UIViewController {
     }
 
     public func setViewControllers(viewControllers: [UIViewController], animated: Bool, completion: (() -> Void)?) {
+        self.viewControllers = viewControllers
+
         viewControllers.map { self.addChildViewController($0) }
         cardStack.setCards(viewControllers.map { $0.view }, animated: animated) {
             viewControllers.map { $0.didMoveToParentViewController(self) }
