@@ -78,7 +78,7 @@ public class CardStack: UIView {
         _cards.insert(card, atIndex: index)
 
         if animated {
-            startAnimation(CardPushDownAnimation(cardStack: self, cards: cards.filter { $0 !== card }, completion: nil))
+            startAnimation(CardPushDownAnimation(cardStack: self, cards: cards.filter { $0 !== card }, completion: completion))
         } else {
             self.layoutIfNeeded()
             completion?()
