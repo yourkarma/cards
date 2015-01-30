@@ -1,4 +1,4 @@
-// CardPopAnimation.swift
+// CardGroupPopAnimation.swift
 //
 // Copyright (c) 2015 Karma Mobility Inc. (https://yourkarma.com)
 //
@@ -18,51 +18,40 @@
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.Kit
+// THE SOFTWARE.
 
-import UIKit
+import Foundation
 
-class CardPopAnimation: CardAnimation {
+class CardGroupPopAnimation: CardAnimation {
     let cardStack: CardStack
-    let card: UIView
+    let cards: [UIView]
     let completion: CompletionBlock?
 
     var isRunning: Bool = false
-    var delay = 0.0
-
-    convenience init(cardStack: CardStack, card: UIView, completion: CompletionBlock?) {
-        self.init(cardStack: cardStack, cards: [card], completion: completion)
-    }
 
     required init(cardStack: CardStack, cards: [UIView], completion: CompletionBlock?) {
         self.cardStack = cardStack
-        self.card = cards.first!
+        self.cards = cards
         self.completion = completion
     }
 
     func start() {
         assert(!isRunning, "Attempt to start a \(self) that is already running")
-        self.isRunning = true
+        isRunning = true
 
-        UIView.animateKeyframesWithDuration(0.3, delay: self.delay, options: UIViewKeyframeAnimationOptions.CalculationModeLinear, animations: {
-
-            UIView.addKeyframeWithRelativeStartTime(0.0, relativeDuration: 0.3) {
-                self.card.frame.origin.y -= 20.0
+        for index in (0..<cards.count) {
+            let card = cards[index]
+            let animation = CardPopAnimation(cardStack: cardStack, card: card) {
+                if index >= self.cards.count - 1 {
+                    self.finish()
+                }
             }
-
-            UIView.addKeyframeWithRelativeStartTime(0.3, relativeDuration: 0.7) {
-                self.card.frame.origin.y = self.cardStack.bounds.maxY
-            }
-
-        }) { completed in
-            if let completion = self.completion {
-                self.finish()
-            }
+            animation.start()
         }
     }
 
     func stop() {
-        card.layer.removeAllAnimations()
+        cards.map { $0.layer.removeAllAnimations() }
     }
 
     func finish() {

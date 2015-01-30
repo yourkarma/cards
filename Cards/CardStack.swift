@@ -69,11 +69,11 @@ public class CardStack: UIView {
         return _cards.last
     }
 
-    private func addCardToBack(card: UIView, animated: Bool, completion: (() -> Void)?) {
+    internal func addCardToBack(card: UIView, animated: Bool, completion: (() -> Void)?) {
         insertCard(card, atIndex: 0, animated: animated, completion: completion)
     }
 
-    private func insertCard(card: UIView, atIndex index: Int, animated: Bool, completion: (() -> Void)?) {
+    internal func insertCard(card: UIView, atIndex index: Int, animated: Bool, completion: (() -> Void)?) {
         self.insertSubview(card, atIndex: index)
         _cards.insert(card, atIndex: index)
 
@@ -82,6 +82,75 @@ public class CardStack: UIView {
         } else {
             self.layoutIfNeeded()
             completion?()
+        }
+    }
+
+    internal func insertCards(cards: [UIView], atIndexes indexes: [Int], animated: Bool, completion: (() -> Void)?) {
+        assert(cards.count == indexes.count, "number of cards: \(cards.count) not equal to number of indexes: \(indexes.count)")
+
+        let currentCards = self.cards
+
+        let group = dispatch_group_create()
+        for index in (0..<cards.count) {
+            let card = cards[index]
+            let insertionIndex = indexes[index]
+
+            self.insertSubview(card, atIndex: insertionIndex)
+            _cards.insert(card, atIndex: insertionIndex)
+
+        }
+
+        if (animated) {
+            dispatch_group_enter(group)
+            let animation = CardGroupPushAnimation(cardStack: self, cards: cards) {
+                dispatch_group_leave(group)
+            }
+            animation.individualCardDelay = 0.0
+            startAnimation(animation)
+            dispatch_group_enter(group)
+            startAnimation(CardSnapBackAnimation(cardStack: self, cards: currentCards) {
+                dispatch_group_leave(group)
+            })
+        } else {
+            self.layoutIfNeeded()
+        }
+
+        dispatch_group_notify(group, dispatch_get_main_queue(), completion)
+    }
+
+
+    internal func removeCards(cards: [UIView], animated: Bool, completion: (() -> Void)?) {
+
+        cards.map { card -> Void in
+            if let index = find(self.cards, card) {
+                self._cards.removeAtIndex(index)
+            }
+        }
+
+        let finishRemoval: (() ->()) = {
+            cards.map { $0.removeFromSuperview() }
+            completion?()
+        }
+
+        if (animated) {
+            let group = dispatch_group_create()
+
+            dispatch_group_enter(group)
+            startAnimation(CardGroupPopAnimation(cardStack: self, cards: cards) {
+                dispatch_group_leave(group)
+            })
+
+            let remainingCards = self._cards.filter { !contains(cards, $0) }
+            dispatch_group_enter(group)
+            let snapAnimation = CardSnapBackAnimation(cardStack: self, cards: remainingCards) {
+                dispatch_group_leave(group)
+            }
+            snapAnimation.delay = 0.1
+            startAnimation(snapAnimation)
+
+            dispatch_group_notify(group, dispatch_get_main_queue(), finishRemoval)
+        } else {
+            finishRemoval()
         }
     }
 

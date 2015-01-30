@@ -22,7 +22,7 @@
 
 import UIKit
 
-class CardPushAnimation: NSObject, CardAnimation {
+class CardPushAnimation: CardAnimation {
     let cardStack: CardStack
     var card: UIView
     let completion: CompletionBlock?
@@ -38,19 +38,25 @@ class CardPushAnimation: NSObject, CardAnimation {
         self.cardStack = cardStack
         self.card = cards.first!
         self.completion = completion
-        super.init()
     }
 
     func start() {
         assert(!isRunning, "Attempt to start a \(self) that is already running")
 
-        let origin = card.frame.origin
-        card.frame.origin.y += self.cardStack.bounds.height
+        if let index = find(self.cardStack.cards, card) {
+            let targetFrame = self.cardStack.cardRectForBounds(self.cardStack.bounds, atIndex: index)
 
-        UIView.animateWithDuration(0.3, delay: self.delay, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: UIViewAnimationOptions.allZeros, animations: {
-            self.card.frame.origin = origin
-        }) { completed in
-                self.finish()
+            var startFrame = targetFrame
+            startFrame.origin.y = self.cardStack.bounds.height
+            card.frame = startFrame
+
+            UIView.animateWithDuration(0.3, delay: self.delay, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: UIViewAnimationOptions.allZeros, animations: {
+                self.card.frame = targetFrame
+            }) { completed in
+                    self.finish()
+            }
+        } else {
+            self.finish()
         }
     }
 

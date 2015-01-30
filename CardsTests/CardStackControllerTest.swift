@@ -87,6 +87,7 @@ class CardStackControllerTest: XCTestCase {
     func test_pop_view_controller_removes_the_child_controller_relationship() {
         let stackViewController = CardStackController()
 
+        stackViewController.pushViewController(ViewController())
         stackViewController.popViewController()
 
         XCTAssertEqual(stackViewController.childViewControllers.count, 0,

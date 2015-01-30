@@ -11,9 +11,10 @@ import UIKit
 class CardSnapBackAnimation: CardAnimation {
 
     let cardStack: CardStack
-    let card: UIView
+    let cards: [UIView]
     let dynamicAnimator: UIDynamicAnimator
     let completion: CompletionBlock?
+    var delay = 0.0
 
     var isRunning: Bool = false
 
@@ -23,26 +24,42 @@ class CardSnapBackAnimation: CardAnimation {
 
     required init(cardStack: CardStack, cards: [UIView], completion: CompletionBlock?) {
         self.cardStack = cardStack
-        self.card = cards.last!
+        self.cards = cards
         self.dynamicAnimator = UIDynamicAnimator(referenceView: cardStack)
+        self.completion = completion
     }
 
     func start() {
         self.isRunning = true
-        let index = find(cardStack.cards, card)!
-        let rect = cardStack.cardRectForBounds(cardStack.bounds, atIndex: index)
-        UIView.animateWithDuration(0.35, delay: 0.0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.0, options: UIViewAnimationOptions.allZeros, animations: {
-            self.card.frame = rect
-        }) { completed in
-            if let completion = self.completion {
-                self.isRunning = false
-                completion()
+
+        let group = dispatch_group_create()
+
+        self.cards.map { card -> Void in
+
+            if let index = find(self.cardStack.cards, card) {
+                dispatch_group_enter(group)
+
+                let rect = self.cardStack.cardRectForBounds(self.cardStack.bounds, atIndex: index)
+                UIView.animateWithDuration(0.35, delay: self.delay, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.0, options: UIViewAnimationOptions.allZeros, animations: {
+                    card.frame = rect
+                    }) { completed in
+                        dispatch_group_leave(group)
+                }
             }
+        }
+
+        dispatch_group_notify(group, dispatch_get_main_queue()) {
+            self.finish()
         }
     }
 
     func stop() {
-        card.layer.removeAllAnimations()
+        self.cards.map { $0.layer.removeAllAnimations() }
         isRunning = false
+    }
+
+    func finish() {
+       self.isRunning = false
+        completion?()
     }
 }

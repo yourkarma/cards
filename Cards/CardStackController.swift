@@ -63,17 +63,51 @@ public class CardStackController: UIViewController {
                 viewController.removeFromParentViewController()
                 completion?()
             }
-
         }
     }
 
-    public func setViewControllers(viewControllers: [UIViewController], animated: Bool, completion: (() -> Void)?) {
+    private func _setViewControllers(viewControllers: [UIViewController], animated: Bool, completion: (() -> Void)?) {
         self.viewControllers = viewControllers
 
         viewControllers.map { self.addChildViewController($0) }
         cardStack.setCards(viewControllers.map { $0.view }, animated: animated) {
             viewControllers.map { $0.didMoveToParentViewController(self) }
             completion?()
+        }
+    }
+
+    public func setViewControllers(viewControllers: [UIViewController], animated: Bool, completion: (() -> Void)?) {
+        if self.viewControllers.count <= 0 {
+            self._setViewControllers(viewControllers, animated: animated, completion: completion)
+        } else {
+            let toAdd = viewControllers.filter { !contains(self.viewControllers, $0) }
+            let toRemove = self.viewControllers.filter { !contains(viewControllers, $0) }
+
+            self.viewControllers = viewControllers
+
+            let group = dispatch_group_create()
+
+            let cardsToAdd: [UIView] = toAdd.map { $0.view }
+            let indexes = toAdd.map { find(viewControllers, $0) }.filter{ $0 != nil }.map { $0! }
+            if cardsToAdd.count > 0 {
+                dispatch_group_enter(group)
+                self.cardStack.insertCards(cardsToAdd, atIndexes:indexes, animated: true) {
+                    dispatch_group_leave(group)
+                }
+            }
+
+            let cardsToRemove: [UIView] = toRemove.map { $0.view }
+            if cardsToRemove.count > 0 {
+                dispatch_group_enter(group)
+                self.cardStack.removeCards(cardsToRemove, animated: true) {
+                    dispatch_group_leave(group)
+                }
+            }
+
+            dispatch_group_notify(group, dispatch_get_main_queue()) {
+                completion?()
+                return // Compiler bug.
+            }
         }
     }
 
@@ -86,7 +120,5 @@ extension CardStackController: CardStackDelegate {
     public func cardStackDidMoveCardToBack(cardStack: CardStack) {
         let viewController = self.viewControllers.removeLast()
         self.viewControllers.insert(viewController, atIndex: 0)
-
-        println("moved: \(self.viewControllers)")
     }
 }

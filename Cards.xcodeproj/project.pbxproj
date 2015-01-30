@@ -20,6 +20,7 @@
 		A1A132191A66F8140077EFFB /* CardSnapBackAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A132181A66F8140077EFFB /* CardSnapBackAnimation.swift */; };
 		A1CF81261A5DA2350086F847 /* CardStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1CF81251A5DA2350086F847 /* CardStack.swift */; };
 		A1CF81281A5DC9820086F847 /* CardStackTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1CF81271A5DC9820086F847 /* CardStackTest.swift */; };
+		A1FFE1511A7BD05E00514D2A /* CardGroupPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FFE1501A7BD05E00514D2A /* CardGroupPopAnimation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		A1A132181A66F8140077EFFB /* CardSnapBackAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardSnapBackAnimation.swift; sourceTree = "<group>"; };
 		A1CF81251A5DA2350086F847 /* CardStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardStack.swift; sourceTree = "<group>"; };
 		A1CF81271A5DC9820086F847 /* CardStackTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardStackTest.swift; sourceTree = "<group>"; };
+		A1FFE1501A7BD05E00514D2A /* CardGroupPopAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardGroupPopAnimation.swift; sourceTree = "<group>"; };
 		C901807A8B6D497AE5057C4E /* Pods-CardsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CardsTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CardsTests/Pods-CardsTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -92,6 +94,7 @@
 				A1A132141A66D5BE0077EFFB /* CardPopWithVelocityAnimation.swift */,
 				A1A132161A66F5A20077EFFB /* CardPushDownAnimation.swift */,
 				A1A132181A66F8140077EFFB /* CardSnapBackAnimation.swift */,
+				A1FFE1501A7BD05E00514D2A /* CardGroupPopAnimation.swift */,
 			);
 			name = Animation;
 			sourceTree = "<group>";
@@ -261,6 +264,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1FFE1511A7BD05E00514D2A /* CardGroupPopAnimation.swift in Sources */,
 				A1A132171A66F5A20077EFFB /* CardPushDownAnimation.swift in Sources */,
 				A13548861A646560009D3A26 /* CardAnimation.swift in Sources */,
 				A13548841A645485009D3A26 /* CardPushAnimation.swift in Sources */,

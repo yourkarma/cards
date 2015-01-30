@@ -38,6 +38,13 @@ class ViewController: UIViewController {
         }
     }
 
+    func perform(closure: ( () -> () ) -> ()) {
+        println("started with: \(self.cardStackController.viewControllers.count)")
+        closure() {
+            println("ended with: \(self.cardStackController.viewControllers.count)")
+        }
+    }
+
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
 
@@ -46,21 +53,65 @@ class ViewController: UIViewController {
         }
     }
 
-    @IBAction func pushViewController() {
-        cardStackController.pushViewController(createViewController(), animated: true) {
-            println("Push completed")
+    func pushViewControllers() {
+        perform {
+            self.cardStackController.setViewControllers(
+                [self.createViewController(), self.createViewController(), self.createViewController()],
+                animated: true, completion: $0)
         }
     }
 
-    func pushViewControllers() {
-        cardStackController.setViewControllers([createViewController(), createViewController(), createViewController()], animated: true) {
-            println("Push completed")
+    @IBAction func pushViewController() {
+        perform {
+            self.cardStackController.pushViewController(self.createViewController(), animated: true, completion: $0)
+        }
+    }
+
+    @IBAction func insertTwoViewControllers() {
+        perform {
+            var existingViewControllers = self.cardStackController.viewControllers
+
+            if (existingViewControllers.count < 1) {
+                existingViewControllers.insert(self.createViewController(), atIndex: 0)
+                existingViewControllers.insert(self.createViewController(), atIndex: 0)
+            } else {
+                existingViewControllers.insert(self.createViewController(), atIndex: 1)
+                existingViewControllers.insert(self.createViewController(), atIndex: 1)
+            }
+
+            self.cardStackController.setViewControllers(existingViewControllers, animated: true, completion: $0)
+        }
+    }
+
+
+    @IBAction func insertAndRemoveOneViewController() {
+        perform {
+            var existingViewControllers = self.cardStackController.viewControllers
+            existingViewControllers.removeAtIndex(0)
+            existingViewControllers.insert(self.createViewController(), atIndex: 1)
+
+            self.cardStackController.setViewControllers(existingViewControllers, animated: true, completion: $0)
         }
     }
 
     @IBAction func popViewController() {
-        cardStackController.popViewController(animated: true) {
-            println("Pop completed")
+        perform {
+            self.cardStackController.popViewController(animated: true, completion: $0)
+        }
+    }
+
+    @IBAction func removeTwoViewControllers() {
+        perform {
+            var existingViewControllers = self.cardStackController.viewControllers
+
+            if (existingViewControllers.count > 2) {
+                existingViewControllers.removeAtIndex(1)
+                existingViewControllers.removeAtIndex(1)
+            } else {
+                existingViewControllers.removeAll(keepCapacity: false)
+            }
+
+            self.cardStackController.setViewControllers(existingViewControllers, animated: true, completion: $0)
         }
     }
 
@@ -74,6 +125,4 @@ class ViewController: UIViewController {
         viewController.view.backgroundColor = randomColor()
         return viewController
     }
-
 }
-

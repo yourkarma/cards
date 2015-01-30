@@ -22,18 +22,18 @@
 
 import UIKit
 
-class CardGroupPushAnimation: NSObject, CardAnimation {
+class CardGroupPushAnimation: CardAnimation {
     let cardStack: CardStack
     let cards: [UIView]
     let completion: CompletionBlock?
 
     var isRunning: Bool = false
+    var individualCardDelay = 0.2
 
     required init(cardStack: CardStack, cards: [UIView], completion: CompletionBlock?) {
         self.cardStack = cardStack
         self.cards = cards
         self.completion = completion
-        super.init()
     }
 
     func start() {
@@ -47,7 +47,7 @@ class CardGroupPushAnimation: NSObject, CardAnimation {
                     self.finish()
                 }
             }
-            animation.delay = 0.2 * Double(index)
+            animation.delay = self.individualCardDelay * Double(index)
             animation.start()
         }
     }
