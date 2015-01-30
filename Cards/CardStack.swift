@@ -33,7 +33,6 @@ public class CardStack: UIView {
     }
     public weak var delegate: CardStackDelegate? = nil
 
-    var animator: UIDynamicAnimator?
     var displayLink: CADisplayLink!
 
     var startY: CGFloat!
@@ -42,9 +41,6 @@ public class CardStack: UIView {
 
     override public func willMoveToSuperview(newSuperview: UIView?) {
         if newSuperview != nil {
-            animator = UIDynamicAnimator(referenceView: self)
-            animator?.delegate = self
-
             let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePan:")
             panGestureRecognizer.delegate = self
             addGestureRecognizer(panGestureRecognizer)
@@ -307,7 +303,6 @@ extension CardStack {
     public override func layoutSubviews() {
         super.layoutSubviews()
 
-        animator?.removeAllBehaviors()
         animations.filter { $0.isRunning }
 
         for index in (0..<_cards.count) {
@@ -322,7 +317,7 @@ extension CardStack {
 }
 
 // Animation
-extension CardStack: UIDynamicAnimatorDelegate {
+extension CardStack {
     func startAnimation(animation: CardAnimation) {
         animations.append(animation)
         animation.start()
@@ -330,11 +325,5 @@ extension CardStack: UIDynamicAnimatorDelegate {
 
     func stopAllAnimations() {
         animations.map { $0.stop() }
-        animations = []
-        animator?.removeAllBehaviors()
-    }
-
-    public func dynamicAnimatorDidPause(animator: UIDynamicAnimator) {
-        animator.removeAllBehaviors()
     }
 }

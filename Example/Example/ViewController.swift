@@ -87,8 +87,8 @@ class ViewController: UIViewController {
     @IBAction func insertAndRemoveOneViewController() {
         perform {
             var existingViewControllers = self.cardStackController.viewControllers
-            existingViewControllers.removeAtIndex(0)
-            existingViewControllers.insert(self.createViewController(), atIndex: 1)
+            existingViewControllers.insert(self.createViewController(), atIndex: 0)
+            existingViewControllers.removeAtIndex(2)
 
             self.cardStackController.setViewControllers(existingViewControllers, animated: true, completion: $0)
         }
