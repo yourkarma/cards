@@ -23,6 +23,38 @@
 import UIKit
 import Cards
 
+class IndexViewController: UIViewController {
+    var label: UILabel! = nil
+    var index: Int = 0 {
+        didSet {
+            self.view.setNeedsLayout()
+            self.view.setNeedsUpdateConstraints()
+        }
+    }
+
+    override func loadView() {
+        self.view = UIView()
+
+        self.label = UILabel()
+        self.label.setTranslatesAutoresizingMaskIntoConstraints(false)
+        self.label.textAlignment = .Center
+        self.view.addSubview(self.label)
+    }
+
+    override func updateViewConstraints() {
+        super.updateViewConstraints()
+
+        let views = ["label": self.label]
+        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[label]|", options: NSLayoutFormatOptions.allZeros, metrics: nil, views: views))
+        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-10-[label]", options: NSLayoutFormatOptions.allZeros, metrics: nil, views: views))
+    }
+
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        self.label.text = String(self.index)
+    }
+}
+
 class ViewController: UIViewController {
 
     var cardStackController: CardStackController!
@@ -41,6 +73,11 @@ class ViewController: UIViewController {
     func perform(closure: ( () -> () ) -> ()) {
         println("started with: \(self.cardStackController.viewControllers.count)")
         closure() {
+            for index in (0..<self.cardStackController.viewControllers.count) {
+                let viewController = self.cardStackController.viewControllers[index] as IndexViewController
+                viewController.index = index
+            }
+
             println("ended with: \(self.cardStackController.viewControllers.count)")
         }
     }
@@ -87,8 +124,10 @@ class ViewController: UIViewController {
     @IBAction func insertAndRemoveOneViewController() {
         perform {
             var existingViewControllers = self.cardStackController.viewControllers
+
+            let viewController = existingViewControllers.removeLast()
+            existingViewControllers.insert(viewController, atIndex: 1)
             existingViewControllers.insert(self.createViewController(), atIndex: 0)
-            existingViewControllers.removeAtIndex(2)
 
             self.cardStackController.setViewControllers(existingViewControllers, animated: true, completion: $0)
         }
@@ -119,9 +158,8 @@ class ViewController: UIViewController {
         return UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 1.0)
     }
 
-    func createViewController() -> UIViewController {
-        let viewController = UIViewController()
-        viewController.view = UIView()
+    func createViewController() -> IndexViewController {
+        let viewController = IndexViewController()
         viewController.view.backgroundColor = randomColor()
         return viewController
     }
