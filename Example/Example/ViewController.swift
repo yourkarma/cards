@@ -126,7 +126,8 @@ class ViewController: UIViewController {
             var existingViewControllers = self.cardStackController.viewControllers
 
             let viewController = existingViewControllers.removeLast()
-            existingViewControllers.insert(viewController, atIndex: 1)
+//            existingViewControllers.insert(viewController, atIndex: 1)
+            existingViewControllers.insert(self.createViewController(), atIndex: 0)
             self.cardStackController.setViewControllers(existingViewControllers, animated: true, completion: $0)
         }
     }

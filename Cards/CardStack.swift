@@ -188,19 +188,20 @@ public class CardStack: UIView {
     }
 
     public func setCards(cards: [UIView], animated: Bool, completion: (() -> Void)?) {
-        while topCard != nil {
-            popCard()
-        }
-        cards.map { self.addSubview($0) }
-        _cards = cards
-        layoutIfNeeded()
+        self.startAnimation(CardGroupPopAnimation(cardStack: self, cards: self.cards) {
+            self.cards.map { $0.removeFromSuperview() }
 
-        if animated {
-            stopAllAnimations()
-            startAnimation(CardGroupPushAnimation(cardStack: self, cards: cards, completion: completion))
-        } else {
-            completion?()
-        }
+            cards.map { self.addSubview($0) }
+            self._cards = cards
+            self.layoutIfNeeded()
+
+            if animated {
+                self.stopAllAnimations()
+                self.startAnimation(CardGroupPushAnimation(cardStack: self, cards: cards, completion: completion))
+            } else {
+                completion?()
+            }
+        })
     }
 }
 
