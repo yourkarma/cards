@@ -25,6 +25,10 @@ import Cards
 
 class CardStackTest: XCTestCase {
 
+    override func setUp() {
+        UIView.setAnimationsEnabled(false)
+    }
+
     func test_cards_are_added_as_subviews() {
         let stack = CardStack()
 
@@ -85,9 +89,15 @@ class CardStackTest: XCTestCase {
         let stack = CardStack()
 
         let view = UIView()
-        stack.setCards([view], animated: false, completion: nil)
 
-        XCTAssertTrue(view.isDescendantOfView(stack), "Card should have been added as a subview")
+        let expectation = self.expectationWithDescription("Completion block called")
+        stack.setCards([view], animated: false) {
+            expectation.fulfill()
+        }
+
+        self.waitForExpectationsWithTimeout(0.0) { error in
+            XCTAssertTrue(view.isDescendantOfView(stack), "Card should have been added as a subview")
+        }
     }
 
     func test_old_cards_are_removed_when_setting_new() {

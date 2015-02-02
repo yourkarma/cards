@@ -41,6 +41,10 @@ class ViewController: UIViewController {
 
 class CardStackControllerTest: XCTestCase {
 
+    override func setUp() {
+        UIView.setAnimationsEnabled(false)
+    }
+
     func test_push_view_controller_adds_view_controller_as_a_child_controller() {
         let stackViewController = CardStackController()
 
@@ -137,22 +141,34 @@ class CardStackControllerTest: XCTestCase {
         let viewController = UIViewController()
         let view = UIView()
         viewController.view = view
-        stackViewController.setViewControllers([viewController], animated: false, completion: nil)
 
-        XCTAssertTrue(contains(stackViewController.cardStack.cards, view), "View should have been added as a subview")
+        let expectation = self.expectationWithDescription("Completion block called")
+
+        stackViewController.setViewControllers([viewController], animated: false) {
+            expectation.fulfill()
+        }
+        self.waitForExpectationsWithTimeout(0.0) { error in
+            XCTAssertTrue(contains(stackViewController.cardStack.cards, view), "View should have been added as a subview")
+        }
     }
 
     func test_set_view_controllers_moves_each_view_controller_to_itself_as_parent() {
         let stackViewController = CardStackController()
 
         let childController = ViewController()
-        stackViewController.setViewControllers([childController], animated: false, completion: nil)
 
-        if (childController.didMoveToParentViewControllerArgument == nil) {
-            XCTFail("didMoveToParentViewController should have been called")
-            return
+        let expectation = self.expectationWithDescription("Completion block called")
+        stackViewController.setViewControllers([childController], animated: false) {
+            expectation.fulfill()
         }
-        XCTAssertEqual(childController.didMoveToParentViewControllerArgument!, stackViewController)
+
+        self.waitForExpectationsWithTimeout(0.0) { error in
+            if (childController.didMoveToParentViewControllerArgument == nil) {
+                XCTFail("didMoveToParentViewController should have been called")
+                return
+            }
+            XCTAssertEqual(childController.didMoveToParentViewControllerArgument!, stackViewController)
+        }
     }
 
     func test_set_view_controllers_adds_each_view_controller() {
