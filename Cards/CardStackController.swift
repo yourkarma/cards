@@ -76,13 +76,39 @@ public class CardStackController: UIViewController {
         }
     }
 
+    private func additions<T: Equatable>(a: [T], _ b: [T]) -> [T] {
+        return b.filter { !contains(a, $0) }
+    }
+
+    private func removals<T: Equatable>(a: [T], _ b: [T]) -> [T] {
+        return a.filter { !contains(b, $0) }
+    }
+
+    private func swaps<T: Equatable>(a: [T], _ b: [T]) -> [T] {
+        let additions = self.additions(a, b).count
+        let removals = self.removals(a, b).count
+
+        return a.filter {
+            if let currentIndex = find(a, $0) {
+                if let newIndex = find(b, $0) {
+                    if currentIndex != newIndex {
+                        let numberOfIndexesMoved = abs(newIndex - currentIndex)
+                        return numberOfIndexesMoved != additions && numberOfIndexesMoved != removals
+                    }
+                }
+            }
+            return false
+        }
+    }
+
     public func setViewControllers(viewControllers: [UIViewController], animated: Bool, completion: (() -> Void)?) {
-        if self.viewControllers.count <= 0 {
+        let toAdd = viewControllers.filter { !contains(self.viewControllers, $0) }
+        let toRemove = self.viewControllers.filter { !contains(viewControllers, $0) }
+        let toSwap = swaps(self.viewControllers, viewControllers)
+
+        if self.viewControllers.count <= 0 || toSwap.count > 0 {
             self._setViewControllers(viewControllers, animated: animated, completion: completion)
         } else {
-            let toAdd = viewControllers.filter { !contains(self.viewControllers, $0) }
-            let toRemove = self.viewControllers.filter { !contains(viewControllers, $0) }
-
             self.viewControllers = viewControllers
 
             let group = dispatch_group_create()
