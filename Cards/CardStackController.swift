@@ -24,14 +24,11 @@ import UIKit
 
 public class CardStackController: UIViewController {
 
-    private var _cardStack: CardStack?
-    public var cardStack: CardStack {
-        if let cardStack = self._cardStack {
-            return cardStack
+    public var cardStack: CardStack! {
+        if let view = self.view as? CardStack {
+            return view
         } else {
-            self._cardStack = CardStack()
-            self._cardStack?.delegate = self
-            return self._cardStack!
+            return nil
         }
     }
     public var viewControllers: [UIViewController] = []
@@ -44,7 +41,7 @@ public class CardStackController: UIViewController {
         viewControllers.append(viewController)
 
         self.addChildViewController(viewController)
-        self.cardStack.pushCard(viewController.view, animated: animated) {
+        self.cardStack?.pushCard(viewController.view, animated: animated) {
             viewController.didMoveToParentViewController(self)
             completion?()
         }
@@ -137,8 +134,10 @@ public class CardStackController: UIViewController {
         }
     }
 
-    public override func loadView() {
-        self.view = cardStack
+    public override func viewDidLoad() {
+        if let cardStack = self.cardStack {
+            cardStack.delegate = self
+        }
     }
 }
 
