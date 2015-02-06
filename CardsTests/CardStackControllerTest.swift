@@ -39,126 +39,112 @@ class ViewController: UIViewController {
     }
 }
 
+func tap<A>(object: A, block: (A) -> ()) -> A {
+    block(object)
+    return object
+}
+
 class CardStackControllerTest: XCTestCase {
+
+    let stackViewController = tap(CardStackController()) {
+        $0.view = CardStack()
+    }
 
     override func setUp() {
         UIView.setAnimationsEnabled(false)
     }
 
     func test_push_view_controller_adds_view_controller_as_a_child_controller() {
-        let stackViewController = CardStackController()
-
-        stackViewController.pushViewController(UIViewController(), animated: false, completion: nil)
-
-
+        self.stackViewController.pushViewController(UIViewController(), animated: false, completion: nil)
         XCTAssertEqual(stackViewController.childViewControllers.count, 1,
             "View controllers should be added as child controllers")
     }
 
     func test_push_view_controller_adds_the_view_as_a_card() {
-        let stackViewController = CardStackController()
-
         let viewController = UIViewController()
         viewController.view = UIView()
-        stackViewController.pushViewController(viewController)
+        self.stackViewController.pushViewController(viewController)
 
-        XCTAssertTrue(contains(stackViewController.cardStack.cards, viewController.view), "Card stack should contain the view")
+        XCTAssertTrue(contains(self.stackViewController.cardStack!.cards, viewController.view), "Card stack should contain the view")
     }
 
     func test_push_view_controller_makes_itself_parent_of_the_view_controller() {
-        let stackViewController = CardStackController()
-
         let childController = ViewController()
-        stackViewController.pushViewController(childController)
-        stackViewController.pushViewController(childController)
+        self.stackViewController.pushViewController(childController)
+        self.stackViewController.pushViewController(childController)
 
         if (childController.didMoveToParentViewControllerArgument == nil) {
             XCTFail("didMoveToParentViewController should have been called")
             return
         }
-        XCTAssertEqual(childController.didMoveToParentViewControllerArgument!, stackViewController)
+        XCTAssertEqual(childController.didMoveToParentViewControllerArgument!, self.stackViewController)
     }
 
     func test_push_view_controller_adds_a_view_controller() {
-        let stackViewController = CardStackController()
-
         let childController = ViewController()
-        stackViewController.pushViewController(childController)
+        self.stackViewController.pushViewController(childController)
 
-        XCTAssertTrue(contains(stackViewController.viewControllers, childController), "View controller should have been added")
+        XCTAssertTrue(contains(self.stackViewController.viewControllers, childController), "View controller should have been added")
     }
 
     func test_pop_view_controller_removes_the_child_controller_relationship() {
-        let stackViewController = CardStackController()
+        self.stackViewController.pushViewController(ViewController())
+        self.stackViewController.popViewController()
 
-        stackViewController.pushViewController(ViewController())
-        stackViewController.popViewController()
-
-        XCTAssertEqual(stackViewController.childViewControllers.count, 0,
+        XCTAssertEqual(self.stackViewController.childViewControllers.count, 0,
             "View controllers should be removed as child controllers")
     }
 
     func test_pop_view_controller_removes_the_view_controller_from_its_parent() {
-        let stackViewController = CardStackController()
-
         let childController = ViewController()
-        stackViewController.pushViewController(childController)
-        stackViewController.popViewController(animated: false, completion: nil)
+        self.stackViewController.pushViewController(childController)
+        self.stackViewController.popViewController(animated: false, completion: nil)
 
         XCTAssertNil(childController.willMoveToParentViewControllerArgument, "willMoveToParentViewController should have been called with nil argument")
     }
 
     func test_pop_view_controller_removes_the_view_controllers_view_as_a_card() {
-        let stackViewController = CardStackController()
-
         let childController = ViewController()
         let view = UIView()
         childController.view = view
-        stackViewController.pushViewController(childController)
-        stackViewController.popViewController()
+        self.stackViewController.pushViewController(childController)
+        self.stackViewController.popViewController()
 
-        XCTAssertFalse(contains(stackViewController.cardStack.cards, view))
+        XCTAssertFalse(contains(self.stackViewController.cardStack!.cards, view))
     }
 
     func test_pop_view_controllers_removes_the_view_controller() {
-        let stackViewController = CardStackController()
         let childController = ViewController()
-        stackViewController.pushViewController(childController)
-        stackViewController.popViewController()
-        XCTAssertFalse(contains(stackViewController.viewControllers, childController), "View controller should have been removed")
+        self.stackViewController.pushViewController(childController)
+        self.stackViewController.popViewController()
+        XCTAssertFalse(contains(self.stackViewController.viewControllers, childController), "View controller should have been removed")
     }
 
     func test_can_set_multiple_view_controllers_at_once() {
-        let stackViewController = CardStackController()
-
-        stackViewController.setViewControllers([ViewController(), ViewController()], animated: false, completion: nil)
-
-        XCTAssert(stackViewController.childViewControllers.count == 2, "Two view controllers should have been added")
+        self.stackViewController.setViewControllers([ViewController(), ViewController()], animated: false, completion: nil)
+        XCTAssert(self.stackViewController.childViewControllers.count == 2, "Two view controllers should have been added")
     }
 
     func test_set_view_controllers_adds_every_view_controllers_view_to_the_stack() {
-        let stackViewController = CardStackController()
         let viewController = UIViewController()
         let view = UIView()
         viewController.view = view
 
         let expectation = self.expectationWithDescription("Completion block called")
 
-        stackViewController.setViewControllers([viewController], animated: false) {
+        self.stackViewController.setViewControllers([viewController], animated: false) {
             expectation.fulfill()
         }
         self.waitForExpectationsWithTimeout(0.0) { error in
-            XCTAssertTrue(contains(stackViewController.cardStack.cards, view), "View should have been added as a subview")
+            XCTAssertTrue(contains(self.stackViewController.cardStack!.cards, view), "View should have been added as a subview")
         }
     }
 
     func test_set_view_controllers_moves_each_view_controller_to_itself_as_parent() {
-        let stackViewController = CardStackController()
-
         let childController = ViewController()
 
         let expectation = self.expectationWithDescription("Completion block called")
-        stackViewController.setViewControllers([childController], animated: false) {
+        self.stackViewController.setViewControllers([childController], animated: false) {
             expectation.fulfill()
         }
 
@@ -167,32 +153,27 @@ class CardStackControllerTest: XCTestCase {
                 XCTFail("didMoveToParentViewController should have been called")
                 return
             }
-            XCTAssertEqual(childController.didMoveToParentViewControllerArgument!, stackViewController)
+            XCTAssertEqual(childController.didMoveToParentViewControllerArgument!, self.stackViewController)
         }
     }
 
     func test_set_view_controllers_adds_each_view_controller() {
-        let stackViewController = CardStackController()
-
         let childControllers = [ViewController(), ViewController()]
-        stackViewController.setViewControllers(childControllers, animated: false, completion: nil)
-        XCTAssertEqual(childControllers, stackViewController.viewControllers, "View controllers should have been added")
+        self.stackViewController.setViewControllers(childControllers, animated: false, completion: nil)
+        XCTAssertEqual(childControllers, self.stackViewController.viewControllers, "View controllers should have been added")
     }
 
     func test_sets_itself_as_the_card_stack_delegate() {
-        let stackViewController = CardStackController()
-        XCTAssertTrue(stackViewController.cardStack.delegate === stackViewController, "It should be the card stack's delegate")
+        XCTAssertTrue(self.stackViewController.cardStack?.delegate === self.stackViewController, "It should be the card stack's delegate")
     }
 
     func test_moves_the_view_controller_when_the_view_moves_in_the_stack() {
-        let stackViewController = CardStackController()
-
         let viewController1 = ViewController()
         let viewController2 = ViewController()
-        stackViewController.setViewControllers([viewController1, viewController2], animated:false, completion: nil)
+        self.stackViewController.setViewControllers([viewController1, viewController2], animated:false, completion: nil)
 
-        stackViewController.cardStack.delegate?.cardStackDidMoveCardToBack?(stackViewController.cardStack)
-        XCTAssertEqual([viewController2, viewController1], stackViewController.viewControllers, "View controllers should have moved")
+        self.stackViewController.cardStack?.delegate?.cardStackDidMoveCardToBack?(self.stackViewController.cardStack!)
+        XCTAssertEqual([viewController2, viewController1], self.stackViewController.viewControllers, "View controllers should have moved")
     }
 }
 

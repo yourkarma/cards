@@ -24,13 +24,19 @@ import UIKit
 
 public class CardStackController: UIViewController {
 
-    public var cardStack: CardStack! {
-        if let view = self.view as? CardStack {
-            return view
-        } else {
-            return nil
+    public var cardStack: CardStack? {
+        return self.view as? CardStack
+    }
+
+    public override var view: UIView! {
+        willSet {
+            assert(newValue as? CardStack != nil, "Attempt to set the view of a CardStackController to something that isn't a CardStack")
+            if let view = newValue as? CardStack {
+                view.delegate = self
+            }
         }
     }
+
     public var viewControllers: [UIViewController] = []
 
     public func pushViewController(viewController: UIViewController) {
@@ -56,7 +62,7 @@ public class CardStackController: UIViewController {
             viewControllers.removeLast()
 
             viewController.willMoveToParentViewController(nil)
-            self.cardStack.popCard(animated: animated) {
+            self.cardStack?.popCard(animated: animated) {
                 viewController.removeFromParentViewController()
                 completion?()
             }
@@ -67,7 +73,7 @@ public class CardStackController: UIViewController {
         self.viewControllers = viewControllers
 
         viewControllers.map { self.addChildViewController($0) }
-        cardStack.setCards(viewControllers.map { $0.view }, animated: animated) {
+        cardStack?.setCards(viewControllers.map { $0.view }, animated: animated) {
             viewControllers.map { $0.didMoveToParentViewController(self) }
             completion?()
         }
@@ -114,7 +120,7 @@ public class CardStackController: UIViewController {
             let indexes = toAdd.map { find(viewControllers, $0) }.filter{ $0 != nil }.map { $0! }
             if cardsToAdd.count > 0 {
                 dispatch_group_enter(group)
-                self.cardStack.insertCards(cardsToAdd, atIndexes:indexes, animated: true) {
+                self.cardStack?.insertCards(cardsToAdd, atIndexes:indexes, animated: true) {
                     dispatch_group_leave(group)
                 }
             }
@@ -122,7 +128,7 @@ public class CardStackController: UIViewController {
             let cardsToRemove: [UIView] = toRemove.map { $0.view }
             if cardsToRemove.count > 0 {
                 dispatch_group_enter(group)
-                self.cardStack.removeCards(cardsToRemove, animated: true) {
+                self.cardStack?.removeCards(cardsToRemove, animated: true) {
                     dispatch_group_leave(group)
                 }
             }
@@ -131,12 +137,6 @@ public class CardStackController: UIViewController {
                 completion?()
                 return // Compiler bug.
             }
-        }
-    }
-
-    public override func viewDidLoad() {
-        if let cardStack = self.cardStack {
-            cardStack.delegate = self
         }
     }
 }
