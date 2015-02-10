@@ -11,7 +11,7 @@ import Cards
 
 class CardStackSnapShotTest: FBSnapshotTestCase {
 
-    func snapshotVerifyView(view: UIView, identifier: NSString) {
+    func snapshotVerifyView(view: UIView, identifier: String) {
         var error: NSError? = nil
         let comparisonSuccess = compareSnapshotOfView(view, referenceImagesDirectory: Constants.facebookReferenceImageDir(), identifier: identifier, error: &error)
 

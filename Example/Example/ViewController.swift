@@ -60,7 +60,7 @@ class ViewController: UIViewController {
     var cardStackController: CardStackController!
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        cardStackController = segue.destinationViewController as CardStackController
+        cardStackController = segue.destinationViewController as! CardStackController
     }
 
 
@@ -74,7 +74,7 @@ class ViewController: UIViewController {
         println("started with: \(self.cardStackController.viewControllers.count)")
         closure() {
             for index in (0..<self.cardStackController.viewControllers.count) {
-                let viewController = self.cardStackController.viewControllers[index] as IndexViewController
+                let viewController = self.cardStackController.viewControllers[index] as! IndexViewController
                 viewController.index = index
             }
 

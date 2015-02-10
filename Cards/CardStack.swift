@@ -111,7 +111,9 @@ public class CardStack: UIView {
             self.layoutIfNeeded()
         }
 
-        dispatch_group_notify(group, dispatch_get_main_queue(), completion)
+        dispatch_group_notify(group, dispatch_get_main_queue()) {
+            completion?()
+        }
     }
 
 
@@ -151,7 +153,7 @@ public class CardStack: UIView {
     }
 
     public func pushCard(card: UIView) {
-        pushCard(card, animated: false, nil)
+        pushCard(card, animated: false, completion: nil)
     }
 
     public func pushCard(card: UIView, animated: Bool, completion: (() -> Void)?) {

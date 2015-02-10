@@ -30,9 +30,10 @@ public class CardStackController: UIViewController {
 
     public override var view: UIView! {
         willSet {
-            assert(newValue as? CardStack != nil, "Attempt to set the view of a CardStackController to something that isn't a CardStack")
             if let view = newValue as? CardStack {
                 view.delegate = self
+            } else {
+                assert(false, "Attempt to set the view of a CardStackController to something that isn't a CardStack")
             }
         }
     }
