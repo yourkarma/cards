@@ -13,6 +13,6 @@ end
 target "ExampleTests" do
   xcodeproj "Example/Example.xcodeproj"
   workspace "Cards.xcworkspace"
-  pod "FBSnapshotTestCase", :head
+  pod "Nimble-Snapshots"
 end
 

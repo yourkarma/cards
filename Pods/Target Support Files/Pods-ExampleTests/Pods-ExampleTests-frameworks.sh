@@ -49,7 +49,13 @@ code_sign() {
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework 'FBSnapshotTestCase.framework'
+  install_framework 'Nimble.framework'
+  install_framework 'Nimble_Snapshots.framework'
+  install_framework 'Quick.framework'
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework 'FBSnapshotTestCase.framework'
+  install_framework 'Nimble.framework'
+  install_framework 'Nimble_Snapshots.framework'
+  install_framework 'Quick.framework'
 fi

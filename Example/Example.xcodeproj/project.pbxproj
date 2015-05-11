@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A1518DE51A682C0600C322F1 /* CardStackSnapShotTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1518DE41A682C0600C322F1 /* CardStackSnapShotTest.swift */; };
-		A1518DF11A682FE600C322F1 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = A1518DF01A682FE600C322F1 /* Constants.m */; };
 		A162B1B91A5C80C800C7B01C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A162B1B81A5C80C800C7B01C /* AppDelegate.swift */; };
 		A162B1BB1A5C80C800C7B01C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A162B1BA1A5C80C800C7B01C /* ViewController.swift */; };
 		A162B1BE1A5C80C800C7B01C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A162B1BC1A5C80C800C7B01C /* Main.storyboard */; };
@@ -71,10 +69,6 @@
 		6CDBB7E076AE784D99BE0692 /* Pods_ExampleTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ExampleTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1518DE01A682C0600C322F1 /* ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1518DE31A682C0600C322F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A1518DE41A682C0600C322F1 /* CardStackSnapShotTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStackSnapShotTest.swift; sourceTree = "<group>"; };
-		A1518DEE1A682FE600C322F1 /* ExampleTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ExampleTests-Bridging-Header.h"; sourceTree = "<group>"; };
-		A1518DEF1A682FE600C322F1 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
-		A1518DF01A682FE600C322F1 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		A162B1B31A5C80C800C7B01C /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A162B1B71A5C80C800C7B01C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A162B1B81A5C80C800C7B01C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -118,11 +112,7 @@
 		A1518DE11A682C0600C322F1 /* ExampleTests */ = {
 			isa = PBXGroup;
 			children = (
-				A1518DE41A682C0600C322F1 /* CardStackSnapShotTest.swift */,
 				A1518DE21A682C0600C322F1 /* Supporting Files */,
-				A1518DEF1A682FE600C322F1 /* Constants.h */,
-				A1518DF01A682FE600C322F1 /* Constants.m */,
-				A1518DEE1A682FE600C322F1 /* ExampleTests-Bridging-Header.h */,
 				A19C56741B012C4100A15179 /* CardStackSnapshotSpec.swift */,
 			);
 			path = ExampleTests;
@@ -374,8 +364,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A19C56751B012C4100A15179 /* CardStackSnapshotSpec.swift in Sources */,
-				A1518DE51A682C0600C322F1 /* CardStackSnapShotTest.swift in Sources */,
-				A1518DF11A682FE600C322F1 /* Constants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -441,7 +429,6 @@
 				INFOPLIST_FILE = ExampleTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "ExampleTests/ExampleTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example.app/Example";
 			};
@@ -460,7 +447,6 @@
 				INFOPLIST_FILE = ExampleTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "ExampleTests/ExampleTests-Bridging-Header.h";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example.app/Example";
 			};
 			name = Release;
