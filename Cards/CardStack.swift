@@ -27,6 +27,11 @@ public class CardStack: UIView {
     public var cards: [UIView] {
         return _cards
     }
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        self.addSubview(scrollView)
+        return scrollView
+    }()
 
     var animations: [CardAnimation] = []
 
@@ -39,7 +44,7 @@ public class CardStack: UIView {
     }
 
     internal func insertCard(card: UIView, atIndex index: Int, animated: Bool, completion: (() -> Void)?) {
-        self.insertSubview(card, atIndex: index)
+        self.scrollView.insertSubview(card, atIndex: index)
         _cards.insert(card, atIndex: index)
 
         if animated {
@@ -60,7 +65,7 @@ public class CardStack: UIView {
             let card = cards[index]
             let insertionIndex = indexes[index]
 
-            self.insertSubview(card, atIndex: insertionIndex)
+            self.scrollView.insertSubview(card, atIndex: insertionIndex)
             _cards.insert(card, atIndex: insertionIndex)
 
         }
@@ -127,7 +132,7 @@ public class CardStack: UIView {
 
     public func pushCard(card: UIView, animated: Bool, completion: (() -> Void)?) {
         _cards.append(card)
-        addSubview(card)
+        self.scrollView.addSubview(card)
         layoutIfNeeded()
 
         if animated {
@@ -162,7 +167,7 @@ public class CardStack: UIView {
         self.startAnimation(CardGroupPopAnimation(cardStack: self, cards: self.cards) {
             self.cards.map { $0.removeFromSuperview() }
 
-            cards.map { self.addSubview($0) }
+            cards.map { self.scrollView.addSubview($0) }
             self._cards = cards
             self.layoutIfNeeded()
 
@@ -180,6 +185,8 @@ public class CardStack: UIView {
 extension CardStack {
     public override func layoutSubviews() {
         super.layoutSubviews()
+
+        self.scrollView.frame = self.bounds
 
         animations.filter { $0.isRunning }
 
