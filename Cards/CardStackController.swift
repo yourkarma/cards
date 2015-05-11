@@ -30,9 +30,7 @@ public class CardStackController: UIViewController {
 
     public override var view: UIView! {
         willSet {
-            if let view = newValue as? CardStack {
-                view.delegate = self
-            } else {
+            if newValue as? CardStack == nil {
                 assert(false, "Attempt to set the view of a CardStackController to something that isn't a CardStack")
             }
         }
@@ -139,12 +137,5 @@ public class CardStackController: UIViewController {
                 return // Compiler bug.
             }
         }
-    }
-}
-
-extension CardStackController: CardStackDelegate {
-    public func cardStackDidMoveCardToBack(cardStack: CardStack) {
-        let viewController = self.viewControllers.removeLast()
-        self.viewControllers.insert(viewController, atIndex: 0)
     }
 }

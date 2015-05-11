@@ -117,20 +117,5 @@ class CardStackControllerSpec: QuickSpec {
                 expect(childViewController.parentViewController).toEventually(equal(self.viewController))
             }
         }
-
-        describe("cardStack delegate") {
-            it("sets itself as the CardStack delegate") {
-                self.viewController.cardStack?.delegate === self.viewController
-            }
-
-            it("moves the view controllers when the view moves in the stack") {
-                let childViewController1 = ViewController()
-                let childViewController2 = ViewController()
-                self.viewController.setViewControllers([childViewController1, childViewController2], animated: false, completion: nil)
-
-                self.viewController.cardStack?.delegate?.cardStackDidMoveCardToBack?(self.viewController.cardStack!)
-                expect([childViewController2, childViewController1] == self.viewController.viewControllers)
-            }
-        }
     }
 }

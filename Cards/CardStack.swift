@@ -22,16 +22,11 @@
 
 import UIKit
 
-@objc public protocol CardStackDelegate {
-    optional func cardStackDidMoveCardToBack(cardStack: CardStack)
-}
-
 public class CardStack: UIView {
     private var _cards: [UIView] = []
     public var cards: [UIView] {
         return _cards
     }
-    public weak var delegate: CardStackDelegate? = nil
 
     var animations: [CardAnimation] = []
 
