@@ -31,9 +31,20 @@ class IndexViewController: UIViewController {
             self.view.setNeedsUpdateConstraints()
         }
     }
+    var height: CGFloat
+
+    required init(height: CGFloat = 200.0) {
+        self.height = height
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func loadView() {
         self.view = UIView()
+        self.view.frame.size.height = self.height
 
         self.label = UILabel()
         self.label.setTranslatesAutoresizingMaskIntoConstraints(false)
@@ -93,7 +104,7 @@ class ViewController: UIViewController {
     func pushViewControllers() {
         perform {
             self.cardStackController.setViewControllers(
-                [self.createViewController(), self.createViewController(), self.createViewController()],
+                [self.createViewController(height: 150.0), self.createViewController(height: 400.0), self.createViewController(height: 350.0)],
                 animated: true, completion: $0)
         }
     }
@@ -157,8 +168,8 @@ class ViewController: UIViewController {
         return UIColor(red: CGFloat(drand48()), green: CGFloat(drand48()), blue: CGFloat(drand48()), alpha: 1.0)
     }
 
-    func createViewController() -> IndexViewController {
-        let viewController = IndexViewController()
+    func createViewController(height: CGFloat = 200.0) -> IndexViewController {
+        let viewController = IndexViewController(height: height)
         viewController.view.backgroundColor = randomColor()
         return viewController
     }
