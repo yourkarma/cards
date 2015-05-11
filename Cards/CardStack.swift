@@ -47,10 +47,12 @@ public class CardStack: UIView {
         self.scrollView.insertSubview(card, atIndex: index)
         _cards.insert(card, atIndex: index)
 
+        self.setNeedsLayout()
+        self.layoutIfNeeded()
+
         if animated {
             startAnimation(CardPushDownAnimation(cardStack: self, cards: cards.filter { $0 !== card }, completion: completion))
         } else {
-            self.layoutIfNeeded()
             completion?()
         }
     }
@@ -70,6 +72,9 @@ public class CardStack: UIView {
 
         }
 
+        self.setNeedsLayout()
+        self.layoutIfNeeded()
+
         if (animated) {
             dispatch_group_enter(group)
             let animation = CardGroupPushAnimation(cardStack: self, cards: cards) {
@@ -81,8 +86,6 @@ public class CardStack: UIView {
             startAnimation(CardSnapBackAnimation(cardStack: self, cards: currentCards) {
                 dispatch_group_leave(group)
             })
-        } else {
-            self.layoutIfNeeded()
         }
 
         dispatch_group_notify(group, dispatch_get_main_queue()) {
@@ -101,6 +104,8 @@ public class CardStack: UIView {
 
         let finishRemoval: (() ->()) = {
             cards.map { $0.removeFromSuperview() }
+            self.setNeedsLayout()
+            self.layoutIfNeeded()
             completion?()
         }
 
@@ -133,7 +138,8 @@ public class CardStack: UIView {
     public func pushCard(card: UIView, animated: Bool, completion: (() -> Void)?) {
         _cards.append(card)
         self.scrollView.addSubview(card)
-        layoutIfNeeded()
+        self.setNeedsLayout()
+        self.layoutIfNeeded()
 
         if animated {
             startAnimation(CardPushAnimation(cardStack: self, card: card, completion: completion))
@@ -152,6 +158,8 @@ public class CardStack: UIView {
 
             let finishPop: (() -> Void) = {
                 card.removeFromSuperview()
+                self.setNeedsLayout()
+                self.layoutIfNeeded()
                 completion?()
             }
 
@@ -169,6 +177,7 @@ public class CardStack: UIView {
 
             cards.map { self.scrollView.addSubview($0) }
             self._cards = cards
+            self.setNeedsLayout()
             self.layoutIfNeeded()
 
             if animated {
@@ -190,11 +199,14 @@ extension CardStack {
 
         animations.filter { $0.isRunning }
 
+        var lastCard: UIView? = nil
         for index in (0..<_cards.count) {
             let card = self._cards[index]
-
             card.frame = self.cardRectForBounds(bounds, atIndex: index)
+            lastCard = card
         }
+
+        self.scrollView.contentSize = CGSize(width: self.bounds.width, height: lastCard?.frame.maxY ?? self.bounds.height)
     }
 
     func cardRectForBounds(bounds: CGRect, atIndex index: Int) -> CGRect {
