@@ -104,7 +104,7 @@ class ViewController: UIViewController {
     func pushViewControllers() {
         perform {
             self.cardStackController.setViewControllers(
-                [self.createViewController(height: 150.0), self.createViewController(height: 400.0), self.createViewController(height: 350.0)],
+                [self.createViewController(height: 150.0)/*, self.createViewController(height: 400.0), self.createViewController(height: 350.0)*/],
                 animated: true, completion: $0)
         }
     }

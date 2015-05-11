@@ -27,7 +27,7 @@ public class CardStack: UIView {
     public var cards: [UIView] {
         return _cards
     }
-    private lazy var scrollView: UIScrollView = {
+    lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         self.addSubview(scrollView)
         return scrollView
@@ -80,7 +80,6 @@ public class CardStack: UIView {
             let animation = CardGroupPushAnimation(cardStack: self, cards: cards) {
                 dispatch_group_leave(group)
             }
-            animation.individualCardDelay = 0.0
             startAnimation(animation)
             dispatch_group_enter(group)
             startAnimation(CardSnapBackAnimation(cardStack: self, cards: currentCards) {
