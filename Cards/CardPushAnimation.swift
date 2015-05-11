@@ -47,7 +47,7 @@ class CardPushAnimation: CardAnimation {
             let targetFrame = self.cardStack.cardRectForBounds(self.cardStack.bounds, atIndex: index)
 
             var startFrame = targetFrame
-            startFrame.origin.y = self.cardStack.bounds.height
+            startFrame.origin.y = self.cardStack.scrollView.bounds.height
             card.frame = startFrame
 
             UIView.animateWithDuration(0.3, delay: self.delay, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: UIViewAnimationOptions.allZeros, animations: {

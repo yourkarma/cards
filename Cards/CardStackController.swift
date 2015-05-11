@@ -36,6 +36,11 @@ public class CardStackController: UIViewController {
         }
     }
 
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+        self.automaticallyAdjustsScrollViewInsets = false
+    }
+
     public var viewControllers: [UIViewController] = []
 
     public func pushViewController(viewController: UIViewController) {

@@ -206,7 +206,10 @@ extension CardStack {
             lastCard = card
         }
 
+        let contentOffset = self.scrollView.contentOffset
         self.scrollView.contentSize = CGSize(width: self.bounds.width, height: lastCard?.frame.maxY ?? self.bounds.height)
+        self.scrollView.setContentOffset(contentOffset, animated: false)
+
     }
 
     func cardRectForBounds(bounds: CGRect, atIndex index: Int) -> CGRect {

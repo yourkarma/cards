@@ -54,7 +54,7 @@ class CardPopWithVelocityAnimation: NSObject, CardAnimation, UICollisionBehavior
         dynamicAnimator.addBehavior(dynamicBehavior)
 
         let bottomCollisionBehavior = UICollisionBehavior(items: [card])
-        bottomCollisionBehavior.addBoundaryWithIdentifier("bottom", fromPoint: CGPoint(x: 0.0, y: cardStack.bounds.maxY + card.frame.height), toPoint: CGPoint(x: cardStack.bounds.maxX, y: cardStack.bounds.maxY + card.frame.height))
+        bottomCollisionBehavior.addBoundaryWithIdentifier("bottom", fromPoint: CGPoint(x: 0.0, y: cardStack.scrollView.bounds.maxY + card.frame.height), toPoint: CGPoint(x: cardStack.bounds.maxX, y: cardStack.scrollView.bounds.maxY + card.frame.height))
         bottomCollisionBehavior.collisionDelegate = self
         dynamicAnimator.addBehavior(bottomCollisionBehavior)
     }
