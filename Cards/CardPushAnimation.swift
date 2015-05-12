@@ -44,17 +44,20 @@ class CardPushAnimation: CardAnimation {
         assert(!isRunning, "Attempt to start a \(self) that is already running")
 
         if let index = find(self.cardStack.cards, card) {
-            let targetFrame = self.cardStack.cardRectForBounds(self.cardStack.bounds, atIndex: index)
+            var targetFrame = self.cardStack.cardRectForBounds(self.cardStack.bounds, atIndex: index)
 
             var startFrame = targetFrame
-            startFrame.origin.y = self.cardStack.bounds.height
-            card.frame = startFrame
+            startFrame.origin.y += 50.0
 
-            UIView.animateWithDuration(0.3, delay: self.delay, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.0, options: UIViewAnimationOptions.allZeros, animations: {
+            self.card.frame = startFrame
+            self.card.alpha = 0.0
+
+            UIView.animateWithDuration(0.3, delay: self.delay, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.0, options: UIViewAnimationOptions.allZeros, animations: {
                 self.card.frame = targetFrame
-            }) { completed in
+                self.card.alpha = 1.0
+            }, completion: { completed in
                     self.finish()
-            }
+            })
         } else {
             self.finish()
         }

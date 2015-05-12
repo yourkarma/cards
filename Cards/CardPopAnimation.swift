@@ -44,21 +44,14 @@ class CardPopAnimation: CardAnimation {
         assert(!isRunning, "Attempt to start a \(self) that is already running")
         self.isRunning = true
 
-        UIView.animateKeyframesWithDuration(0.3, delay: self.delay, options: UIViewKeyframeAnimationOptions.CalculationModeLinear, animations: {
+        UIView.animateWithDuration(0.3, delay: self.delay, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.0, options: .allZeros, animations: {
 
-            UIView.addKeyframeWithRelativeStartTime(0.0, relativeDuration: 0.3) {
-                self.card.frame.origin.y -= 20.0
-            }
+            self.card.frame.origin.y += 50.0
+            self.card.alpha = 0.0
 
-            UIView.addKeyframeWithRelativeStartTime(0.3, relativeDuration: 0.7) {
-                self.card.frame.origin.y = self.cardStack.bounds.maxY
-            }
-
-        }) { completed in
-            if let completion = self.completion {
-                self.finish()
-            }
-        }
+        }, completion: { completed in
+            self.finish()
+        })
     }
 
     func stop() {

@@ -40,15 +40,22 @@ class CardGroupPushAnimation: CardAnimation {
         assert(!isRunning, "Attempt to start a \(self) that is already running")
         isRunning = true
 
+        let group = dispatch_group_create()
+
         for index in (0..<cards.count) {
             let card = cards[index]
+
+            dispatch_group_enter(group)
+
             let animation = CardPushAnimation(cardStack: cardStack, card: card) {
-                if index >= self.cards.count - 1 {
-                    self.finish()
-                }
+                dispatch_group_leave(group)
             }
             animation.delay = self.individualCardDelay * Double(index)
             animation.start()
+        }
+
+        dispatch_group_notify(group, dispatch_get_main_queue()) {
+            self.finish()
         }
     }
 

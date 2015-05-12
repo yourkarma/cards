@@ -22,44 +22,20 @@
 
 import UIKit
 
-@objc public protocol CardStackDelegate {
-    optional func cardStackDidMoveCardToBack(cardStack: CardStack)
-}
-
 public class CardStack: UIView {
     private var _cards: [UIView] = []
     public var cards: [UIView] {
         return _cards
     }
-    public weak var delegate: CardStackDelegate? = nil
-
-    var displayLink: CADisplayLink!
-
-    var startY: CGFloat!
+    lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        self.addSubview(scrollView)
+        return scrollView
+    }()
 
     var animations: [CardAnimation] = []
 
-    override public func willMoveToSuperview(newSuperview: UIView?) {
-        if newSuperview != nil {
-            let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePan:")
-            panGestureRecognizer.delegate = self
-            addGestureRecognizer(panGestureRecognizer)
-
-            displayLink = CADisplayLink(target: self, selector: "syncCardPositions")
-            displayLink.paused = true
-            displayLink.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSDefaultRunLoopMode)
-        }
-    }
-
-    /*
-    The speed the top card needs to be moving at to move down and to the back
-    */
-    let velocityTreshold = CGFloat(1500.0)
-
-    /*
-    The number of points of each that is visible above the cards in front of it.
-    */
-    let cardHeaderHeight = CGFloat(40.0)
+    public var distanceBetweenCards: CGFloat = 0.0
 
     public var topCard: UIView? {
         return _cards.last
@@ -70,13 +46,15 @@ public class CardStack: UIView {
     }
 
     internal func insertCard(card: UIView, atIndex index: Int, animated: Bool, completion: (() -> Void)?) {
-        self.insertSubview(card, atIndex: index)
+        self.scrollView.insertSubview(card, atIndex: index)
         _cards.insert(card, atIndex: index)
+
+        self.setNeedsLayout()
+        self.layoutIfNeeded()
 
         if animated {
             startAnimation(CardPushDownAnimation(cardStack: self, cards: cards.filter { $0 !== card }, completion: completion))
         } else {
-            self.layoutIfNeeded()
             completion?()
         }
     }
@@ -91,24 +69,24 @@ public class CardStack: UIView {
             let card = cards[index]
             let insertionIndex = indexes[index]
 
-            self.insertSubview(card, atIndex: insertionIndex)
+            self.scrollView.insertSubview(card, atIndex: insertionIndex)
             _cards.insert(card, atIndex: insertionIndex)
 
         }
+
+        self.setNeedsLayout()
+        self.layoutIfNeeded()
 
         if (animated) {
             dispatch_group_enter(group)
             let animation = CardGroupPushAnimation(cardStack: self, cards: cards) {
                 dispatch_group_leave(group)
             }
-            animation.individualCardDelay = 0.0
             startAnimation(animation)
             dispatch_group_enter(group)
             startAnimation(CardSnapBackAnimation(cardStack: self, cards: currentCards) {
                 dispatch_group_leave(group)
             })
-        } else {
-            self.layoutIfNeeded()
         }
 
         dispatch_group_notify(group, dispatch_get_main_queue()) {
@@ -127,6 +105,8 @@ public class CardStack: UIView {
 
         let finishRemoval: (() ->()) = {
             cards.map { $0.removeFromSuperview() }
+            self.setNeedsLayout()
+            self.layoutIfNeeded()
             completion?()
         }
 
@@ -158,8 +138,9 @@ public class CardStack: UIView {
 
     public func pushCard(card: UIView, animated: Bool, completion: (() -> Void)?) {
         _cards.append(card)
-        addSubview(card)
-        layoutIfNeeded()
+        self.scrollView.addSubview(card)
+        self.setNeedsLayout()
+        self.layoutIfNeeded()
 
         if animated {
             startAnimation(CardPushAnimation(cardStack: self, card: card, completion: completion))
@@ -178,6 +159,8 @@ public class CardStack: UIView {
 
             let finishPop: (() -> Void) = {
                 card.removeFromSuperview()
+                self.setNeedsLayout()
+                self.layoutIfNeeded()
                 completion?()
             }
 
@@ -193,8 +176,9 @@ public class CardStack: UIView {
         self.startAnimation(CardGroupPopAnimation(cardStack: self, cards: self.cards) {
             self.cards.map { $0.removeFromSuperview() }
 
-            cards.map { self.addSubview($0) }
+            cards.map { self.scrollView.addSubview($0) }
             self._cards = cards
+            self.setNeedsLayout()
             self.layoutIfNeeded()
 
             if animated {
@@ -207,115 +191,41 @@ public class CardStack: UIView {
     }
 }
 
-// Gestures
-extension CardStack: UIGestureRecognizerDelegate {
-
-    func rubberBandDistance(offset: CGFloat, dimension: CGFloat) -> CGFloat {
-        let constant = CGFloat(0.05)
-        let result = (constant * abs(offset) * dimension) / (dimension + constant * abs(offset));
-        return offset < 0.0 ? -result : result;
-    }
-
-    func shouldRubberBand(atPosition position: CGPoint) -> Bool {
-        return cards.count == 1 || position.y < 0.0
-    }
-
-    func shouldTransition(velocity: CGPoint) -> Bool {
-        return cards.count > 1 && velocity.y > velocityTreshold
-    }
-
-    func handlePan(pan: UIPanGestureRecognizer) {
-        if let card = topCard {
-            if pan.state == UIGestureRecognizerState.Began {
-                stopAllAnimations()
-                startY  = card.frame.minY
-
-            } else if pan.state == UIGestureRecognizerState.Changed {
-
-                let translation: CGPoint = pan.translationInView(self)
-                var newPosition = CGPoint(x: frame.minX, y: CGFloat(startY + translation.y))
-
-                let minOriginY = CGFloat(0.0)
-                let maxOriginY = CGFloat(0.0)
-
-                if shouldRubberBand(atPosition: newPosition) {
-                    let constrainedOriginY = max(minOriginY, min(newPosition.y, maxOriginY));
-                    let rubberBandY = rubberBandDistance(newPosition.y - constrainedOriginY, dimension: bounds.height)
-                    newPosition.y = constrainedOriginY + rubberBandY
-                }
-
-                card.frame.origin = newPosition
-                syncCardPositions()
-
-            } else if pan.state == UIGestureRecognizerState.Ended {
-
-                let velocity = pan.velocityInView(self)
-                if shouldTransition(velocity) {
-                    displayLink.paused = true
-                    let animation = CardPopWithVelocityAnimation(cardStack: self, cards: cards) {
-                        let card = self.topCard!
-                        self.popCard(animated: false, completion: nil)
-                        self.addCardToBack(card, animated: true) {
-                            self.didMoveCardToBack()
-                        }
-                    }
-                    animation.velocity = velocity
-                    startAnimation(animation)
-                } else {
-                    displayLink.paused = false
-                    startAnimation(CardSnapBackAnimation(cardStack: self, card: card) {
-                        self.displayLink.paused = false
-                    })
-                }
-            }
-        }
-    }
-
-    internal func didMoveCardToBack() {
-        self.delegate?.cardStackDidMoveCardToBack?(self)
-    }
-
-    public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
-        // Only accept touches that are inside the top card
-        if let card = topCard {
-            return card.frame.contains(touch.locationInView(self))
-        }
-
-        return false
-    }
-
-    func syncCardPositions() {
-        if let card = topCard {
-            let normalY = cardRectForBounds(bounds, atIndex: find(cards, card)!).minY
-            let currentY = card.frame.minY
-            let offsetY = currentY - normalY
-
-            let otherCards = cards.filter { $0 !== card }
-            for index in (0..<otherCards.count) {
-                let card = otherCards[index]
-                let normalY = cardRectForBounds(bounds, atIndex: find(cards, card)!).minY
-                let newY = normalY + ((offsetY / 20.0) * CGFloat(index + 1))
-                card.frame.origin.y = newY
-            }
-        }
-    }
-}
-
 // Layout
 extension CardStack {
     public override func layoutSubviews() {
         super.layoutSubviews()
 
+        self.scrollView.frame = self.bounds
+
         animations.filter { $0.isRunning }
 
+        var lastCard: UIView? = nil
         for index in (0..<_cards.count) {
-            let card = _cards[index]
-            card.frame = cardRectForBounds(bounds, atIndex: index)
+            let card = self._cards[index]
+            card.frame = self.cardRectForBounds(bounds, atIndex: index)
+            lastCard = card
         }
+
+        let contentOffset = self.scrollView.contentOffset
+        self.scrollView.contentSize = CGSize(width: self.bounds.width, height: lastCard?.frame.maxY ?? self.bounds.height)
+        self.scrollView.setContentOffset(contentOffset, animated: false)
+
     }
 
     func cardRectForBounds(bounds: CGRect, atIndex index: Int) -> CGRect {
-        return CGRectMake(0.0, CGFloat(index) * cardHeaderHeight, CGRectGetWidth(bounds), CGRectGetHeight(bounds))
+        let aboveFrame: CGRect
+        let distance: CGFloat
+        if index > 0 {
+            aboveFrame = self._cards[index - 1].frame
+            distance = self.distanceBetweenCards
+        } else {
+            aboveFrame = CGRect.zeroRect
+            distance = 0
+        }
+
+        let card = self._cards[index]
+        return CGRect(x: bounds.minX, y: aboveFrame.maxY + distance, width: bounds.maxX, height: card.frame.height)
     }
 }
 

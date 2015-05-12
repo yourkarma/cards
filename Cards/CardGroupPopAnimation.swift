@@ -28,6 +28,7 @@ class CardGroupPopAnimation: CardAnimation {
     let completion: CompletionBlock?
 
     var isRunning: Bool = false
+    var individualCardDelay = 0.1
 
     required init(cardStack: CardStack, cards: [UIView], completion: CompletionBlock?) {
         self.cardStack = cardStack
@@ -41,13 +42,15 @@ class CardGroupPopAnimation: CardAnimation {
 
         let group = dispatch_group_create()
 
-        for index in (0..<cards.count) {
+        for index in reverse(0..<cards.count) {
             let card = cards[index]
 
             dispatch_group_enter(group)
             let animation = CardPopAnimation(cardStack: cardStack, card: card) {
                 dispatch_group_leave(group)
             }
+            let oppositeIndex = Double(abs(index - cards.count))
+            animation.delay = self.individualCardDelay * oppositeIndex
             animation.start()
         }
 
