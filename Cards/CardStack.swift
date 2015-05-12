@@ -35,7 +35,11 @@ public class CardStack: UIView {
 
     var animations: [CardAnimation] = []
 
-    public var distanceBetweenCards: CGFloat = 0.0
+    public var distanceBetweenCards: CGFloat = 0.0 {
+        didSet {
+            self.setNeedsLayout()
+        }
+    }
 
     public var topCard: UIView? {
         return _cards.last
