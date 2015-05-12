@@ -35,6 +35,8 @@ public class CardStack: UIView {
 
     var animations: [CardAnimation] = []
 
+    public var distanceBetweenCards: CGFloat = 0.0
+
     public var topCard: UIView? {
         return _cards.last
     }
@@ -213,14 +215,17 @@ extension CardStack {
 
     func cardRectForBounds(bounds: CGRect, atIndex index: Int) -> CGRect {
         let aboveFrame: CGRect
+        let distance: CGFloat
         if index > 0 {
             aboveFrame = self._cards[index - 1].frame
+            distance = self.distanceBetweenCards
         } else {
             aboveFrame = CGRect.zeroRect
+            distance = 0
         }
 
         let card = self._cards[index]
-        return CGRect(x: bounds.minX, y: bounds.minY + aboveFrame.maxY, width: bounds.maxX, height: card.frame.height)
+        return CGRect(x: bounds.minX, y: aboveFrame.maxY + distance, width: bounds.maxX, height: card.frame.height)
     }
 }
 
