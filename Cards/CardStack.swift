@@ -27,11 +27,21 @@ public class CardStack: UIView {
     public var cards: [UIView] {
         return _cards
     }
-    public lazy var scrollView: UIScrollView = {
+    private lazy var _scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         self.addSubview(scrollView)
         return scrollView
     }()
+
+    public var scrollView: UIScrollView {
+        get {
+            return self._scrollView
+        }
+        set {
+            self._scrollView = newValue
+            self.addSubview(newValue)
+        }
+    }
 
     var animations: [CardAnimation] = []
 
