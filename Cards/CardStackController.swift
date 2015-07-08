@@ -124,15 +124,24 @@ public class CardStackController: UIViewController {
             let indexes = toAdd.map { find(viewControllers, $0) }.filter{ $0 != nil }.map { $0! }
             if cardsToAdd.count > 0 {
                 dispatch_group_enter(group)
+
+                toAdd.map { self.addChildViewController($0) }
                 self.cardStack?.insertCards(cardsToAdd, atIndexes:indexes, animated: true) {
+                    toAdd.map { $0.didMoveToParentViewController(self) }
                     dispatch_group_leave(group)
                 }
             }
 
-            let cardsToRemove: [UIView] = toRemove.map { $0.view }
+            let cardsToRemove: [UIView] = toRemove.map {
+                $0.willMoveToParentViewController(nil)
+                return $0.view
+            }
             if cardsToRemove.count > 0 {
                 dispatch_group_enter(group)
                 self.cardStack?.removeCards(cardsToRemove, animated: true) {
+                    toRemove.map {
+                        $0.removeFromParentViewController()
+                    }
                     dispatch_group_leave(group)
                 }
             }

@@ -98,23 +98,92 @@ class CardStackControllerSpec: QuickSpec {
         }
 
         describe("#setViewControllers") {
-            it("adds all the view controllers as child controllers") {
-                self.viewController.setViewControllers([ViewController(), ViewController()], animated: false, completion: nil)
-                expect(self.viewController.childViewControllers.count) == 2
+            context("with no existing view controllers") {
+                it("adds all the view controllers as child controllers") {
+                    self.viewController.setViewControllers([ViewController(), ViewController()], animated: false, completion: nil)
+                    expect(self.viewController.childViewControllers.count) == 2
+                }
+
+                it("adds every view controller's view as a card") {
+                    let childViewController = ViewController()
+                    self.viewController.setViewControllers([childViewController], animated: false, completion: nil)
+
+                    expect(self.viewController.cardStack!.cards).toEventually(contain(childViewController.view))
+                }
+
+                it("sets itself as parent of each view controller") {
+                    let childViewController = ViewController()
+                    self.viewController.setViewControllers([childViewController], animated: false, completion: nil)
+
+                    expect(childViewController.parentViewController).toEventually(equal(self.viewController))
+                }
             }
 
-            it("adds every view controller's view as a card") {
-                let childViewController = ViewController()
-                self.viewController.setViewControllers([childViewController], animated: false, completion: nil)
+            context("when adding a view controller, with existing view controllers") {
+                var viewControllers: [ViewController] = []
+                beforeEach {
+                    // Wait because the cards array will only be udpated when any animations finish.
+                    // When there are no animations, it updates on the next runloop.
+                    waitUntil { done in
+                        viewControllers = [ViewController()]
+                        self.viewController.setViewControllers(viewControllers, animated: false, completion: done)
+                    }
+                }
 
-                expect(self.viewController.cardStack!.cards).toEventually(contain(childViewController.view))
+                it("adds the new view controller as a child controller") {
+                    viewControllers += [ViewController()]
+                    self.viewController.setViewControllers(viewControllers, animated: false, completion: nil)
+                    expect(self.viewController.childViewControllers.count) == 2
+                }
+
+                it("adds the new viewcontroller's view as a card") {
+                    let viewController = ViewController()
+                    viewControllers += [viewController]
+                    self.viewController.setViewControllers(viewControllers, animated: false, completion: nil)
+                    expect(self.viewController.cardStack?.cards).toEventually(contain(viewController.view))
+                }
+
+                it("sets itself as a parent of the new view controller") {
+                    let viewController = ViewController()
+                    viewControllers += [viewController]
+                    self.viewController.setViewControllers(viewControllers, animated: false, completion: nil)
+                    expect(viewController.parentViewController).toEventually(equal(self.viewController))
+                }
             }
 
-            it("sets itself as parent of each view controller") {
-                let childViewController = ViewController()
-                self.viewController.setViewControllers([childViewController], animated: false, completion: nil)
+            context("when removing a view controller, with existing view controllers") {
+                var viewControllers: [ViewController] = []
+                var childViewController: ViewController?
 
-                expect(childViewController.parentViewController).toEventually(equal(self.viewController))
+                beforeEach {
+                    // Wait because the cards array will only be udpated when any animations finish.
+                    // When there are no animations, it updates on the next runloop.
+                    waitUntil { done in
+                        childViewController = ViewController()
+                        viewControllers = [ViewController(), childViewController!]
+                        self.viewController.setViewControllers(viewControllers, animated: false, completion: done)
+                        viewControllers.removeLast()
+                    }
+                }
+
+                it("removes the view controller as a child controller") {
+                    waitUntil { done in
+                        self.viewController.setViewControllers(viewControllers, animated: false) {
+                            expect(self.viewController.childViewControllers.count) == 1
+                            done()
+                        }
+                    }
+                }
+
+                it("removes the viewcontroller's view as a card") {
+                    self.viewController.setViewControllers(viewControllers, animated: false, completion: nil)
+                    expect(self.viewController.cardStack?.cards).toEventuallyNot(contain(childViewController?.view))
+                }
+
+                it("removes itself as a parent of the view controller") {
+                    self.viewController.setViewControllers(viewControllers, animated: false, completion: nil)
+                    expect(childViewController?.parentViewController).toEventually(beNil())
+                }
             }
         }
     }

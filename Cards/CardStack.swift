@@ -85,7 +85,6 @@ public class CardStack: UIView {
 
             self.scrollView.insertSubview(card, atIndex: insertionIndex)
             _cards.insert(card, atIndex: insertionIndex)
-
         }
 
         self.setNeedsLayout()
