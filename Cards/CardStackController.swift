@@ -1,4 +1,4 @@
-// CardStackController.Swift
+// CardStackController.swift
 //
 // Copyright (c) 2015 Karma Mobility Inc. (https://yourkarma.com)
 //
@@ -22,5 +22,61 @@
 
 import UIKit
 
+extension UIViewController {
+    public var cardStackController: CardStackController? {
+        return self.parentViewController as? CardStackController
+    }
+}
+
 public class CardStackController: UIViewController {
+    public var topViewController: UIViewController? {
+        return self.childViewControllers.last as? UIViewController
+    }
+
+    public func pushViewController(viewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
+        self.addChildViewController(viewController)
+
+        let containerView = UIView()
+        containerView.setTranslatesAutoresizingMaskIntoConstraints(false)
+
+        let childView = viewController.view
+        childView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        containerView.addSubview(childView)
+
+        let dismissButton = UIButton()
+        dismissButton.setTranslatesAutoresizingMaskIntoConstraints(false)
+        let image = UIImage(named: "dismiss-arrow", inBundle: NSBundle(forClass: CardStackController.self), compatibleWithTraitCollection: nil)!
+        dismissButton.setImage(image, forState: .Normal)
+        containerView.addSubview(dismissButton)
+        dismissButton.addTarget(self, action: "popViewController:", forControlEvents: .TouchUpInside)
+        self.view.addSubview(containerView)
+
+        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[button]|", options: .allZeros, metrics: nil, views: ["button": dismissButton]))
+        containerView.addConstraint(NSLayoutConstraint(item: dismissButton, attribute: .Top, relatedBy: .Equal, toItem: containerView, attribute: .Top, multiplier: 1.0, constant: 0.0))
+
+        containerView.addConstraint(NSLayoutConstraint(item: childView, attribute: .Top, relatedBy: .Equal, toItem: containerView, attribute: .Top, multiplier: 1.0, constant: 0.0))
+        containerView.addConstraint(NSLayoutConstraint(item: childView, attribute: .Bottom, relatedBy: .Equal, toItem: containerView, attribute: .Bottom, multiplier: 1.0, constant: 0.0))
+        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[child]|", options: .allZeros, metrics: nil, views: ["child": childView]))
+
+        self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .Top, relatedBy: .Equal, toItem: self.topLayoutGuide, attribute: .Bottom, multiplier: 1.0, constant: 40.0))
+        self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .Bottom, relatedBy: .Equal, toItem: self.bottomLayoutGuide, attribute: .Top, multiplier: 1.0, constant: 0.0))
+        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[container]|", options: .allZeros, metrics: nil, views: ["container": containerView]))
+
+        viewController.didMoveToParentViewController(self)
+        completion?()
+    }
+
+    public func popViewController(animated: Bool, completion: (() -> Void)? = nil) {
+        if let topViewController = self.topViewController,
+            let containerView = topViewController.view.superview {
+                topViewController.willMoveToParentViewController(nil)
+                containerView.removeFromSuperview()
+                topViewController.removeFromParentViewController()
+                completion?()
+        }
+    }
+
+    func popViewController(sender: AnyObject) {
+        self.popViewController(true)
+    }
 }

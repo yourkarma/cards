@@ -1,4 +1,4 @@
-// ViewController.swift
+// DetailViewController
 //
 // Copyright (c) 2015 Karma Mobility Inc. (https://yourkarma.com)
 //
@@ -23,6 +23,9 @@
 import UIKit
 import Cards
 
-class ViewController: UIViewController {
-
+class DetailViewController: UIViewController {
+    @IBAction func push(sender: AnyObject) {
+        let viewController = self.storyboard?.instantiateViewControllerWithIdentifier("DetailViewController") as! DetailViewController
+        self.cardStackController?.pushViewController(viewController, animated: true)
+    }
 }

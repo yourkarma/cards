@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1B4BCC373940F670884D11EE /* Pods_CardsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 337CFF0FA26C8015555440DA /* Pods_CardsTests.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		A120414A1B9A385D00E80140 /* CardStackControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12041491B9A385D00E80140 /* CardStackControllerSpec.swift */; };
+		A120414C1B9A3DFC00E80140 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A120414B1B9A3DFC00E80140 /* Images.xcassets */; };
 		A19D72CC1A5B3E7D003DDC63 /* Cards.h in Headers */ = {isa = PBXBuildFile; fileRef = A19D72CB1A5B3E7D003DDC63 /* Cards.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A19D72D21A5B3E7D003DDC63 /* Cards.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A19D72C61A5B3E7D003DDC63 /* Cards.framework */; };
 		A19D73331A5B40C6003DDC63 /* CardStackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19D73321A5B40C6003DDC63 /* CardStackController.swift */; };
@@ -26,6 +28,8 @@
 /* Begin PBXFileReference section */
 		30BF0FBA01FAD36D799CD79E /* Pods-CardsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CardsTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CardsTests/Pods-CardsTests.release.xcconfig"; sourceTree = "<group>"; };
 		337CFF0FA26C8015555440DA /* Pods_CardsTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CardsTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A12041491B9A385D00E80140 /* CardStackControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardStackControllerSpec.swift; sourceTree = "<group>"; };
+		A120414B1B9A3DFC00E80140 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		A19D72C61A5B3E7D003DDC63 /* Cards.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Cards.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A19D72CA1A5B3E7D003DDC63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A19D72CB1A5B3E7D003DDC63 /* Cards.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cards.h; sourceTree = "<group>"; };
@@ -90,6 +94,7 @@
 				A19D72C91A5B3E7D003DDC63 /* Supporting Files */,
 				A19D72CB1A5B3E7D003DDC63 /* Cards.h */,
 				A19D73321A5B40C6003DDC63 /* CardStackController.swift */,
+				A120414B1B9A3DFC00E80140 /* Images.xcassets */,
 			);
 			path = Cards;
 			sourceTree = "<group>";
@@ -106,6 +111,7 @@
 			isa = PBXGroup;
 			children = (
 				A19D72D61A5B3E7D003DDC63 /* Supporting Files */,
+				A12041491B9A385D00E80140 /* CardStackControllerSpec.swift */,
 			);
 			path = CardsTests;
 			sourceTree = "<group>";
@@ -218,6 +224,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A120414C1B9A3DFC00E80140 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,6 +291,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A120414A1B9A385D00E80140 /* CardStackControllerSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
