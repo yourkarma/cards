@@ -119,6 +119,9 @@ public class CardStackController: UIViewController {
         let springBounciness: CGFloat = 2.0
 
         for (i, card) in enumerate(reverse(cards)) {
+            let dismissButton = card.dismissButton
+            dismissButton.enabled = false
+
             let containerView = card.containerView
             let index = CGFloat(i)
 
@@ -145,6 +148,12 @@ public class CardStackController: UIViewController {
                 opacityDownAnimation.springSpeed = springSpeed
                 opacityDownAnimation.springBounciness = springBounciness
                 containerView.pop_addAnimation(opacityDownAnimation, forKey: "opacityDownAnimation")
+
+                let dismissButtonOpacityAnimation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
+                dismissButtonOpacityAnimation.duration = 0.5
+                dismissButtonOpacityAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+                dismissButtonOpacityAnimation.toValue = 0.0
+                dismissButton.pop_addAnimation(dismissButtonOpacityAnimation, forKey: "dismissButtonDisappearAnimation")
             } else {
                 let scaleTransform = CGAffineTransformMakeScale(scale, scale)
                 let translationTransform = CGAffineTransformMakeTranslation(0.0, offset)
@@ -152,6 +161,7 @@ public class CardStackController: UIViewController {
 
                 containerView.transform = combinedTransform
                 containerView.alpha = opacity
+                dismissButton.alpha = 0.0
             }
         }
     }
@@ -182,6 +192,7 @@ public class CardStackController: UIViewController {
     func moveCardsForward(cards: [Card], animated: Bool) {
         for (index, card) in enumerate(reverse(cards)) {
             let containerView = card.containerView
+            let dismissButton = card.dismissButton
 
             let offset = self.offsetForCardAtIndex(index)
             let scale = self.scaleForCardAtIndex(index)
@@ -209,13 +220,25 @@ public class CardStackController: UIViewController {
                 opacityDownAnimation.springBounciness = springBounciness
                 containerView.pop_addAnimation(opacityDownAnimation, forKey: "opacityUpAnimation")
 
+                if index == 0 {
+                    let dismissButtonOpacityAnimation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
+                    dismissButtonOpacityAnimation.duration = 0.3
+                    dismissButtonOpacityAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
+                    dismissButtonOpacityAnimation.toValue = 1.0
+                    dismissButton.pop_addAnimation(dismissButtonOpacityAnimation, forKey: "dismissButtonAppearAnimation")
+                }
+
             } else {
                 let scaleTransform = CGAffineTransformMakeScale(scale, scale)
                 let translationTransform = CGAffineTransformMakeTranslation(0.0, offset)
                 let combinedTransform = CGAffineTransformConcat(scaleTransform, translationTransform)
                 containerView.transform = combinedTransform
                 containerView.alpha = opacity
+
+                dismissButton.alpha = index == 0 ? 1.0 : 0.0
             }
+
+            dismissButton.enabled = index == 0
         }
     }
 
@@ -254,6 +277,7 @@ public class CardStackController: UIViewController {
         let bundle = NSBundle(forClass: CardStackController.self)
         let image = UIImage(named: "Cards.bundle/dismiss-arrow.png", inBundle: bundle, compatibleWithTraitCollection: nil)
         dismissButton.setImage(image, forState: .Normal)
+        dismissButton.adjustsImageWhenDisabled = false
         dismissButton.addTarget(self, action: "popViewController:", forControlEvents: .TouchUpInside)
         return dismissButton
     }
