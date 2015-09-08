@@ -39,9 +39,15 @@ public class CardStackController: UIViewController {
     let extendedEdgeDistance: CGFloat = 10.0
 
     public func pushViewController(viewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
+        if self.childViewControllers.count == 2 {
+            fatalError("For now a maximum of 2 child view controllers is supported")
+        }
+
+        let topView = self.topViewController?.view.superview
+
         self.addChildViewController(viewController)
 
-        self.presentView(viewController.view, animated: animated) {
+        self.presentChildView(viewController.view, overTopView: topView, animated: animated) {
             viewController.didMoveToParentViewController(self)
             completion?()
         }
@@ -52,8 +58,8 @@ public class CardStackController: UIViewController {
             let containerView = topViewController.view.superview {
                 topViewController.willMoveToParentViewController(nil)
 
-                self.dismissContainerView(containerView, animated: animated) {
-                    containerView.removeFromSuperview()
+                let previousViewController = self.childViewControllers.first as? UIViewController
+                self.dismissContainerView(containerView, overTopView: previousViewController?.view.superview, animated: animated) {
                     topViewController.removeFromParentViewController()
                     completion?()
                 }
@@ -64,7 +70,7 @@ public class CardStackController: UIViewController {
         self.popViewController(true)
     }
 
-    func presentView(childView: UIView, animated: Bool, completion: (() -> Void)) {
+    func containerViewByAddingChildViewToViewHierarchy(childView: UIView) -> UIView {
         let containerView = UIView()
         containerView.setTranslatesAutoresizingMaskIntoConstraints(false)
 
@@ -99,6 +105,15 @@ public class CardStackController: UIViewController {
         containerView.layer.cornerRadius = 4.0
         self.view.layoutIfNeeded()
 
+        return containerView
+    }
+
+    func presentChildView(childView: UIView, overTopView topView: UIView?, animated: Bool, completion: (() -> Void)) {
+        let scale = CGPoint(x: 0.9, y: 0.9)
+        let transformY: CGFloat = -60.0
+
+        let containerView = self.containerViewByAddingChildViewToViewHierarchy(childView)
+
         if animated {
             containerView.transform = CGAffineTransformMakeTranslation(0.0, containerView.frame.height - self.extendedEdgeDistance)
 
@@ -111,19 +126,44 @@ public class CardStackController: UIViewController {
             transformAnimation.springSpeed = 12.0
             transformAnimation.springBounciness = 2.0
             containerView.layer.pop_addAnimation(transformAnimation, forKey: "transformAnimation")
-
             transformAnimation.completionBlock = { _ in
-
-                // Restore the child view to the state that it should be in (according to it's constraints).
-                childView.frame.size.height -= self.extendedEdgeDistance
                 completion()
             }
+
+            if let topView = topView {
+                let transformAnimation = POPSpringAnimation(propertyNamed: kPOPLayerPositionY)
+                transformAnimation.toValue = topView.layer.position.y + transformY
+                transformAnimation.springSpeed = 12.0
+                transformAnimation.springBounciness = 2.0
+                topView.layer.pop_addAnimation(transformAnimation, forKey: "transformAnimation")
+
+                let scaleAnimation = POPSpringAnimation(propertyNamed: kPOPLayerScaleXY)
+                scaleAnimation.toValue = NSValue(CGPoint: scale)
+                scaleAnimation.springSpeed = 12.0
+                scaleAnimation.springBounciness = 2.0
+                topView.layer.pop_addAnimation(scaleAnimation, forKey: "scaleAnimation")
+
+                let opacityAnimation = POPSpringAnimation(propertyNamed: kPOPLayerOpacity)
+                opacityAnimation.toValue = 0.5
+                opacityAnimation.springSpeed = 12.0
+                opacityAnimation.springBounciness = 2.0
+                topView.layer.pop_addAnimation(opacityAnimation, forKey: "opacityAnimation")
+            }
+
         } else {
+            if let topView = topView {
+                let scaleTransform = CGAffineTransformMakeScale(scale.x, scale.y)
+                let translateScaleTransform = CGAffineTransformTranslate(scaleTransform, 0.0, transformY)
+
+                topView.transform = translateScaleTransform
+                topView.alpha = 0.5
+            }
+
             completion()
         }
     }
 
-    func dismissContainerView(containerView: UIView, animated: Bool, completion: (() -> Void)) {
+    func dismissContainerView(containerView: UIView, overTopView topView: UIView?, animated: Bool, completion: (() -> Void)) {
         if animated {
             let transformAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
             transformAnimation.toValue = containerView.frame.height - self.extendedEdgeDistance
@@ -131,12 +171,38 @@ public class CardStackController: UIViewController {
             transformAnimation.springBounciness = 0.0
             containerView.layer.pop_addAnimation(transformAnimation, forKey: "transformAnimation")
             transformAnimation.completionBlock = { _ in
+                containerView.removeFromSuperview()
                 completion()
             }
 
+            if let topView = topView {
+                let transformAnimation = POPSpringAnimation(propertyNamed: kPOPLayerPositionY)
+                transformAnimation.toValue = topView.layer.position.y + 60.0
+                transformAnimation.springSpeed = 12.0
+                transformAnimation.springBounciness = 2.0
+                topView.layer.pop_addAnimation(transformAnimation, forKey: "transformAnimation")
+
+                let scaleAnimation = POPSpringAnimation(propertyNamed: kPOPLayerScaleXY)
+                scaleAnimation.toValue = NSValue(CGPoint: CGPoint(x: 1.0, y: 1.0))
+                scaleAnimation.springSpeed = 12.0
+                scaleAnimation.springBounciness = 2.0
+                topView.layer.pop_addAnimation(scaleAnimation, forKey: "scaleAnimation")
+
+                let opacityAnimation = POPSpringAnimation(propertyNamed: kPOPLayerOpacity)
+                opacityAnimation.toValue = 1.0
+                opacityAnimation.springSpeed = 12.0
+                opacityAnimation.springBounciness = 2.0
+                topView.layer.pop_addAnimation(opacityAnimation, forKey: "opacityAnimation")
+            }
+
         } else {
+            if let topView = topView {
+                topView.layer.transform = CATransform3DIdentity
+                topView.layer.opacity = 1.0
+            }
+
+            containerView.removeFromSuperview()
             completion()
         }
-
     }
 }
