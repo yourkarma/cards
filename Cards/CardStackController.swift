@@ -23,6 +23,12 @@
 import UIKit
 import pop
 
+struct Card {
+    let viewController: UIViewController
+    let containerView: UIView
+    let dismissButton: UIButton
+}
+
 extension UIViewController {
     public var cardStackController: CardStackController? {
         return self.parentViewController as? CardStackController
@@ -31,7 +37,12 @@ extension UIViewController {
 
 public class CardStackController: UIViewController {
     public var topViewController: UIViewController? {
-        return self.childViewControllers.last as? UIViewController
+        return self.topCard?.viewController
+    }
+
+    var cards: [Card] = []
+    var topCard: Card? {
+        return self.cards.last
     }
 
     // The edge of the container view is slightly extended so that it's bottom rounded corners aren't visible.
@@ -39,131 +50,123 @@ public class CardStackController: UIViewController {
     let extendedEdgeDistance: CGFloat = 10.0
 
     public func pushViewController(viewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
-        if self.childViewControllers.count == 2 {
-            fatalError("For now a maximum of 2 child view controllers is supported")
-        }
-
-        let topView = self.topViewController?.view.superview
+        let dismissButton = self.makeDismissButton()
+        let containerView = self.makeContainerForChildView(viewController.view, withDismissButton: dismissButton)
+        let card = Card(viewController: viewController, containerView: containerView, dismissButton: dismissButton)
 
         self.addChildViewController(viewController)
-
-        self.presentChildView(viewController.view, overTopView: topView, animated: animated) {
+        self.presentCard(card, overCards: self.cards, animated: animated) {
             viewController.didMoveToParentViewController(self)
             completion?()
         }
     }
 
     public func popViewController(animated: Bool, completion: (() -> Void)? = nil) {
-        if let topViewController = self.topViewController,
-            let containerView = topViewController.view.superview {
-                topViewController.willMoveToParentViewController(nil)
+        if let topCard = self.topCard {
+            let topViewController = topCard.viewController
+            topViewController.willMoveToParentViewController(nil)
 
-                let previousViewController = self.childViewControllers.first as? UIViewController
-                self.dismissContainerView(containerView, overTopView: previousViewController?.view.superview, animated: animated) {
-                    topViewController.removeFromParentViewController()
-                    completion?()
-                }
+            var remainingCards = Array(self.cards[0..<self.cards.endIndex - 1])
+
+            self.dismissCard(topCard, remainingCards: remainingCards, animated: animated) {
+                topViewController.removeFromParentViewController()
+                completion?()
             }
+        }
     }
 
-    func popViewController(sender: AnyObject) {
-        self.popViewController(true)
-    }
+    func presentCard(card: Card, overCards cards: [Card], animated: Bool, completion: (() -> Void)) {
+        self.cards.append(card)
 
-    func containerViewByAddingChildViewToViewHierarchy(childView: UIView) -> UIView {
-        let containerView = UIView()
-        containerView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        let containerView = card.containerView
 
-        childView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        containerView.addSubview(childView)
-
-        let dismissButton = UIButton()
-        dismissButton.setTranslatesAutoresizingMaskIntoConstraints(false)
-        let bundle = NSBundle(forClass: CardStackController.self)
-        let image = UIImage(named: "Cards.bundle/dismiss-arrow.png", inBundle: bundle, compatibleWithTraitCollection: nil)
-        dismissButton.setImage(image, forState: .Normal)
-        containerView.addSubview(dismissButton)
-        dismissButton.addTarget(self, action: "popViewController:", forControlEvents: .TouchUpInside)
         self.view.addSubview(containerView)
-
-        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[button]|", options: .allZeros, metrics: nil, views: ["button": dismissButton]))
-        containerView.addConstraint(NSLayoutConstraint(item: dismissButton, attribute: .Top, relatedBy: .Equal, toItem: containerView, attribute: .Top, multiplier: 1.0, constant: 0.0))
-
-        containerView.addConstraint(NSLayoutConstraint(item: childView, attribute: .Top, relatedBy: .Equal, toItem: containerView, attribute: .Top, multiplier: 1.0, constant: 0.0))
-
-        containerView.addConstraint(NSLayoutConstraint(item: childView, attribute: .Bottom, relatedBy: .Equal, toItem: containerView, attribute: .Bottom, multiplier: 1.0, constant: -self.extendedEdgeDistance))
-        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[child]|", options: .allZeros, metrics: nil, views: ["child": childView]))
-
-        self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .Top, relatedBy: .Equal, toItem: self.topLayoutGuide, attribute: .Bottom, multiplier: 1.0, constant: 40.0))
+        self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .Top, relatedBy: .Equal, toItem: self.topLayoutGuide, attribute: .Bottom, multiplier: 1.0, constant: 65.0))
 
         self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .Bottom, relatedBy: .Equal, toItem: self.bottomLayoutGuide, attribute: .Bottom, multiplier: 1.0, constant: self.extendedEdgeDistance))
         self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[container]|", options: .allZeros, metrics: nil, views: ["container": containerView]))
-
-        containerView.layer.borderColor = UIColor.clearColor().CGColor
-        containerView.layer.masksToBounds = true
-        containerView.layer.borderWidth = 1.0
-        containerView.layer.cornerRadius = 4.0
         self.view.layoutIfNeeded()
 
-        return containerView
-    }
-
-    func presentChildView(childView: UIView, overTopView topView: UIView?, animated: Bool, completion: (() -> Void)) {
-        let scale = CGPoint(x: 0.9, y: 0.9)
-        let transformY: CGFloat = -60.0
-
-        let containerView = self.containerViewByAddingChildViewToViewHierarchy(childView)
-
         if animated {
-            containerView.transform = CGAffineTransformMakeTranslation(0.0, containerView.frame.height - self.extendedEdgeDistance)
+
+            let position = containerView.layer.position
+            containerView.layer.position.y += containerView.bounds.height - self.extendedEdgeDistance
 
             // Ensure the content behind the view doesn't peek through when the
             // spring bounces.
-            childView.frame.size.height += self.extendedEdgeDistance
+            card.viewController.view.frame.size.height += self.extendedEdgeDistance
 
-            let transformAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
-            transformAnimation.toValue = 0.0
+            let transformAnimation = POPSpringAnimation(propertyNamed: kPOPLayerPositionY)
+            transformAnimation.toValue = position.y
             transformAnimation.springSpeed = 12.0
             transformAnimation.springBounciness = 2.0
             containerView.layer.pop_addAnimation(transformAnimation, forKey: "presentAnimation")
             transformAnimation.completionBlock = { _ in
+                card.viewController.view.frame.size.height -= self.extendedEdgeDistance
                 completion()
             }
 
-            if let topView = topView {
-                let moveUpAnimation = POPSpringAnimation(propertyNamed: kPOPLayerPositionY)
-                moveUpAnimation.toValue = topView.layer.position.y + transformY
-                moveUpAnimation.springSpeed = 12.0
-                moveUpAnimation.springBounciness = 2.0
-                topView.layer.pop_addAnimation(moveUpAnimation, forKey: "moveUpAnimation")
+        } else {
+            completion()
+        }
+
+        self.moveCardsBack(cards, animated: animated)
+    }
+
+    func moveCardsBack(cards: [Card], animated: Bool) {
+        let baseOffset: CGFloat = -60.0
+        let offsetFraction: CGFloat = 1.75
+
+        let baseScale: CGFloat = 0.9
+        let scaleFraction: CGFloat = 0.9
+
+        let baseOpacity: CGFloat =  0.5
+        let opacityFraction: CGFloat = 0.6
+
+        let springSpeed: CGFloat = 12.0
+        let springBounciness: CGFloat = 2.0
+
+        for (i, card) in enumerate(reverse(cards)) {
+            let containerView = card.containerView
+            let index = CGFloat(i)
+
+            let offset = baseOffset * CGFloat(pow(offsetFraction, index))
+            let scale = baseScale * CGFloat(pow(scaleFraction, index))
+            let opacity = baseOpacity * CGFloat(pow(opacityFraction, index))
+
+            if animated {
+                let moveUpAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
+                moveUpAnimation.toValue = offset
+                moveUpAnimation.springSpeed = springSpeed
+                moveUpAnimation.springBounciness = springBounciness
+                containerView.layer.pop_addAnimation(moveUpAnimation, forKey: "moveUpAnimation")
 
                 let scaleBackAnimation = POPSpringAnimation(propertyNamed: kPOPLayerScaleXY)
-                scaleBackAnimation.toValue = NSValue(CGPoint: scale)
-                scaleBackAnimation.springSpeed = 12.0
-                scaleBackAnimation.springBounciness = 2.0
-                topView.layer.pop_addAnimation(scaleBackAnimation, forKey: "scaleBackAnimation")
+                scaleBackAnimation.toValue = NSValue(CGPoint: CGPoint(x: scale, y: scale))
+                scaleBackAnimation.springSpeed = springSpeed
+                scaleBackAnimation.springBounciness = springBounciness
+                containerView.layer.pop_addAnimation(scaleBackAnimation, forKey: "scaleBackAnimation")
 
-                let opacityDownAnimation = POPSpringAnimation(propertyNamed: kPOPLayerOpacity)
-                opacityDownAnimation.toValue = 0.5
-                opacityDownAnimation.springSpeed = 12.0
-                opacityDownAnimation.springBounciness = 2.0
-                topView.layer.pop_addAnimation(opacityDownAnimation, forKey: "opacityDownAnimation")
+                let opacityDownAnimation = POPSpringAnimation(propertyNamed: kPOPViewAlpha)
+                opacityDownAnimation.toValue = opacity
+                opacityDownAnimation.springSpeed = springSpeed
+                opacityDownAnimation.springBounciness = springBounciness
+                containerView.pop_addAnimation(opacityDownAnimation, forKey: "opacityDownAnimation")
+            } else {
+                let scaleTransform = CGAffineTransformMakeScale(scale, scale)
+                let translationTransform = CGAffineTransformMakeTranslation(0.0, offset)
+                let combinedTransform = CGAffineTransformConcat(scaleTransform, translationTransform)
+
+                containerView.transform = combinedTransform
+                containerView.alpha = opacity
             }
-
-        } else {
-            if let topView = topView {
-                let scaleTransform = CGAffineTransformMakeScale(scale.x, scale.y)
-                let translateScaleTransform = CGAffineTransformTranslate(scaleTransform, 0.0, transformY)
-
-                topView.transform = translateScaleTransform
-                topView.alpha = 0.5
-            }
-
-            completion()
         }
     }
 
-    func dismissContainerView(containerView: UIView, overTopView topView: UIView?, animated: Bool, completion: (() -> Void)) {
+    func dismissCard(card: Card, remainingCards: [Card], animated: Bool, completion: (() -> Void)) {
+        let containerView = card.containerView
+        self.cards.removeLast()
+
         if animated {
             let dismissAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
             dismissAnimation.toValue = containerView.frame.height - self.extendedEdgeDistance
@@ -175,34 +178,110 @@ public class CardStackController: UIViewController {
                 completion()
             }
 
-            if let topView = topView {
-                let moveDownAnimation = POPSpringAnimation(propertyNamed: kPOPLayerPositionY)
-                moveDownAnimation.toValue = topView.layer.position.y + 60.0
-                moveDownAnimation.springSpeed = 12.0
-                moveDownAnimation.springBounciness = 0.0
-                topView.layer.pop_addAnimation(moveDownAnimation, forKey: "moveDownAnimation")
-
-                let scaleUpAnimation = POPSpringAnimation(propertyNamed: kPOPLayerScaleXY)
-                scaleUpAnimation.toValue = NSValue(CGPoint: CGPoint(x: 1.0, y: 1.0))
-                scaleUpAnimation.springSpeed = 12.0
-                scaleUpAnimation.springBounciness = 0.0
-                topView.layer.pop_addAnimation(scaleUpAnimation, forKey: "scaleUpAnimation")
-
-                let opacityUpAnimation = POPSpringAnimation(propertyNamed: kPOPLayerOpacity)
-                opacityUpAnimation.toValue = 1.0
-                opacityUpAnimation.springSpeed = 12.0
-                opacityUpAnimation.springBounciness = 2.0
-                topView.layer.pop_addAnimation(opacityUpAnimation, forKey: "opacityUpAnimation")
-            }
-
         } else {
-            if let topView = topView {
-                topView.layer.transform = CATransform3DIdentity
-                topView.layer.opacity = 1.0
-            }
-
             containerView.removeFromSuperview()
             completion()
         }
+
+        self.moveCardsForward(self.cards, animated: animated)
+    }
+
+    func moveCardsForward(cards: [Card], animated: Bool) {
+        for (i, card) in enumerate(reverse(cards)) {
+            let containerView = card.containerView
+            let index = CGFloat(i)
+
+            let baseOffset: CGFloat = -60.0
+            let offsetFraction: CGFloat = 1.75
+
+            let baseScale: CGFloat = 0.9
+            let scaleFraction: CGFloat = 0.9
+
+            let baseOpacity: CGFloat =  0.5
+            let opacityFraction: CGFloat = 0.6
+
+            let offset: CGFloat
+            let scale: CGFloat
+            let opacity: CGFloat
+
+            if i == 0 {
+                offset = 0.0
+                scale = 1.0
+                opacity = 1.0
+            } else {
+                offset = baseOffset * CGFloat(pow(offsetFraction, index - 1))
+                scale = baseScale * CGFloat(pow(scaleFraction, index - 1))
+                opacity = baseOpacity * CGFloat(pow(opacityFraction, index - 1))
+            }
+
+            if animated {
+                let springSpeed: CGFloat = 12.0
+                let springBounciness: CGFloat = 0.0
+
+                let moveUpAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
+                moveUpAnimation.toValue = offset
+                moveUpAnimation.springSpeed = springSpeed
+                moveUpAnimation.springBounciness = springBounciness
+                containerView.layer.pop_addAnimation(moveUpAnimation, forKey: "moveUpAnimation")
+
+                let scaleBackAnimation = POPSpringAnimation(propertyNamed: kPOPLayerScaleXY)
+                scaleBackAnimation.toValue = NSValue(CGPoint: CGPoint(x: scale, y: scale))
+                scaleBackAnimation.springSpeed = springSpeed
+                scaleBackAnimation.springBounciness = springBounciness
+                containerView.layer.pop_addAnimation(scaleBackAnimation, forKey: "scaleBackAnimation")
+
+                let opacityDownAnimation = POPSpringAnimation(propertyNamed: kPOPViewAlpha)
+                opacityDownAnimation.toValue = opacity
+                opacityDownAnimation.springSpeed = springSpeed
+                opacityDownAnimation.springBounciness = springBounciness
+                containerView.pop_addAnimation(opacityDownAnimation, forKey: "opacityDownAnimation")
+
+            } else {
+                let scaleTransform = CGAffineTransformMakeScale(scale, scale)
+                let translationTransform = CGAffineTransformMakeTranslation(0.0, offset)
+                let combinedTransform = CGAffineTransformConcat(scaleTransform, translationTransform)
+                containerView.transform = combinedTransform
+                containerView.alpha = opacity
+            }
+        }
+    }
+
+    func popViewController(sender: AnyObject) {
+        self.popViewController(true)
+    }
+
+    func makeContainerForChildView(childView: UIView, withDismissButton dismissButton: UIButton) -> UIView {
+        let containerView = UIView()
+        containerView.setTranslatesAutoresizingMaskIntoConstraints(false)
+
+        childView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        containerView.addSubview(childView)
+
+        containerView.addSubview(dismissButton)
+
+        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[button]|", options: .allZeros, metrics: nil, views: ["button": dismissButton]))
+        containerView.addConstraint(NSLayoutConstraint(item: dismissButton, attribute: .Top, relatedBy: .Equal, toItem: containerView, attribute: .Top, multiplier: 1.0, constant: 0.0))
+
+        containerView.addConstraint(NSLayoutConstraint(item: childView, attribute: .Top, relatedBy: .Equal, toItem: containerView, attribute: .Top, multiplier: 1.0, constant: 0.0))
+
+        containerView.addConstraint(NSLayoutConstraint(item: childView, attribute: .Bottom, relatedBy: .Equal, toItem: containerView, attribute: .Bottom, multiplier: 1.0, constant: -self.extendedEdgeDistance))
+        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[child]|", options: .allZeros, metrics: nil, views: ["child": childView]))
+
+        containerView.layer.borderColor = UIColor.clearColor().CGColor
+        containerView.layer.masksToBounds = true
+        containerView.layer.borderWidth = 1.0
+        containerView.layer.cornerRadius = 4.0
+        
+        return containerView
+    }
+
+    func makeDismissButton() -> UIButton {
+        let dismissButton = UIButton()
+        dismissButton.setTranslatesAutoresizingMaskIntoConstraints(false)
+        let bundle = NSBundle(forClass: CardStackController.self)
+        let image = UIImage(named: "Cards.bundle/dismiss-arrow.png", inBundle: bundle, compatibleWithTraitCollection: nil)
+        dismissButton.setImage(image, forState: .Normal)
+        dismissButton.addTarget(self, action: "popViewController:", forControlEvents: .TouchUpInside)
+        return dismissButton
     }
 }
