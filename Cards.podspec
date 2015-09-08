@@ -10,4 +10,9 @@ Pod::Spec.new do |s|
   s.source           =  { :git => "https://github.com/yourkarma/Cards.git", :commit => "db92f1d" }
   s.source_files     =  "Cards/**/*.swift"
   s.requires_arc     =  true
+
+  s.resource_bundles = {
+    Cards: "Cards/**/*.png"
+  }
+  s.dependency "pop", "~> 1.0"
 end

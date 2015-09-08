@@ -1,0 +1,28 @@
+{
+  "name": "Cards",
+  "version": "0.0.1",
+  "summary": "A card stack container view controller",
+  "homepage": "https://github.com/yourkarma/Cards",
+  "license": "MIT",
+  "authors": {
+    "Klaas Pieter Annema": "klaaspieter@annema.me"
+  },
+  "social_media_url": "http://twitter.com/klaaspieter",
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source": {
+    "git": "https://github.com/yourkarma/Cards.git",
+    "commit": "db92f1d"
+  },
+  "source_files": "Cards/**/*.swift",
+  "requires_arc": true,
+  "resource_bundles": {
+    "Cards": "Cards/**/*.png"
+  },
+  "dependencies": {
+    "pop": [
+      "~> 1.0"
+    ]
+  }
+}

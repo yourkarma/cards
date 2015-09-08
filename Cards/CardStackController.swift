@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 import UIKit
+import pop
 
 extension UIViewController {
     public var cardStackController: CardStackController? {
@@ -32,6 +33,10 @@ public class CardStackController: UIViewController {
     public var topViewController: UIViewController? {
         return self.childViewControllers.last as? UIViewController
     }
+
+    // The edge of the container view is slightly extended so that it's bottom rounded corners aren't visible.
+    // This has no effect on the child view controller's view because it subtracts this amount from it's height.
+    let extendedEdgeDistance: CGFloat = 10.0
 
     public func pushViewController(viewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
         self.addChildViewController(viewController)
@@ -45,7 +50,8 @@ public class CardStackController: UIViewController {
 
         let dismissButton = UIButton()
         dismissButton.setTranslatesAutoresizingMaskIntoConstraints(false)
-        let image = UIImage(named: "dismiss-arrow", inBundle: NSBundle(forClass: CardStackController.self), compatibleWithTraitCollection: nil)!
+        let bundle = NSBundle(forClass: CardStackController.self)
+        let image = UIImage(named: "Cards.bundle/dismiss-arrow.png", inBundle: bundle, compatibleWithTraitCollection: nil)
         dismissButton.setImage(image, forState: .Normal)
         containerView.addSubview(dismissButton)
         dismissButton.addTarget(self, action: "popViewController:", forControlEvents: .TouchUpInside)
@@ -56,35 +62,68 @@ public class CardStackController: UIViewController {
 
         containerView.addConstraint(NSLayoutConstraint(item: childView, attribute: .Top, relatedBy: .Equal, toItem: containerView, attribute: .Top, multiplier: 1.0, constant: 0.0))
 
-        // The edge of the container view is slightly extended so that it's bottom rounded corners aren't visible.
-        // This has no effect on the child view controller's view because it subtracts this amount from it's height.
-        let extendedEdgeDistance: CGFloat = 10.0
-
-        containerView.addConstraint(NSLayoutConstraint(item: childView, attribute: .Bottom, relatedBy: .Equal, toItem: containerView, attribute: .Bottom, multiplier: 1.0, constant: -extendedEdgeDistance))
+        containerView.addConstraint(NSLayoutConstraint(item: childView, attribute: .Bottom, relatedBy: .Equal, toItem: containerView, attribute: .Bottom, multiplier: 1.0, constant: -self.extendedEdgeDistance))
         containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[child]|", options: .allZeros, metrics: nil, views: ["child": childView]))
 
         self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .Top, relatedBy: .Equal, toItem: self.topLayoutGuide, attribute: .Bottom, multiplier: 1.0, constant: 40.0))
 
-        self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .Bottom, relatedBy: .Equal, toItem: self.bottomLayoutGuide, attribute: .Bottom, multiplier: 1.0, constant: extendedEdgeDistance))
+        self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .Bottom, relatedBy: .Equal, toItem: self.bottomLayoutGuide, attribute: .Bottom, multiplier: 1.0, constant: self.extendedEdgeDistance))
         self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[container]|", options: .allZeros, metrics: nil, views: ["container": containerView]))
 
         containerView.layer.borderColor = UIColor.clearColor().CGColor
         containerView.layer.masksToBounds = true
         containerView.layer.borderWidth = 1.0
         containerView.layer.cornerRadius = 4.0
+        self.view.layoutIfNeeded()
 
-        viewController.didMoveToParentViewController(self)
+        if animated {
+            containerView.transform = CGAffineTransformMakeTranslation(0.0, containerView.frame.height - self.extendedEdgeDistance)
 
-        completion?()
+            // Ensure the content behind the view doesn't peek through when the
+            // spring bounces.
+            childView.frame.size.height += self.extendedEdgeDistance
+
+            let transformAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
+            transformAnimation.toValue = 0.0
+            transformAnimation.springSpeed = 12.0
+            transformAnimation.springBounciness = 2.0
+            containerView.layer.pop_addAnimation(transformAnimation, forKey: "transformAnimation")
+
+            transformAnimation.completionBlock = { _ in
+
+                // Restore the child view to the state that it should be in (according to it's constraints).
+                childView.frame.size.height -= self.extendedEdgeDistance
+                viewController.didMoveToParentViewController(self)
+                completion?()
+            }
+        } else {
+            viewController.didMoveToParentViewController(self)
+            completion?()
+        }
     }
 
     public func popViewController(animated: Bool, completion: (() -> Void)? = nil) {
         if let topViewController = self.topViewController,
             let containerView = topViewController.view.superview {
                 topViewController.willMoveToParentViewController(nil)
-                containerView.removeFromSuperview()
-                topViewController.removeFromParentViewController()
-                completion?()
+
+                if animated {
+                    let transformAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
+                    transformAnimation.toValue = containerView.frame.height - self.extendedEdgeDistance
+                    transformAnimation.springSpeed = 12.0
+                    transformAnimation.springBounciness = 0.0
+                    containerView.layer.pop_addAnimation(transformAnimation, forKey: "transformAnimation")
+                    transformAnimation.completionBlock = { _ in
+                        containerView.removeFromSuperview()
+                        topViewController.removeFromParentViewController()
+                        completion?()
+                    }
+
+                } else {
+                    containerView.removeFromSuperview()
+                    topViewController.removeFromParentViewController()
+                    completion?()
+                }
         }
     }
 
