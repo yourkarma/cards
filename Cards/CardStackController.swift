@@ -125,29 +125,29 @@ public class CardStackController: UIViewController {
             transformAnimation.toValue = 0.0
             transformAnimation.springSpeed = 12.0
             transformAnimation.springBounciness = 2.0
-            containerView.layer.pop_addAnimation(transformAnimation, forKey: "transformAnimation")
+            containerView.layer.pop_addAnimation(transformAnimation, forKey: "presentAnimation")
             transformAnimation.completionBlock = { _ in
                 completion()
             }
 
             if let topView = topView {
-                let transformAnimation = POPSpringAnimation(propertyNamed: kPOPLayerPositionY)
-                transformAnimation.toValue = topView.layer.position.y + transformY
-                transformAnimation.springSpeed = 12.0
-                transformAnimation.springBounciness = 2.0
-                topView.layer.pop_addAnimation(transformAnimation, forKey: "transformAnimation")
+                let moveUpAnimation = POPSpringAnimation(propertyNamed: kPOPLayerPositionY)
+                moveUpAnimation.toValue = topView.layer.position.y + transformY
+                moveUpAnimation.springSpeed = 12.0
+                moveUpAnimation.springBounciness = 2.0
+                topView.layer.pop_addAnimation(moveUpAnimation, forKey: "moveUpAnimation")
 
-                let scaleAnimation = POPSpringAnimation(propertyNamed: kPOPLayerScaleXY)
-                scaleAnimation.toValue = NSValue(CGPoint: scale)
-                scaleAnimation.springSpeed = 12.0
-                scaleAnimation.springBounciness = 2.0
-                topView.layer.pop_addAnimation(scaleAnimation, forKey: "scaleAnimation")
+                let scaleBackAnimation = POPSpringAnimation(propertyNamed: kPOPLayerScaleXY)
+                scaleBackAnimation.toValue = NSValue(CGPoint: scale)
+                scaleBackAnimation.springSpeed = 12.0
+                scaleBackAnimation.springBounciness = 2.0
+                topView.layer.pop_addAnimation(scaleBackAnimation, forKey: "scaleBackAnimation")
 
-                let opacityAnimation = POPSpringAnimation(propertyNamed: kPOPLayerOpacity)
-                opacityAnimation.toValue = 0.5
-                opacityAnimation.springSpeed = 12.0
-                opacityAnimation.springBounciness = 2.0
-                topView.layer.pop_addAnimation(opacityAnimation, forKey: "opacityAnimation")
+                let opacityDownAnimation = POPSpringAnimation(propertyNamed: kPOPLayerOpacity)
+                opacityDownAnimation.toValue = 0.5
+                opacityDownAnimation.springSpeed = 12.0
+                opacityDownAnimation.springBounciness = 2.0
+                topView.layer.pop_addAnimation(opacityDownAnimation, forKey: "opacityDownAnimation")
             }
 
         } else {
@@ -165,34 +165,34 @@ public class CardStackController: UIViewController {
 
     func dismissContainerView(containerView: UIView, overTopView topView: UIView?, animated: Bool, completion: (() -> Void)) {
         if animated {
-            let transformAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
-            transformAnimation.toValue = containerView.frame.height - self.extendedEdgeDistance
-            transformAnimation.springSpeed = 12.0
-            transformAnimation.springBounciness = 0.0
-            containerView.layer.pop_addAnimation(transformAnimation, forKey: "transformAnimation")
-            transformAnimation.completionBlock = { _ in
+            let dismissAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
+            dismissAnimation.toValue = containerView.frame.height - self.extendedEdgeDistance
+            dismissAnimation.springSpeed = 12.0
+            dismissAnimation.springBounciness = 0.0
+            containerView.layer.pop_addAnimation(dismissAnimation, forKey: "dismissAnimation")
+            dismissAnimation.completionBlock = { _ in
                 containerView.removeFromSuperview()
                 completion()
             }
 
             if let topView = topView {
-                let transformAnimation = POPSpringAnimation(propertyNamed: kPOPLayerPositionY)
-                transformAnimation.toValue = topView.layer.position.y + 60.0
-                transformAnimation.springSpeed = 12.0
-                transformAnimation.springBounciness = 2.0
-                topView.layer.pop_addAnimation(transformAnimation, forKey: "transformAnimation")
+                let moveDownAnimation = POPSpringAnimation(propertyNamed: kPOPLayerPositionY)
+                moveDownAnimation.toValue = topView.layer.position.y + 60.0
+                moveDownAnimation.springSpeed = 12.0
+                moveDownAnimation.springBounciness = 0.0
+                topView.layer.pop_addAnimation(moveDownAnimation, forKey: "moveDownAnimation")
 
-                let scaleAnimation = POPSpringAnimation(propertyNamed: kPOPLayerScaleXY)
-                scaleAnimation.toValue = NSValue(CGPoint: CGPoint(x: 1.0, y: 1.0))
-                scaleAnimation.springSpeed = 12.0
-                scaleAnimation.springBounciness = 2.0
-                topView.layer.pop_addAnimation(scaleAnimation, forKey: "scaleAnimation")
+                let scaleUpAnimation = POPSpringAnimation(propertyNamed: kPOPLayerScaleXY)
+                scaleUpAnimation.toValue = NSValue(CGPoint: CGPoint(x: 1.0, y: 1.0))
+                scaleUpAnimation.springSpeed = 12.0
+                scaleUpAnimation.springBounciness = 0.0
+                topView.layer.pop_addAnimation(scaleUpAnimation, forKey: "scaleUpAnimation")
 
-                let opacityAnimation = POPSpringAnimation(propertyNamed: kPOPLayerOpacity)
-                opacityAnimation.toValue = 1.0
-                opacityAnimation.springSpeed = 12.0
-                opacityAnimation.springBounciness = 2.0
-                topView.layer.pop_addAnimation(opacityAnimation, forKey: "opacityAnimation")
+                let opacityUpAnimation = POPSpringAnimation(propertyNamed: kPOPLayerOpacity)
+                opacityUpAnimation.toValue = 1.0
+                opacityUpAnimation.springSpeed = 12.0
+                opacityUpAnimation.springBounciness = 2.0
+                topView.layer.pop_addAnimation(opacityUpAnimation, forKey: "opacityUpAnimation")
             }
 
         } else {
