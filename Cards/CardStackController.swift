@@ -44,6 +44,7 @@ public class CardStackController: UIViewController {
     var topCard: Card? {
         return self.cards.last
     }
+    var cardAppearanceCalculator: CardAppearanceCalculator = CardAppearanceCalculator()
 
     // The edge of the container view is slightly extended so that it's bottom rounded corners aren't visible.
     // This has no effect on the child view controller's view because it subtracts this amount from it's height.
@@ -114,15 +115,6 @@ public class CardStackController: UIViewController {
     }
 
     func moveCardsBack(cards: [Card], animated: Bool) {
-        let baseOffset: CGFloat = -60.0
-        let offsetFraction: CGFloat = 1.75
-
-        let baseScale: CGFloat = 0.9
-        let scaleFraction: CGFloat = 0.9
-
-        let baseOpacity: CGFloat =  0.5
-        let opacityFraction: CGFloat = 0.6
-
         let springSpeed: CGFloat = 12.0
         let springBounciness: CGFloat = 2.0
 
@@ -130,9 +122,10 @@ public class CardStackController: UIViewController {
             let containerView = card.containerView
             let index = CGFloat(i)
 
-            let offset = baseOffset * CGFloat(pow(offsetFraction, index))
-            let scale = baseScale * CGFloat(pow(scaleFraction, index))
-            let opacity = baseOpacity * CGFloat(pow(opacityFraction, index))
+            // + 1 because the first card is not part of the cards array
+            let offset = self.offsetForCardAtIndex(i + 1)
+            let scale = self.scaleForCardAtIndex(i + 1)
+            let opacity = self.opacityForCardAtIndex(i + 1)
 
             if animated {
                 let moveUpAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
@@ -187,32 +180,12 @@ public class CardStackController: UIViewController {
     }
 
     func moveCardsForward(cards: [Card], animated: Bool) {
-        for (i, card) in enumerate(reverse(cards)) {
+        for (index, card) in enumerate(reverse(cards)) {
             let containerView = card.containerView
-            let index = CGFloat(i)
 
-            let baseOffset: CGFloat = -60.0
-            let offsetFraction: CGFloat = 1.75
-
-            let baseScale: CGFloat = 0.9
-            let scaleFraction: CGFloat = 0.9
-
-            let baseOpacity: CGFloat =  0.5
-            let opacityFraction: CGFloat = 0.6
-
-            let offset: CGFloat
-            let scale: CGFloat
-            let opacity: CGFloat
-
-            if i == 0 {
-                offset = 0.0
-                scale = 1.0
-                opacity = 1.0
-            } else {
-                offset = baseOffset * CGFloat(pow(offsetFraction, index - 1))
-                scale = baseScale * CGFloat(pow(scaleFraction, index - 1))
-                opacity = baseOpacity * CGFloat(pow(opacityFraction, index - 1))
-            }
+            let offset = self.offsetForCardAtIndex(index)
+            let scale = self.scaleForCardAtIndex(index)
+            let opacity = self.opacityForCardAtIndex(index)
 
             if animated {
                 let springSpeed: CGFloat = 12.0
@@ -283,5 +256,20 @@ public class CardStackController: UIViewController {
         dismissButton.setImage(image, forState: .Normal)
         dismissButton.addTarget(self, action: "popViewController:", forControlEvents: .TouchUpInside)
         return dismissButton
+    }
+}
+
+// MARK: Appearance calculator
+extension CardStackController {
+    func offsetForCardAtIndex(i: Int) -> CGFloat {
+        return self.cardAppearanceCalculator.offsetForCardAtIndex(i)
+    }
+
+    func scaleForCardAtIndex(i: Int) -> CGFloat {
+        return self.cardAppearanceCalculator.scaleForCardAtIndex(i)
+    }
+
+    func opacityForCardAtIndex(i: Int) -> CGFloat {
+        return self.cardAppearanceCalculator.opacityForCardAtIndex(i)
     }
 }
