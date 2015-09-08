@@ -41,10 +41,33 @@ public class CardStackController: UIViewController {
     public func pushViewController(viewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
         self.addChildViewController(viewController)
 
+        self.presentView(viewController.view, animated: animated) {
+            viewController.didMoveToParentViewController(self)
+            completion?()
+        }
+    }
+
+    public func popViewController(animated: Bool, completion: (() -> Void)? = nil) {
+        if let topViewController = self.topViewController,
+            let containerView = topViewController.view.superview {
+                topViewController.willMoveToParentViewController(nil)
+
+                self.dismissContainerView(containerView, animated: animated) {
+                    containerView.removeFromSuperview()
+                    topViewController.removeFromParentViewController()
+                    completion?()
+                }
+            }
+    }
+
+    func popViewController(sender: AnyObject) {
+        self.popViewController(true)
+    }
+
+    func presentView(childView: UIView, animated: Bool, completion: (() -> Void)) {
         let containerView = UIView()
         containerView.setTranslatesAutoresizingMaskIntoConstraints(false)
 
-        let childView = viewController.view
         childView.setTranslatesAutoresizingMaskIntoConstraints(false)
         containerView.addSubview(childView)
 
@@ -93,41 +116,27 @@ public class CardStackController: UIViewController {
 
                 // Restore the child view to the state that it should be in (according to it's constraints).
                 childView.frame.size.height -= self.extendedEdgeDistance
-                viewController.didMoveToParentViewController(self)
-                completion?()
+                completion()
             }
         } else {
-            viewController.didMoveToParentViewController(self)
-            completion?()
+            completion()
         }
     }
 
-    public func popViewController(animated: Bool, completion: (() -> Void)? = nil) {
-        if let topViewController = self.topViewController,
-            let containerView = topViewController.view.superview {
-                topViewController.willMoveToParentViewController(nil)
+    func dismissContainerView(containerView: UIView, animated: Bool, completion: (() -> Void)) {
+        if animated {
+            let transformAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
+            transformAnimation.toValue = containerView.frame.height - self.extendedEdgeDistance
+            transformAnimation.springSpeed = 12.0
+            transformAnimation.springBounciness = 0.0
+            containerView.layer.pop_addAnimation(transformAnimation, forKey: "transformAnimation")
+            transformAnimation.completionBlock = { _ in
+                completion()
+            }
 
-                if animated {
-                    let transformAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
-                    transformAnimation.toValue = containerView.frame.height - self.extendedEdgeDistance
-                    transformAnimation.springSpeed = 12.0
-                    transformAnimation.springBounciness = 0.0
-                    containerView.layer.pop_addAnimation(transformAnimation, forKey: "transformAnimation")
-                    transformAnimation.completionBlock = { _ in
-                        containerView.removeFromSuperview()
-                        topViewController.removeFromParentViewController()
-                        completion?()
-                    }
-
-                } else {
-                    containerView.removeFromSuperview()
-                    topViewController.removeFromParentViewController()
-                    completion?()
-                }
+        } else {
+            completion()
         }
-    }
 
-    func popViewController(sender: AnyObject) {
-        self.popViewController(true)
     }
 }
