@@ -24,8 +24,21 @@ import UIKit
 import Cards
 
 class DetailViewController: UIViewController {
+
+    @IBOutlet weak var toggle: UISwitch!
+
+    var animated: Bool = true
+
+    override func viewWillAppear(animated: Bool) {
+        self.animated = self.toggle.on
+    }
+
+    @IBAction func toggleAnimation(sender: UISwitch) {
+        self.animated = sender.on
+    }
+
     @IBAction func push(sender: AnyObject) {
         let viewController = self.storyboard?.instantiateViewControllerWithIdentifier("DetailViewController") as! DetailViewController
-        self.cardStackController?.pushViewController(viewController, animated: true)
+        self.cardStackController?.pushViewController(viewController, animated: self.animated)
     }
 }

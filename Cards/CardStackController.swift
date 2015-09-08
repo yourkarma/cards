@@ -145,7 +145,7 @@ public class CardStackController: UIViewController {
                 scaleBackAnimation.toValue = NSValue(CGPoint: CGPoint(x: scale, y: scale))
                 scaleBackAnimation.springSpeed = springSpeed
                 scaleBackAnimation.springBounciness = springBounciness
-                containerView.layer.pop_addAnimation(scaleBackAnimation, forKey: "scaleBackAnimation")
+                containerView.layer.pop_addAnimation(scaleBackAnimation, forKey: "scaleDownAnimation")
 
                 let opacityDownAnimation = POPSpringAnimation(propertyNamed: kPOPViewAlpha)
                 opacityDownAnimation.toValue = opacity
@@ -222,19 +222,19 @@ public class CardStackController: UIViewController {
                 moveUpAnimation.toValue = offset
                 moveUpAnimation.springSpeed = springSpeed
                 moveUpAnimation.springBounciness = springBounciness
-                containerView.layer.pop_addAnimation(moveUpAnimation, forKey: "moveUpAnimation")
+                containerView.layer.pop_addAnimation(moveUpAnimation, forKey: "moveDownAnimation")
 
                 let scaleBackAnimation = POPSpringAnimation(propertyNamed: kPOPLayerScaleXY)
                 scaleBackAnimation.toValue = NSValue(CGPoint: CGPoint(x: scale, y: scale))
                 scaleBackAnimation.springSpeed = springSpeed
                 scaleBackAnimation.springBounciness = springBounciness
-                containerView.layer.pop_addAnimation(scaleBackAnimation, forKey: "scaleBackAnimation")
+                containerView.layer.pop_addAnimation(scaleBackAnimation, forKey: "scaleUpAnimation")
 
                 let opacityDownAnimation = POPSpringAnimation(propertyNamed: kPOPViewAlpha)
                 opacityDownAnimation.toValue = opacity
                 opacityDownAnimation.springSpeed = springSpeed
                 opacityDownAnimation.springBounciness = springBounciness
-                containerView.pop_addAnimation(opacityDownAnimation, forKey: "opacityDownAnimation")
+                containerView.pop_addAnimation(opacityDownAnimation, forKey: "opacityUpAnimation")
 
             } else {
                 let scaleTransform = CGAffineTransformMakeScale(scale, scale)

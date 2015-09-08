@@ -61,13 +61,32 @@
                                     <action selector="push:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ub9-zf-DhO"/>
                                 </connections>
                             </button>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qd2-0d-awP">
+                                <rect key="frame" x="276" y="352" width="51" height="31"/>
+                                <connections>
+                                    <action selector="toggleAnimation:" destination="NhM-sK-G6N" eventType="valueChanged" id="iFD-ZH-G45"/>
+                                </connections>
+                            </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Animated" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OVQ-XF-PfP">
+                                <rect key="frame" x="267" y="330" width="66" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" red="0.78039215689999997" green="0.83529411760000005" blue="0.85098039219999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.69803921570000005" blue="0.8862745098" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstAttribute="centerX" secondItem="OVQ-XF-PfP" secondAttribute="centerX" id="8pT-us-p2a"/>
                             <constraint firstAttribute="centerY" secondItem="qwB-si-EkN" secondAttribute="centerY" id="Yt9-8u-N3M"/>
                             <constraint firstAttribute="centerX" secondItem="qwB-si-EkN" secondAttribute="centerX" id="h94-LW-rvY"/>
+                            <constraint firstAttribute="centerX" secondItem="Qd2-0d-awP" secondAttribute="centerX" id="hBm-eL-vXM"/>
+                            <constraint firstItem="Qd2-0d-awP" firstAttribute="top" secondItem="OVQ-XF-PfP" secondAttribute="bottom" constant="4" id="iFd-EW-Eum"/>
+                            <constraint firstItem="OVQ-XF-PfP" firstAttribute="top" secondItem="qwB-si-EkN" secondAttribute="bottom" constant="15" id="xMr-QK-QXI"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="toggle" destination="Qd2-0d-awP" id="BnI-yO-Gaz"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1ko-jr-IU6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
