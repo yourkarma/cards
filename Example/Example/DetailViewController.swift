@@ -41,4 +41,8 @@ class DetailViewController: UIViewController {
         let viewController = self.storyboard?.instantiateViewControllerWithIdentifier("DetailViewController") as! DetailViewController
         self.cardStackController?.pushViewController(viewController, animated: self.animated)
     }
+
+    @IBAction func pop(sender: AnyObject) {
+        self.cardStackController?.popViewController(self.animated)
+    }
 }
