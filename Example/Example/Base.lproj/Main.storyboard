@@ -132,15 +132,40 @@
                                     </mask>
                                 </variation>
                             </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Constrained to the bottom layout guide" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jaL-y0-thI">
+                                <rect key="frame" x="150" y="579" width="301" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rRZ-JT-2h5">
+                                <rect key="frame" x="0.0" y="599" width="600" height="1"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="xDn-ku-ZU7"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.69803921570000005" blue="0.8862745098" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="centerX" secondItem="q7S-nA-Plw" secondAttribute="centerX" id="0p5-3B-Tu4"/>
+                            <constraint firstItem="K9a-gD-f80" firstAttribute="top" secondItem="rRZ-JT-2h5" secondAttribute="bottom" id="4el-x1-YZ7"/>
+                            <constraint firstAttribute="trailing" secondItem="rRZ-JT-2h5" secondAttribute="trailing" id="SfK-sg-x0A"/>
+                            <constraint firstItem="K9a-gD-f80" firstAttribute="top" secondItem="jaL-y0-thI" secondAttribute="bottom" id="ibZ-IY-HEx"/>
                             <constraint firstAttribute="centerY" secondItem="q7S-nA-Plw" secondAttribute="centerY" constant="20" id="qWb-e1-fSq"/>
+                            <constraint firstItem="rRZ-JT-2h5" firstAttribute="leading" secondItem="F5x-qk-lTQ" secondAttribute="leading" id="rMI-zB-G9S"/>
+                            <constraint firstItem="K9a-gD-f80" firstAttribute="top" secondItem="rRZ-JT-2h5" secondAttribute="bottom" placeholder="YES" id="ycE-eD-1wn"/>
+                            <constraint firstAttribute="centerX" secondItem="jaL-y0-thI" secondAttribute="centerX" id="zlR-tP-cW7"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="4el-x1-YZ7"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="animatedToggle" destination="Qd2-0d-awP" id="EZ9-mb-hc9"/>
+                        <outlet property="bottomView" destination="rRZ-JT-2h5" id="Ij9-pU-xbI"/>
                         <outlet property="dismissableToggle" destination="VIY-jW-Yb3" id="i7j-qR-bTf"/>
                     </connections>
                 </viewController>

@@ -59,6 +59,14 @@ public class CardStackController: UIViewController {
     // This has no effect on the child view controller's view because it subtracts this amount from it's height.
     let extendedEdgeDistance: CGFloat = 10.0
 
+    var panGestureRecognizer: UIPanGestureRecognizer!
+
+    public override func viewDidLoad() {
+        super.viewDidLoad()
+        self.panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePan:")
+        self.view.addGestureRecognizer(self.panGestureRecognizer)
+    }
+
     public func pushViewController(viewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
         let dismissButton = self.makeDismissButton()
         let containerView = self.makeContainerForChildView(viewController.view, withDismissButton: dismissButton)
@@ -72,13 +80,17 @@ public class CardStackController: UIViewController {
     }
 
     public func popViewController(animated: Bool, completion: (() -> Void)? = nil) {
+        self.popViewController(animated, velocity: nil, completion: completion)
+    }
+
+    func popViewController(animated: Bool, velocity: CGFloat?, completion: (() -> Void)? = nil) {
         if let topCard = self.topCard {
             let topViewController = topCard.viewController
             topViewController.willMoveToParentViewController(nil)
 
             var remainingCards = Array(self.cards[0..<self.cards.endIndex - 1])
 
-            self.dismissCard(topCard, remainingCards: remainingCards, animated: animated) {
+            self.dismissCard(topCard, remainingCards: remainingCards, animated: animated, velocity: velocity) {
                 topViewController.removeFromParentViewController()
                 completion?()
             }
@@ -98,21 +110,19 @@ public class CardStackController: UIViewController {
         self.view.layoutIfNeeded()
 
         if animated {
+            // Applying the transform directly, instead of using fromValue, prevents a brief flash
+            // where the view is visible in it's final location.
+            containerView.layer.transform = CATransform3DMakeTranslation(0.0, containerView.bounds.height - self.extendedEdgeDistance, 0.0)
 
-            let position = containerView.layer.position
-            containerView.layer.position.y += containerView.bounds.height - self.extendedEdgeDistance
-
-            // Ensure the content behind the view doesn't peek through when the
-            // spring bounces.
-            card.viewController.view.frame.size.height += self.extendedEdgeDistance
-
-            let transformAnimation = POPSpringAnimation(propertyNamed: kPOPLayerPositionY)
-            transformAnimation.toValue = position.y
-            transformAnimation.springSpeed = 12.0
-            transformAnimation.springBounciness = 2.0
-            containerView.layer.pop_addAnimation(transformAnimation, forKey: "presentAnimation")
-            transformAnimation.completionBlock = { _ in
-                card.viewController.view.frame.size.height -= self.extendedEdgeDistance
+            let presentAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
+            presentAnimation.toValue = 0.0
+            presentAnimation.springSpeed = 12.0
+            presentAnimation.springBounciness = 2.0
+            presentAnimation.tracer.shouldLogAndResetOnCompletion = true
+            presentAnimation.tracer.start()
+            presentAnimation.delegate = self
+            containerView.layer.pop_addAnimation(presentAnimation, forKey: "presentAnimation")
+            presentAnimation.completionBlock = { _ in
                 completion()
             }
 
@@ -177,7 +187,7 @@ public class CardStackController: UIViewController {
         }
     }
 
-    func dismissCard(card: Card, remainingCards: [Card], animated: Bool, completion: (() -> Void)) {
+    func dismissCard(card: Card, remainingCards: [Card], animated: Bool, velocity: CGFloat?, completion: (() -> Void)) {
         let containerView = card.containerView
         self.cards.removeLast()
 
@@ -186,6 +196,11 @@ public class CardStackController: UIViewController {
             dismissAnimation.toValue = containerView.frame.height - self.extendedEdgeDistance
             dismissAnimation.springSpeed = 12.0
             dismissAnimation.springBounciness = 0.0
+
+            if let velocity = velocity {
+                dismissAnimation.velocity = velocity
+            }
+
             containerView.layer.pop_addAnimation(dismissAnimation, forKey: "dismissAnimation")
             dismissAnimation.completionBlock = { _ in
                 containerView.removeFromSuperview()
@@ -264,6 +279,7 @@ public class CardStackController: UIViewController {
         childView.setTranslatesAutoresizingMaskIntoConstraints(false)
         containerView.addSubview(childView)
 
+        dismissButton.setTranslatesAutoresizingMaskIntoConstraints(false)
         containerView.addSubview(dismissButton)
 
         containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[button]|", options: .allZeros, metrics: nil, views: ["button": dismissButton]))
@@ -275,11 +291,11 @@ public class CardStackController: UIViewController {
         containerView.addConstraint(NSLayoutConstraint(item: childView, attribute: .Bottom, relatedBy: .Equal, toItem: containerView, attribute: .Bottom, multiplier: 1.0, constant: -self.extendedEdgeDistance))
         containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[child]|", options: .allZeros, metrics: nil, views: ["child": childView]))
 
-        containerView.layer.borderColor = UIColor.clearColor().CGColor
-        containerView.layer.masksToBounds = true
-        containerView.layer.borderWidth = 1.0
-        containerView.layer.cornerRadius = 4.0
-        
+        childView.layer.borderColor = UIColor.clearColor().CGColor
+        childView.layer.masksToBounds = true
+        childView.layer.borderWidth = 1.0
+        childView.layer.cornerRadius = 4.0
+
         return containerView
     }
 
@@ -291,6 +307,47 @@ public class CardStackController: UIViewController {
         dismissButton.setImage(image, forState: .Normal)
         dismissButton.addTarget(self, action: "popViewController:", forControlEvents: .TouchUpInside)
         return dismissButton
+    }
+
+    func handlePan(gestureRecognizer: UIPanGestureRecognizer) {
+        if let containerView = self.topCard?.containerView,
+            let childView = self.topCard?.viewController.view {
+            let translation = gestureRecognizer.translationInView(self.view)
+            let velocity = gestureRecognizer.velocityInView(self.view)
+
+            switch gestureRecognizer.state {
+
+            case .Began:
+                self.cancelReturnAnimation()
+
+            case .Changed:
+                containerView.transform = CGAffineTransformMakeTranslation(0.0, translation.y)
+
+            case .Failed, .Cancelled:
+                self.returnTopCardToStartPosition()
+
+            case .Ended:
+                if translation.y >= 25.0 && velocity.y > 0.0 {
+                    self.popViewController(true, velocity: velocity.y)
+                } else {
+                    self.returnTopCardToStartPosition()
+                }
+
+            case .Possible: return
+            }
+        }
+    }
+
+    func returnTopCardToStartPosition() {
+        let returnAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
+        returnAnimation.toValue = self.offsetForCardAtIndex(0)
+        returnAnimation.springSpeed = 12.0
+        returnAnimation.springBounciness = 4.0
+        self.topCard?.containerView.layer.pop_addAnimation(returnAnimation, forKey: "returnAnimation")
+    }
+
+    func cancelReturnAnimation() {
+        self.topCard?.containerView.layer.pop_removeAnimationForKey("returnAnimation")
     }
 }
 
