@@ -25,16 +25,22 @@ import Cards
 
 class DetailViewController: UIViewController {
 
-    @IBOutlet weak var toggle: UISwitch!
+    @IBOutlet weak var animatedToggle: UISwitch!
+    @IBOutlet weak var dismissableToggle: UISwitch!
 
     var animated: Bool = true
 
     override func viewWillAppear(animated: Bool) {
-        self.animated = self.toggle.on
+        self.animated = self.animatedToggle.on
+        self.dismissableToggle.on = self.cardStackController?.topViewControllerDismissButtonEnabled ?? true
     }
 
     @IBAction func toggleAnimation(sender: UISwitch) {
         self.animated = sender.on
+    }
+
+    @IBAction func toggleDismissable(sender: UISwitch) {
+        self.cardStackController?.topViewControllerDismissButtonEnabled = sender.on
     }
 
     @IBAction func push(sender: AnyObject) {

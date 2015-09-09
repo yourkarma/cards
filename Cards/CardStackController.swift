@@ -40,6 +40,15 @@ public class CardStackController: UIViewController {
         return self.topCard?.viewController
     }
 
+    public var topViewControllerDismissButtonEnabled: Bool {
+        get {
+            return self.topCard?.dismissButton.enabled ?? false
+        }
+        set {
+            self.topCard?.dismissButton.enabled = newValue
+        }
+    }
+
     var cards: [Card] = []
     var topCard: Card? {
         return self.cards.last
@@ -120,7 +129,9 @@ public class CardStackController: UIViewController {
 
         for (i, card) in enumerate(reverse(cards)) {
             let dismissButton = card.dismissButton
-            dismissButton.enabled = false
+
+            // Disable the dismiss button without showing the disabled state
+            dismissButton.userInteractionEnabled = false
 
             let containerView = card.containerView
             let index = CGFloat(i)
@@ -238,7 +249,7 @@ public class CardStackController: UIViewController {
                 dismissButton.alpha = index == 0 ? 1.0 : 0.0
             }
 
-            dismissButton.enabled = index == 0
+            dismissButton.userInteractionEnabled = index == 0
         }
     }
 
@@ -277,7 +288,6 @@ public class CardStackController: UIViewController {
         let bundle = NSBundle(forClass: CardStackController.self)
         let image = UIImage(named: "Cards.bundle/dismiss-arrow.png", inBundle: bundle, compatibleWithTraitCollection: nil)
         dismissButton.setImage(image, forState: .Normal)
-        dismissButton.adjustsImageWhenDisabled = false
         dismissButton.addTarget(self, action: "popViewController:", forControlEvents: .TouchUpInside)
         return dismissButton
     }
