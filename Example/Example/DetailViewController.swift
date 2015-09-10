@@ -30,6 +30,8 @@ class DetailViewController: UIViewController {
 
     @IBOutlet weak var bottomView: UIView!
 
+    var index: Int = 0
+
     var animated: Bool = true
 
     override func viewDidLoad() {
@@ -38,8 +40,26 @@ class DetailViewController: UIViewController {
     }
 
     override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        println("\(index) will appear")
+
         self.animated = self.animatedToggle.on
         self.dismissableToggle.on = self.cardStackController?.topViewControllerCanBeDismissed ?? true
+    }
+
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        println("\(index) did appear")
+    }
+
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        println("\(index) will disappear")
+    }
+
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        println("\(index) did disappear")
     }
 
     @IBAction func toggleAnimation(sender: UISwitch) {

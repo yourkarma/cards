@@ -72,6 +72,10 @@ public class CardStackController: UIViewController {
     }
 
     public func pushViewController(viewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
+
+        let topViewController = self.topCard?.viewController
+        topViewController?.beginAppearanceTransition(false, animated: animated)
+
         let dismissButton = self.makeDismissButton()
         let containerView = self.makeContainerForChildView(viewController.view, withDismissButton: dismissButton)
         let card = Card(viewController: viewController, containerView: containerView, dismissButton: dismissButton)
@@ -79,6 +83,7 @@ public class CardStackController: UIViewController {
         self.addChildViewController(viewController)
         self.presentCard(card, overCards: self.cards, animated: animated) {
             viewController.didMoveToParentViewController(self)
+            topViewController?.endAppearanceTransition()
             completion?()
         }
     }
@@ -90,12 +95,16 @@ public class CardStackController: UIViewController {
     func popViewController(animated: Bool, velocity: CGFloat?, completion: (() -> Void)? = nil) {
         if let topCard = self.topCard {
             let topViewController = topCard.viewController
-            topViewController.willMoveToParentViewController(nil)
+            let remainingCards = Array(self.cards[0..<self.cards.endIndex - 1])
 
-            var remainingCards = Array(self.cards[0..<self.cards.endIndex - 1])
+            let newTopViewController = remainingCards.last?.viewController
+            newTopViewController?.beginAppearanceTransition(true, animated: animated)
+
+            topViewController.willMoveToParentViewController(nil)
 
             self.dismissCard(topCard, remainingCards: remainingCards, animated: animated, velocity: velocity) {
                 topViewController.removeFromParentViewController()
+                newTopViewController?.endAppearanceTransition()
                 completion?()
             }
         }
