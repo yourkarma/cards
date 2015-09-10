@@ -118,9 +118,6 @@ public class CardStackController: UIViewController {
             presentAnimation.toValue = 0.0
             presentAnimation.springSpeed = 12.0
             presentAnimation.springBounciness = 2.0
-            presentAnimation.tracer.shouldLogAndResetOnCompletion = true
-            presentAnimation.tracer.start()
-            presentAnimation.delegate = self
             containerView.layer.pop_addAnimation(presentAnimation, forKey: "presentAnimation")
             presentAnimation.completionBlock = { _ in
                 completion()
@@ -291,10 +288,10 @@ public class CardStackController: UIViewController {
         containerView.addConstraint(NSLayoutConstraint(item: childView, attribute: .Bottom, relatedBy: .Equal, toItem: containerView, attribute: .Bottom, multiplier: 1.0, constant: -self.extendedEdgeDistance))
         containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[child]|", options: .allZeros, metrics: nil, views: ["child": childView]))
 
-        childView.layer.borderColor = UIColor.clearColor().CGColor
-        childView.layer.masksToBounds = true
-        childView.layer.borderWidth = 1.0
-        childView.layer.cornerRadius = 4.0
+        containerView.layer.borderColor = UIColor.clearColor().CGColor
+        containerView.layer.masksToBounds = true
+        containerView.layer.borderWidth = 1.0
+        containerView.layer.cornerRadius = 4.0
 
         return containerView
     }

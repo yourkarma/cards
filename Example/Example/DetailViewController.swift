@@ -28,7 +28,14 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var animatedToggle: UISwitch!
     @IBOutlet weak var dismissableToggle: UISwitch!
 
+    @IBOutlet weak var bottomView: UIView!
+
     var animated: Bool = true
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.view.addConstraint(NSLayoutConstraint(item: bottomView, attribute: .Bottom, relatedBy: .Equal, toItem: self.view, attribute: .Bottom, multiplier: 1.0, constant: 0.0))
+    }
 
     override func viewWillAppear(animated: Bool) {
         self.animated = self.animatedToggle.on
