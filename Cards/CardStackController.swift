@@ -53,11 +53,38 @@ public class CardStackController: UIViewController {
         }
     }
 
+    public init(rootViewController: UIViewController) {
+        super.init(nibName: nil, bundle: nil)
+        self.pushViewController(rootViewController, animated: false, completion: nil)
+    }
+
+    public required init(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+
     var cards: [Card] = []
     var topCard: Card? {
         return self.cards.last
     }
     var cardAppearanceCalculator: CardAppearanceCalculator = CardAppearanceCalculator()
+
+    var rootViewController: UIViewController? {
+        didSet {
+            if let rootViewController = self.rootViewController {
+                self.addChildViewController(rootViewController)
+                self.view.addSubview(rootViewController.view)
+
+                self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[root]|", options: .allZeros, metrics: nil, views: ["root": rootViewController.view]))
+                self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[root]|", options: .allZeros, metrics: nil, views: ["root": rootViewController.view]))
+
+                rootViewController.didMoveToParentViewController(self)
+            } else {
+                oldValue?.willMoveToParentViewController(nil)
+                oldValue?.view.removeFromSuperview()
+                oldValue?.removeFromParentViewController()
+            }
+        }
+    }
 
     // The edge of the container view is slightly extended so that it's bottom rounded corners aren't visible.
     // This has no effect on the child view controller's view because it subtracts this amount from it's height.
@@ -72,19 +99,28 @@ public class CardStackController: UIViewController {
     }
 
     public func pushViewController(viewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
+        if rootViewController == nil {
+            self.rootViewController = viewController
+        } else {
+            let topViewController: UIViewController?
 
-        let topViewController = self.topCard?.viewController
-        topViewController?.beginAppearanceTransition(false, animated: animated)
+            if let topCard = self.topCard {
+                topViewController = topCard.viewController
+            } else {
+                topViewController = self.rootViewController
+            }
+            topViewController?.beginAppearanceTransition(false, animated: animated)
 
-        let dismissButton = self.makeDismissButton()
-        let containerView = self.makeContainerForChildView(viewController.view, withDismissButton: dismissButton)
-        let card = Card(viewController: viewController, containerView: containerView, dismissButton: dismissButton)
+            let dismissButton = self.makeDismissButton()
+            let containerView = self.makeContainerForChildView(viewController.view, withDismissButton: dismissButton)
+            let card = Card(viewController: viewController, containerView: containerView, dismissButton: dismissButton)
 
-        self.addChildViewController(viewController)
-        self.presentCard(card, overCards: self.cards, animated: animated) {
-            viewController.didMoveToParentViewController(self)
-            topViewController?.endAppearanceTransition()
-            completion?()
+            self.addChildViewController(viewController)
+            self.presentCard(card, overCards: self.cards, animated: animated) {
+                viewController.didMoveToParentViewController(self)
+                topViewController?.endAppearanceTransition()
+                completion?()
+            }
         }
     }
 
@@ -97,7 +133,12 @@ public class CardStackController: UIViewController {
             let topViewController = topCard.viewController
             let remainingCards = Array(self.cards[0..<self.cards.endIndex - 1])
 
-            let newTopViewController = remainingCards.last?.viewController
+            let newTopViewController: UIViewController?
+            if let newTopCard = remainingCards.last {
+                newTopViewController = newTopCard.viewController
+            } else {
+                newTopViewController = self.rootViewController
+            }
             newTopViewController?.beginAppearanceTransition(true, animated: animated)
 
             topViewController.willMoveToParentViewController(nil)

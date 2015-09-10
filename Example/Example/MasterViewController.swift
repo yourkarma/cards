@@ -23,7 +23,9 @@
 import UIKit
 import Cards
 
-class MasterViewController: CardStackController {
+class MasterViewController: UIViewController {
+    @IBOutlet weak var presentButton: UIButton!
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         println("master will appear")
@@ -44,15 +46,8 @@ class MasterViewController: CardStackController {
         println("master did disappear")
     }
 
-
-    override func pushViewController(viewController: UIViewController, animated: Bool, completion: (() -> Void)?) {
-        (viewController as? DetailViewController)?.index = self.childViewControllers.count
-
-        super.pushViewController(viewController, animated: animated, completion: completion)
-    }
-
     @IBAction func push(sender: AnyObject) {
         let viewController = self.storyboard?.instantiateViewControllerWithIdentifier("DetailViewController") as! DetailViewController
-        self.pushViewController(viewController, animated: true, completion: nil)
+        self.cardStackController?.pushViewController(viewController, animated: true, completion: nil)
     }
 }
