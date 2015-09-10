@@ -39,7 +39,7 @@ class DetailViewController: UIViewController {
 
     override func viewWillAppear(animated: Bool) {
         self.animated = self.animatedToggle.on
-        self.dismissableToggle.on = self.cardStackController?.topViewControllerDismissButtonEnabled ?? true
+        self.dismissableToggle.on = self.cardStackController?.topViewControllerCanBeDismissed ?? true
     }
 
     @IBAction func toggleAnimation(sender: UISwitch) {
@@ -47,7 +47,7 @@ class DetailViewController: UIViewController {
     }
 
     @IBAction func toggleDismissable(sender: UISwitch) {
-        self.cardStackController?.topViewControllerDismissButtonEnabled = sender.on
+        self.cardStackController?.topViewControllerCanBeDismissed = sender.on
     }
 
     @IBAction func push(sender: AnyObject) {

@@ -44,7 +44,7 @@ public class CardStackController: UIViewController {
         return self.topCard?.viewController
     }
 
-    public var topViewControllerDismissButtonEnabled: Bool {
+    public var topViewControllerCanBeDismissed: Bool {
         get {
             return self.topCard?.dismissButton.enabled ?? false
         }
@@ -317,6 +317,10 @@ public class CardStackController: UIViewController {
     }
 
     func handlePan(gestureRecognizer: UIPanGestureRecognizer) {
+        if !self.topViewControllerCanBeDismissed {
+            return
+        }
+
         if let containerView = self.topCard?.containerView,
             let childView = self.topCard?.viewController.view {
             let translation = gestureRecognizer.translationInView(self.view)
