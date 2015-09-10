@@ -26,7 +26,6 @@ import pop
 struct Card {
     let viewController: UIViewController
     let containerView: UIView
-    let cardMask: CAShapeLayer
     let dismissButton: UIButton
 }
 
@@ -74,28 +73,14 @@ public class CardStackController: UIViewController {
 
     public func pushViewController(viewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
         let dismissButton = self.makeDismissButton()
-        let childView = viewController.view
-        let cardMask = self.maskChildView(childView)
-        let containerView = self.makeContainerForChildView(childView, withDismissButton: dismissButton)
-        let card = Card(viewController: viewController, containerView: containerView, cardMask: cardMask, dismissButton: dismissButton)
+        let containerView = self.makeContainerForChildView(viewController.view, withDismissButton: dismissButton)
+        let card = Card(viewController: viewController, containerView: containerView, dismissButton: dismissButton)
 
         self.addChildViewController(viewController)
         self.presentCard(card, overCards: self.cards, animated: animated) {
             viewController.didMoveToParentViewController(self)
             completion?()
         }
-    }
-
-    func maskChildView(childView: UIView) -> CAShapeLayer {
-        let mask = CAShapeLayer()
-
-        let cornerRadii = CGSize(width: 4.0, height: 4.0)
-        let path = UIBezierPath(roundedRect: childView.bounds, byRoundingCorners: .TopLeft | .TopRight, cornerRadii: cornerRadii)
-        mask.path = path.CGPath
-        mask.frame = childView.bounds
-        childView.layer.mask = mask
-
-        return mask
     }
 
     public func popViewController(animated: Bool, completion: (() -> Void)? = nil) {
@@ -299,12 +284,9 @@ public class CardStackController: UIViewController {
         containerView.addSubview(dismissButton)
 
         containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[button]|", options: .allZeros, metrics: nil, views: ["button": dismissButton]))
-        containerView.addConstraint(NSLayoutConstraint(item: dismissButton, attribute: .Top, relatedBy: .Equal, toItem: containerView, attribute: .Top, multiplier: 1.0, constant: 0.0))
-        containerView.addConstraint(NSLayoutConstraint(item: dismissButton, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 45.0))
+        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[button(==45)]", options: .allZeros, metrics: nil, views: ["button": dismissButton]))
 
-        containerView.addConstraint(NSLayoutConstraint(item: childView, attribute: .Top, relatedBy: .Equal, toItem: containerView, attribute: .Top, multiplier: 1.0, constant: 0.0))
-
-        containerView.addConstraint(NSLayoutConstraint(item: childView, attribute: .Bottom, relatedBy: .Equal, toItem: containerView, attribute: .Bottom, multiplier: 1.0, constant: -self.extendedEdgeDistance))
+        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[child]-distance-|", options: .allZeros, metrics: ["distance": self.extendedEdgeDistance], views: ["child": childView]))
         containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[child]|", options: .allZeros, metrics: nil, views: ["child": childView]))
 
         containerView.layer.cornerRadius = 4.0
@@ -336,8 +318,7 @@ public class CardStackController: UIViewController {
 
     func handlePan(gestureRecognizer: UIPanGestureRecognizer) {
         if let containerView = self.topCard?.containerView,
-            let childView = self.topCard?.viewController.view,
-            let cardMask = self.topCard?.cardMask {
+            let childView = self.topCard?.viewController.view {
             let translation = gestureRecognizer.translationInView(self.view)
             let velocity = gestureRecognizer.velocityInView(self.view)
 
