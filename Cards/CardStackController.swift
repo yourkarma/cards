@@ -26,6 +26,7 @@ import pop
 struct Card {
     let viewController: UIViewController
     let containerView: UIView
+    let cardMask: CAShapeLayer
     let dismissButton: UIButton
 }
 
@@ -69,14 +70,28 @@ public class CardStackController: UIViewController {
 
     public func pushViewController(viewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
         let dismissButton = self.makeDismissButton()
-        let containerView = self.makeContainerForChildView(viewController.view, withDismissButton: dismissButton)
-        let card = Card(viewController: viewController, containerView: containerView, dismissButton: dismissButton)
+        let childView = viewController.view
+        let cardMask = self.maskChildView(childView)
+        let containerView = self.makeContainerForChildView(childView, withDismissButton: dismissButton)
+        let card = Card(viewController: viewController, containerView: containerView, cardMask: cardMask, dismissButton: dismissButton)
 
         self.addChildViewController(viewController)
         self.presentCard(card, overCards: self.cards, animated: animated) {
             viewController.didMoveToParentViewController(self)
             completion?()
         }
+    }
+
+    func maskChildView(childView: UIView) -> CAShapeLayer {
+        let mask = CAShapeLayer()
+
+        let cornerRadii = CGSize(width: 4.0, height: 4.0)
+        let path = UIBezierPath(roundedRect: childView.bounds, byRoundingCorners: .TopLeft | .TopRight, cornerRadii: cornerRadii)
+        mask.path = path.CGPath
+        mask.frame = childView.bounds
+        childView.layer.mask = mask
+
+        return mask
     }
 
     public func popViewController(animated: Bool, completion: (() -> Void)? = nil) {
@@ -288,10 +303,10 @@ public class CardStackController: UIViewController {
         containerView.addConstraint(NSLayoutConstraint(item: childView, attribute: .Bottom, relatedBy: .Equal, toItem: containerView, attribute: .Bottom, multiplier: 1.0, constant: -self.extendedEdgeDistance))
         containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[child]|", options: .allZeros, metrics: nil, views: ["child": childView]))
 
-        containerView.layer.borderColor = UIColor.clearColor().CGColor
-        containerView.layer.masksToBounds = true
-        containerView.layer.borderWidth = 1.0
         containerView.layer.cornerRadius = 4.0
+        containerView.layer.borderColor = UIColor.clearColor().CGColor
+        containerView.layer.borderWidth = 1.0
+        containerView.layer.masksToBounds = true
 
         return containerView
     }
@@ -306,19 +321,44 @@ public class CardStackController: UIViewController {
         return dismissButton
     }
 
+    // Taken from: http://holko.pl/2014/07/06/inertia-bouncing-rubber-banding-uikit-dynamics/
+    func rubberBandDistance(offset: CGFloat , dimension: CGFloat )  -> CGFloat {
+        let constant: CGFloat = 0.01
+        let result = (constant * abs(offset) * dimension) / (dimension + constant * abs(offset))
+
+        // The algorithm expects a positive offset, so we have to negate the result if the offset was negative.
+        return offset < 0.0 ? -result : result
+    }
+
     func handlePan(gestureRecognizer: UIPanGestureRecognizer) {
         if let containerView = self.topCard?.containerView,
-            let childView = self.topCard?.viewController.view {
+            let childView = self.topCard?.viewController.view,
+            let cardMask = self.topCard?.cardMask {
             let translation = gestureRecognizer.translationInView(self.view)
             let velocity = gestureRecognizer.velocityInView(self.view)
 
             switch gestureRecognizer.state {
 
             case .Began:
+                let containerViewHeightConstraint = NSLayoutConstraint(item: containerView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: containerView.frame.height)
+                containerView.addConstraint(containerViewHeightConstraint)
                 self.cancelReturnAnimation()
 
             case .Changed:
-                containerView.transform = CGAffineTransformMakeTranslation(0.0, translation.y)
+                let minY: CGFloat = 0.0
+                let maxY: CGFloat = translation.y
+
+                let constrained = max(minY, min(translation.y, maxY))
+                let rubberBandedY = self.rubberBandDistance(translation.y - constrained, dimension: containerView.frame.height)
+                let newY = rubberBandedY + constrained
+
+                let childFrame = self.view.convertRect(childView.frame, fromView: childView)
+                let distanceFromBottom = childFrame.maxY - self.view.frame.maxY
+
+                let minHeight = containerView.frame.height - self.extendedEdgeDistance
+                let newHeight = childView.frame.size.height - (distanceFromBottom - 2.0)
+                childView.frame.size.height = max(minHeight, newHeight)
+                containerView.transform = CGAffineTransformMakeTranslation(0.0, newY)
 
             case .Failed, .Cancelled:
                 self.returnTopCardToStartPosition()
@@ -336,11 +376,18 @@ public class CardStackController: UIViewController {
     }
 
     func returnTopCardToStartPosition() {
-        let returnAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
-        returnAnimation.toValue = self.offsetForCardAtIndex(0)
-        returnAnimation.springSpeed = 12.0
-        returnAnimation.springBounciness = 4.0
-        self.topCard?.containerView.layer.pop_addAnimation(returnAnimation, forKey: "returnAnimation")
+        if let card = self.topCard {
+            let returnAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
+            returnAnimation.toValue = self.offsetForCardAtIndex(0)
+            returnAnimation.springSpeed = 12.0
+            returnAnimation.springBounciness = 1.0
+            card.containerView.layer.pop_addAnimation(returnAnimation, forKey: "returnAnimation")
+
+            returnAnimation.completionBlock = { _ in
+                // Return the child view to it's original, unadjusted, height
+                card.viewController.view.frame.size.height = card.containerView.frame.height - self.extendedEdgeDistance
+            }
+        }
     }
 
     func cancelReturnAnimation() {
