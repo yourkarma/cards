@@ -32,7 +32,11 @@ struct Card {
 
 extension UIViewController {
     public var cardStackController: CardStackController? {
-        return self.parentViewController as? CardStackController
+        if let cardStackController = self.parentViewController as? CardStackController {
+            return cardStackController
+        } else {
+            return self.parentViewController?.cardStackController
+        }
     }
 }
 

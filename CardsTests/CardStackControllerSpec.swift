@@ -49,6 +49,18 @@ class CardStackControllerSpec: QuickSpec {
             self.viewController.view = UIView()
         }
 
+        it("extends UIViewController with the ability to find the nearest CardStackController") {
+            let childViewController = FakeViewController()
+            let grandChildViewController = FakeViewController()
+
+            childViewController.addChildViewController(grandChildViewController)
+            grandChildViewController.didMoveToParentViewController(childViewController)
+
+            self.viewController.pushViewController(childViewController, animated: false)
+
+            expect(grandChildViewController.cardStackController) == self.viewController
+        }
+
         describe("#pushViewController") {
             it("adds the view controller as a child") {
                 let childViewController = FakeViewController()
