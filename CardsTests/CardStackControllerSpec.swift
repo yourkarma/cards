@@ -45,7 +45,7 @@ class CardStackControllerSpec: QuickSpec {
 
     override func spec() {
         beforeEach {
-            self.viewController = CardStackController()
+            self.viewController = CardStackController(rootViewController: FakeViewController())
             self.viewController.view = UIView()
         }
 
