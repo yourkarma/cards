@@ -25,7 +25,10 @@ import pop
 
 struct Card {
     let viewController: UIViewController
+
     let containerView: UIView
+    var topConstraint: NSLayoutConstraint
+
     let dismissButton: UIButton
 }
 
@@ -113,7 +116,8 @@ public class CardStackController: UIViewController {
 
             let dismissButton = self.makeDismissButton()
             let containerView = self.makeContainerForChildView(viewController.view, withDismissButton: dismissButton)
-            let card = Card(viewController: viewController, containerView: containerView, dismissButton: dismissButton)
+            let topConstraint = NSLayoutConstraint(item: containerView, attribute: .Top, relatedBy: .Equal, toItem: self.topLayoutGuide, attribute: .Bottom, multiplier: 1.0, constant: self.cardAppearanceCalculator.verticalTopOffsetForTraitCollection(self.traitCollection))
+            let card = Card(viewController: viewController, containerView: containerView, topConstraint: topConstraint, dismissButton: dismissButton)
 
             self.addChildViewController(viewController)
             self.presentCard(card, overCards: self.cards, animated: animated) {
@@ -151,14 +155,21 @@ public class CardStackController: UIViewController {
         }
     }
 
+    public override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+        for card in self.cards {
+            card.topConstraint.constant = self.cardAppearanceCalculator.verticalTopOffsetForTraitCollection(self.traitCollection)
+            self.view.layoutIfNeeded()
+        }
+    }
+
     func presentCard(card: Card, overCards cards: [Card], animated: Bool, completion: (() -> Void)) {
         self.cards.append(card)
 
         let containerView = card.containerView
 
         self.view.addSubview(containerView)
-        self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .Top, relatedBy: .Equal, toItem: self.topLayoutGuide, attribute: .Bottom, multiplier: 1.0, constant: 45.0))
 
+        self.view.addConstraint(card.topConstraint)
         self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .Bottom, relatedBy: .Equal, toItem: self.bottomLayoutGuide, attribute: .Bottom, multiplier: 1.0, constant: self.extendedEdgeDistance))
         self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[container]|", options: .allZeros, metrics: nil, views: ["container": containerView]))
         self.view.layoutIfNeeded()

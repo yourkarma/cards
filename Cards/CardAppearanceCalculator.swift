@@ -40,4 +40,12 @@ struct CardAppearanceCalculator {
             return baseOpacity * CGFloat(pow(opacityFraction, index - 1))
         }
     }
+
+    func verticalTopOffsetForTraitCollection(traitCollection: UITraitCollection) -> CGFloat {
+        if traitCollection.verticalSizeClass == .Compact {
+            return 0.0
+        } else {
+            return 45.0
+        }
+    }
 }
