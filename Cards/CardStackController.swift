@@ -56,6 +56,15 @@ public class CardStackController: UIViewController {
         }
     }
 
+    public var cardTopOffset: CGFloat {
+        get {
+            return self.cardAppearanceCalculator.topOffset
+        }
+        set {
+            self.cardAppearanceCalculator.topOffset = newValue
+        }
+    }
+
     public init(rootViewController: UIViewController) {
         super.init(nibName: nil, bundle: nil)
         self.pushViewController(rootViewController, animated: false, completion: nil)

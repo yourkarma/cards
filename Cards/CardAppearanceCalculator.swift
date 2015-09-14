@@ -11,6 +11,8 @@ struct CardAppearanceCalculator {
     let baseOpacity: CGFloat =  0.5
     let opacityFraction: CGFloat = 0.6
 
+    var topOffset: CGFloat = 45.0
+
     func offsetForCardAtIndex(i: Int) -> CGFloat {
         let index = CGFloat(i)
 
@@ -45,7 +47,7 @@ struct CardAppearanceCalculator {
         if traitCollection.verticalSizeClass == .Compact {
             return 0.0
         } else {
-            return 45.0
+            return self.topOffset
         }
     }
 }
