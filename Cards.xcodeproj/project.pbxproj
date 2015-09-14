@@ -14,6 +14,7 @@
 		A19D72CC1A5B3E7D003DDC63 /* Cards.h in Headers */ = {isa = PBXBuildFile; fileRef = A19D72CB1A5B3E7D003DDC63 /* Cards.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A19D72D21A5B3E7D003DDC63 /* Cards.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A19D72C61A5B3E7D003DDC63 /* Cards.framework */; };
 		A19D73331A5B40C6003DDC63 /* CardStackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19D73321A5B40C6003DDC63 /* CardStackController.swift */; };
+		A1CC90551BA7344400054E8D /* TransitionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1CC90541BA7344400054E8D /* TransitionCoordinator.swift */; };
 		F23F3D606F1B6E85D10CF59E /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB8E482A2DDB115DF77AD73 /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -40,6 +41,7 @@
 		A19D72D11A5B3E7D003DDC63 /* CardsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CardsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A19D72D71A5B3E7D003DDC63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A19D73321A5B40C6003DDC63 /* CardStackController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardStackController.swift; sourceTree = "<group>"; };
+		A1CC90541BA7344400054E8D /* TransitionCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransitionCoordinator.swift; sourceTree = "<group>"; };
 		AAF90A8ED716DFC34AD99228 /* Pods_CardsTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CardsTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B63E60032A87FF9194A86212 /* Pods-CardsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CardsTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CardsTests/Pods-CardsTests.release.xcconfig"; sourceTree = "<group>"; };
 		BEB8E482A2DDB115DF77AD73 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -94,6 +96,7 @@
 				A19D73321A5B40C6003DDC63 /* CardStackController.swift */,
 				A12A0A401B9F8E6300C8930E /* CardAppearanceCalculator.swift */,
 				A120414B1B9A3DFC00E80140 /* Images.xcassets */,
+				A1CC90541BA7344400054E8D /* TransitionCoordinator.swift */,
 			);
 			path = Cards;
 			sourceTree = "<group>";
@@ -295,6 +298,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A12A0A411B9F8E6300C8930E /* CardAppearanceCalculator.swift in Sources */,
+				A1CC90551BA7344400054E8D /* TransitionCoordinator.swift in Sources */,
 				A19D73331A5B40C6003DDC63 /* CardStackController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

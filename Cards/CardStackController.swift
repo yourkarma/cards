@@ -65,6 +65,8 @@ public class CardStackController: UIViewController {
         super.init(coder: coder)
     }
 
+    public var cardStackTransitionCoordinator: TransitionCoordinator?
+
     var cards: [Card] = []
     var topCard: Card? {
         return self.cards.last
@@ -105,6 +107,8 @@ public class CardStackController: UIViewController {
         if rootViewController == nil {
             self.rootViewController = viewController
         } else {
+            self.cardStackTransitionCoordinator = TransitionCoordinator()
+
             let topViewController: UIViewController?
 
             if let topCard = self.topCard {
@@ -134,6 +138,8 @@ public class CardStackController: UIViewController {
 
     func popViewController(animated: Bool, velocity: CGFloat?, completion: (() -> Void)? = nil) {
         if let topCard = self.topCard {
+            self.cardStackTransitionCoordinator = TransitionCoordinator()
+
             let topViewController = topCard.viewController
             let remainingCards = Array(self.cards[0..<self.cards.endIndex - 1])
 
@@ -174,6 +180,8 @@ public class CardStackController: UIViewController {
         self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[container]|", options: .allZeros, metrics: nil, views: ["container": containerView]))
         self.view.layoutIfNeeded()
 
+        self.cardStackTransitionCoordinator?.transitionWillBegin()
+
         if animated {
             // Applying the transform directly, instead of using fromValue, prevents a brief flash
             // where the view is visible in it's final location.
@@ -185,10 +193,13 @@ public class CardStackController: UIViewController {
             presentAnimation.springBounciness = 2.0
             containerView.layer.pop_addAnimation(presentAnimation, forKey: "presentAnimation")
             presentAnimation.completionBlock = { _ in
+                self.cardStackTransitionCoordinator?.transitionDidEnd()
+                self.cardStackTransitionCoordinator = nil
                 completion()
             }
 
         } else {
+            self.cardStackTransitionCoordinator?.transitionDidEnd()
             completion()
         }
 
@@ -250,6 +261,8 @@ public class CardStackController: UIViewController {
     }
 
     func dismissCard(card: Card, remainingCards: [Card], animated: Bool, velocity: CGFloat?, completion: (() -> Void)) {
+        self.cardStackTransitionCoordinator?.transitionWillBegin()
+
         let containerView = card.containerView
         self.cards.removeLast()
 
@@ -266,11 +279,14 @@ public class CardStackController: UIViewController {
             containerView.layer.pop_addAnimation(dismissAnimation, forKey: "dismissAnimation")
             dismissAnimation.completionBlock = { _ in
                 containerView.removeFromSuperview()
+                self.cardStackTransitionCoordinator?.transitionDidEnd()
                 completion()
             }
 
         } else {
             containerView.removeFromSuperview()
+            self.cardStackTransitionCoordinator?.transitionDidEnd()
+            self.cardStackTransitionCoordinator = nil
             completion()
         }
 
