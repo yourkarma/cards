@@ -50,4 +50,8 @@ class MasterViewController: UIViewController {
         let viewController = self.storyboard?.instantiateViewControllerWithIdentifier("DetailViewController") as! DetailViewController
         self.cardStackController?.pushViewController(viewController, animated: true, completion: nil)
     }
+
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return .Default
+    }
 }
