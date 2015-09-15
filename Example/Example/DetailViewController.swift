@@ -42,6 +42,16 @@ class DetailViewController: UIViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         println("\(index) will appear")
+
+        self.animated = self.animatedToggle.on
+        self.dismissableToggle.on = self.cardStackController?.topViewControllerCanBeDismissed ?? true
+
+        self.view.alpha = 0.0
+        self.cardStackController?.cardStackTransitionCoordinator?.notifyWhenTransitionWillBegin {
+            UIView.animateWithDuration(1.0) {
+                self.view.alpha = 1.0
+            }
+        }
      }
 
     override func viewDidAppear(animated: Bool) {
@@ -51,6 +61,14 @@ class DetailViewController: UIViewController {
 
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+
+        self.view.alpha = 1.0
+        self.cardStackController?.cardStackTransitionCoordinator?.notifyWhenTransitionWillBegin {
+            UIView.animateWithDuration(1.0) {
+                self.view.alpha = 0.0
+            }
+        }
+
         println("\(index) will disappear")
     }
 
@@ -74,9 +92,5 @@ class DetailViewController: UIViewController {
 
     @IBAction func pop(sender: AnyObject) {
         self.cardStackController?.popViewController(self.animated)
-    }
-
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .LightContent
     }
 }

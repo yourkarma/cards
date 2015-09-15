@@ -133,11 +133,9 @@ public class CardStackController: UIViewController {
             let card = Card(viewController: viewController, containerView: containerView, topConstraint: topConstraint, dismissButton: dismissButton)
 
             self.addChildViewController(viewController)
-            self.setNeedsStatusBarAppearanceUpdate()
             self.presentCard(card, overCards: self.cards, animated: animated) {
                 viewController.didMoveToParentViewController(self)
                 topViewController?.endAppearanceTransition()
-                self.setNeedsStatusBarAppearanceUpdate()
                 completion?()
             }
         }
@@ -167,7 +165,6 @@ public class CardStackController: UIViewController {
             self.dismissCard(topCard, remainingCards: remainingCards, animated: animated, velocity: velocity) {
                 topViewController.removeFromParentViewController()
                 newTopViewController?.endAppearanceTransition()
-                self.setNeedsStatusBarAppearanceUpdate()
                 completion?()
             }
         }
@@ -470,14 +467,6 @@ public class CardStackController: UIViewController {
 
     func cancelReturnAnimation() {
         self.topCard?.containerView.layer.pop_removeAnimationForKey("returnAnimation")
-    }
-
-    public override func childViewControllerForStatusBarStyle() -> UIViewController? {
-        return self.topViewController ?? self.rootViewController
-    }
-
-    public override func childViewControllerForStatusBarHidden() -> UIViewController? {
-        return self.topViewController ?? self.rootViewController
     }
 }
 
