@@ -258,7 +258,7 @@ public class CardStackController: UIViewController {
                 containerView.pop_addAnimation(opacityDownAnimation, forKey: "opacityDownAnimation")
 
                 let dismissButtonOpacityAnimation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
-                dismissButtonOpacityAnimation.duration = 0.5
+                dismissButtonOpacityAnimation.duration = 0.25
                 dismissButtonOpacityAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
                 dismissButtonOpacityAnimation.toValue = 0.0
                 dismissButton.pop_addAnimation(dismissButtonOpacityAnimation, forKey: "dismissButtonDisappearAnimation")
