@@ -113,6 +113,8 @@ public class CardStackController: UIViewController {
     }
 
     public func pushViewController(viewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
+        self.cancelAnimations()
+
         if rootViewController == nil {
             self.rootViewController = viewController
         } else {
@@ -133,6 +135,7 @@ public class CardStackController: UIViewController {
             let card = Card(viewController: viewController, containerView: containerView, topConstraint: topConstraint, dismissButton: dismissButton)
 
             self.addChildViewController(viewController)
+
             self.presentCard(card, overCards: self.cards, animated: animated) {
                 viewController.didMoveToParentViewController(self)
                 topViewController?.endAppearanceTransition()
@@ -146,6 +149,8 @@ public class CardStackController: UIViewController {
     }
 
     func popViewController(animated: Bool, velocity: CGFloat?, completion: (() -> Void)? = nil) {
+        self.cancelAnimations()
+        
         if let topCard = self.topCard {
             self.cardStackTransitionCoordinator = TransitionCoordinator()
 
@@ -158,8 +163,8 @@ public class CardStackController: UIViewController {
             } else {
                 newTopViewController = self.rootViewController
             }
-            newTopViewController?.beginAppearanceTransition(true, animated: animated)
 
+            newTopViewController?.beginAppearanceTransition(true, animated: animated)
             topViewController.willMoveToParentViewController(nil)
 
             self.dismissCard(topCard, remainingCards: remainingCards, animated: animated, velocity: velocity) {
@@ -417,7 +422,7 @@ public class CardStackController: UIViewController {
             case .Began:
                 let containerViewHeightConstraint = NSLayoutConstraint(item: containerView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: containerView.frame.height)
                 containerView.addConstraint(containerViewHeightConstraint)
-                self.cancelReturnAnimation()
+                self.cancelAnimations()
 
             case .Changed:
                 let minY: CGFloat = 0.0
@@ -465,8 +470,10 @@ public class CardStackController: UIViewController {
         }
     }
 
-    func cancelReturnAnimation() {
+    func cancelAnimations() {
         self.topCard?.containerView.layer.pop_removeAnimationForKey("returnAnimation")
+        self.topCard?.containerView.layer.pop_removeAnimationForKey("presentAnimation")
+        self.topCard?.containerView.layer.pop_removeAnimationForKey("dismissAnimation")
     }
 }
 

@@ -41,40 +41,26 @@ class DetailViewController: UIViewController {
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        println("\(index) will appear")
+        println("detail will appear")
 
         self.animated = self.animatedToggle.on
         self.dismissableToggle.on = self.cardStackController?.topViewControllerCanBeDismissed ?? true
-
-        self.view.alpha = 0.0
-        self.cardStackController?.cardStackTransitionCoordinator?.notifyWhenTransitionWillBegin {
-            UIView.animateWithDuration(1.0) {
-                self.view.alpha = 1.0
-            }
-        }
      }
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        println("\(index) did appear")
+        println("detail did appear")
     }
 
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
 
-        self.view.alpha = 1.0
-        self.cardStackController?.cardStackTransitionCoordinator?.notifyWhenTransitionWillBegin {
-            UIView.animateWithDuration(1.0) {
-                self.view.alpha = 0.0
-            }
-        }
-
-        println("\(index) will disappear")
+        println("detail will disappear")
     }
 
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        println("\(index) did disappear")
+        println("detail did disappear")
     }
 
     @IBAction func toggleAnimation(sender: UISwitch) {
