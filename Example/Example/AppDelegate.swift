@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         if let rootViewController = window?.rootViewController as? CardStackController,
-            let masterViewController = rootViewController.storyboard?.instantiateViewControllerWithIdentifier("Master") as? UIViewController {
+            let masterViewController = rootViewController.storyboard?.instantiateViewControllerWithIdentifier("Master") as UIViewController! {
             rootViewController.pushViewController(masterViewController, animated: false, completion: nil)
         }
 

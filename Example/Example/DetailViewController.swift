@@ -41,7 +41,7 @@ class DetailViewController: UIViewController {
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        println("detail will appear")
+        print("detail will appear")
 
         self.animated = self.animatedToggle.on
         self.dismissableToggle.on = self.cardStackController?.topViewControllerCanBeDismissed ?? true
@@ -49,18 +49,18 @@ class DetailViewController: UIViewController {
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        println("detail did appear")
+        print("detail did appear")
     }
 
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
 
-        println("detail will disappear")
+        print("detail will disappear")
     }
 
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        println("detail did disappear")
+        print("detail did disappear")
     }
 
     @IBAction func toggleAnimation(sender: UISwitch) {

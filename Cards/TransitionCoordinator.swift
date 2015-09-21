@@ -13,10 +13,10 @@ public class TransitionCoordinator {
     }
 
     func transitionWillBegin() {
-        willBeginCallbacks.map { $0() }
+        self.willBeginCallbacks.forEach { $0() }
     }
 
     func transitionDidEnd() {
-        didEndCallbacks.map { $0() }
+        self.didEndCallbacks.forEach { $0() }
     }
 }

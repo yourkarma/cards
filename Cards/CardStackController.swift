@@ -70,7 +70,7 @@ public class CardStackController: UIViewController {
         self.pushViewController(rootViewController, animated: false, completion: nil)
     }
 
-    public required init(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
 
@@ -88,8 +88,8 @@ public class CardStackController: UIViewController {
                 self.addChildViewController(rootViewController)
                 self.view.addSubview(rootViewController.view)
 
-                self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[root]|", options: .allZeros, metrics: nil, views: ["root": rootViewController.view]))
-                self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[root]|", options: .allZeros, metrics: nil, views: ["root": rootViewController.view]))
+                self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[root]|", options: [], metrics: nil, views: ["root": rootViewController.view]))
+                self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[root]|", options: [], metrics: nil, views: ["root": rootViewController.view]))
 
                 rootViewController.didMoveToParentViewController(self)
             } else {
@@ -191,7 +191,7 @@ public class CardStackController: UIViewController {
 
         self.view.addConstraint(card.topConstraint)
         self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .Bottom, relatedBy: .Equal, toItem: self.bottomLayoutGuide, attribute: .Bottom, multiplier: 1.0, constant: self.extendedEdgeDistance))
-        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[container]|", options: .allZeros, metrics: nil, views: ["container": containerView]))
+        self.view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[container]|", options: [], metrics: nil, views: ["container": containerView]))
         self.view.layoutIfNeeded()
 
         self.cardStackTransitionCoordinator?.transitionWillBegin()
@@ -224,14 +224,13 @@ public class CardStackController: UIViewController {
         let springSpeed: CGFloat = 12.0
         let springBounciness: CGFloat = 2.0
 
-        for (i, card) in enumerate(reverse(cards)) {
+        for (i, card) in Array(cards.reverse()).enumerate() {
             let dismissButton = card.dismissButton
 
             // Disable the dismiss button without showing the disabled state
             dismissButton.userInteractionEnabled = false
 
             let containerView = card.containerView
-            let index = CGFloat(i)
 
             // + 1 because the first card is not part of the cards array
             let offset = self.offsetForCardAtIndex(i + 1)
@@ -308,7 +307,7 @@ public class CardStackController: UIViewController {
     }
 
     func moveCardsForward(cards: [Card], animated: Bool) {
-        for (index, card) in enumerate(reverse(cards)) {
+        for (index, card) in Array(cards.reverse()).enumerate() {
             let containerView = card.containerView
             let dismissButton = card.dismissButton
 
@@ -366,19 +365,19 @@ public class CardStackController: UIViewController {
 
     func makeContainerForChildView(childView: UIView, withDismissButton dismissButton: UIButton) -> UIView {
         let containerView = UIView()
-        containerView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
 
-        childView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        childView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(childView)
 
-        dismissButton.setTranslatesAutoresizingMaskIntoConstraints(false)
+        dismissButton.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(dismissButton)
 
-        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[button]|", options: .allZeros, metrics: nil, views: ["button": dismissButton]))
-        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[button(==45)]", options: .allZeros, metrics: nil, views: ["button": dismissButton]))
+        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[button]|", options: [], metrics: nil, views: ["button": dismissButton]))
+        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[button(==45)]", options: [], metrics: nil, views: ["button": dismissButton]))
 
-        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[child]-distance-|", options: .allZeros, metrics: ["distance": self.extendedEdgeDistance], views: ["child": childView]))
-        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[child]|", options: .allZeros, metrics: nil, views: ["child": childView]))
+        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[child]-distance-|", options: [], metrics: ["distance": self.extendedEdgeDistance], views: ["child": childView]))
+        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[child]|", options: [], metrics: nil, views: ["child": childView]))
 
         containerView.layer.cornerRadius = 4.0
         containerView.layer.borderColor = UIColor.clearColor().CGColor
@@ -390,7 +389,7 @@ public class CardStackController: UIViewController {
 
     func makeDismissButton() -> UIButton {
         let dismissButton = UIButton()
-        dismissButton.setTranslatesAutoresizingMaskIntoConstraints(false)
+        dismissButton.translatesAutoresizingMaskIntoConstraints = false
         let bundle = NSBundle(forClass: CardStackController.self)
         let image = UIImage(named: "Cards.bundle/dismiss-arrow.png", inBundle: bundle, compatibleWithTraitCollection: nil)
         dismissButton.setImage(image, forState: .Normal)

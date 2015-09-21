@@ -5,7 +5,7 @@ pod "pop", inhibit_warnings: true
 
 target "CardsTests" do
   pod "Quick"
-  pod "Nimble"
+  pod "Nimble", "2.0.0-rc.3"
 end
 
 target "Example" do

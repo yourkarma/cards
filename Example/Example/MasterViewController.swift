@@ -28,22 +28,22 @@ class MasterViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        println("master will appear")
+        print("master will appear")
     }
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        println("master did appear")
+        print("master did appear", terminator: "")
     }
 
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        println("master will disappear")
+        print("master will disappear", terminator: "")
     }
 
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        println("master did disappear")
+        print("master did disappear", terminator: "")
     }
 
     @IBAction func push(sender: AnyObject) {
