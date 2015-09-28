@@ -380,6 +380,8 @@ public class CardStackController: UIViewController {
 
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.showsVerticalScrollIndicator = false
         scrollView.delegate = self
 
         childView.translatesAutoresizingMaskIntoConstraints = false
