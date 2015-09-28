@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A12041481B9A365100E80140 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12041471B9A365100E80140 /* DetailViewController.swift */; };
+		A12F39281BB9E09F00E376C1 /* VerticalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12F39271BB9E09F00E376C1 /* VerticalViewController.swift */; };
 		A162B1B91A5C80C800C7B01C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A162B1B81A5C80C800C7B01C /* AppDelegate.swift */; };
 		A162B1BB1A5C80C800C7B01C /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A162B1BA1A5C80C800C7B01C /* MasterViewController.swift */; };
 		A162B1BE1A5C80C800C7B01C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A162B1BC1A5C80C800C7B01C /* Main.storyboard */; };
@@ -48,6 +49,7 @@
 		6CDBB7E076AE784D99BE0692 /* Pods_ExampleTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ExampleTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		96EFBD407EA773827E72D4E1 /* Pods_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A12041471B9A365100E80140 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		A12F39271BB9E09F00E376C1 /* VerticalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerticalViewController.swift; sourceTree = "<group>"; };
 		A1518DE01A682C0600C322F1 /* ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1518DE31A682C0600C322F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A162B1B31A5C80C800C7B01C /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -136,6 +138,7 @@
 				A162B1BF1A5C80C800C7B01C /* Images.xcassets */,
 				A162B1C11A5C80C800C7B01C /* LaunchScreen.xib */,
 				A162B1B61A5C80C800C7B01C /* Supporting Files */,
+				A12F39271BB9E09F00E376C1 /* VerticalViewController.swift */,
 			);
 			path = Example;
 			sourceTree = "<group>";
@@ -322,6 +325,7 @@
 				A12041481B9A365100E80140 /* DetailViewController.swift in Sources */,
 				A162B1BB1A5C80C800C7B01C /* MasterViewController.swift in Sources */,
 				A1A775371BB9914F00289023 /* ImageViewController.swift in Sources */,
+				A12F39281BB9E09F00E376C1 /* VerticalViewController.swift in Sources */,
 				A162B1B91A5C80C800C7B01C /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
