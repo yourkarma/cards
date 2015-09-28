@@ -11,6 +11,7 @@
 		A120414A1B9A385D00E80140 /* CardStackControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12041491B9A385D00E80140 /* CardStackControllerSpec.swift */; };
 		A120414C1B9A3DFC00E80140 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A120414B1B9A3DFC00E80140 /* Images.xcassets */; };
 		A12A0A411B9F8E6300C8930E /* CardAppearanceCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12A0A401B9F8E6300C8930E /* CardAppearanceCalculator.swift */; };
+		A12F392C1BB9EF6400E376C1 /* CardMaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12F392B1BB9EF6400E376C1 /* CardMaskView.swift */; };
 		A19D72CC1A5B3E7D003DDC63 /* Cards.h in Headers */ = {isa = PBXBuildFile; fileRef = A19D72CB1A5B3E7D003DDC63 /* Cards.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A19D72D21A5B3E7D003DDC63 /* Cards.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A19D72C61A5B3E7D003DDC63 /* Cards.framework */; };
 		A19D73331A5B40C6003DDC63 /* CardStackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19D73321A5B40C6003DDC63 /* CardStackController.swift */; };
@@ -35,6 +36,7 @@
 		A12041491B9A385D00E80140 /* CardStackControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardStackControllerSpec.swift; sourceTree = "<group>"; };
 		A120414B1B9A3DFC00E80140 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		A12A0A401B9F8E6300C8930E /* CardAppearanceCalculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardAppearanceCalculator.swift; sourceTree = "<group>"; };
+		A12F392B1BB9EF6400E376C1 /* CardMaskView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardMaskView.swift; sourceTree = "<group>"; };
 		A19D72C61A5B3E7D003DDC63 /* Cards.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Cards.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A19D72CA1A5B3E7D003DDC63 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A19D72CB1A5B3E7D003DDC63 /* Cards.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cards.h; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 				A12A0A401B9F8E6300C8930E /* CardAppearanceCalculator.swift */,
 				A120414B1B9A3DFC00E80140 /* Images.xcassets */,
 				A1CC90541BA7344400054E8D /* TransitionCoordinator.swift */,
+				A12F392B1BB9EF6400E376C1 /* CardMaskView.swift */,
 			);
 			path = Cards;
 			sourceTree = "<group>";
@@ -300,6 +303,7 @@
 			files = (
 				A12A0A411B9F8E6300C8930E /* CardAppearanceCalculator.swift in Sources */,
 				A1CC90551BA7344400054E8D /* TransitionCoordinator.swift in Sources */,
+				A12F392C1BB9EF6400E376C1 /* CardMaskView.swift in Sources */,
 				A19D73331A5B40C6003DDC63 /* CardStackController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

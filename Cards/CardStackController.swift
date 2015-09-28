@@ -34,6 +34,7 @@ struct CardHierarchy {
     let containerView: UIView
     let dismissButton: UIButton
     let scrollView: UIScrollView
+    let maskView: CardMaskView
     let childView: UIView
 }
 
@@ -380,22 +381,27 @@ public class CardStackController: UIViewController {
         scrollView.showsVerticalScrollIndicator = false
         scrollView.delegate = self
 
+        let maskView = CardMaskView()
+        maskView.translatesAutoresizingMaskIntoConstraints = false
+
         childView.translatesAutoresizingMaskIntoConstraints = false
 
         let dismissButton = self.makeDismissButton()
         dismissButton.translatesAutoresizingMaskIntoConstraints = false
 
-        scrollView.addSubview(childView)
+        maskView.addSubview(childView)
+        scrollView.addSubview(maskView)
         scrollView.addSubview(dismissButton)
         containerView.addSubview(scrollView)
 
-        return CardHierarchy(containerView: containerView, dismissButton: dismissButton, scrollView: scrollView, childView: childView)
+        return CardHierarchy(containerView: containerView, dismissButton: dismissButton, scrollView: scrollView, maskView: maskView, childView: childView)
     }
 
     func constrainHierarchy(hierarchy: CardHierarchy) -> CardLayout {
         let verticalTopOffset = self.cardAppearanceCalculator.verticalTopOffsetForTraitCollection(self.traitCollection)
 
         let dismissButton = hierarchy.dismissButton
+        let maskView = hierarchy.maskView
         let childView = hierarchy.childView
         let containerView = hierarchy.containerView
         let scrollView = hierarchy.scrollView
@@ -421,10 +427,17 @@ public class CardStackController: UIViewController {
         childContainerConstraints.forEach { $0.priority = 1 } // Super low priority so that essentially everything (i.e. image view content hugging priority, compression resistantance) overrides it
         containerView.addConstraints(childContainerConstraints)
 
+        let maskViewTopConstraint = NSLayoutConstraint(item: maskView, attribute: .Top, relatedBy: .Equal, toItem: childView, attribute: .Top, multiplier: 1.0, constant: 0.0)
+        let maskViewBottomConstraint = NSLayoutConstraint(item: maskView, attribute: .Bottom, relatedBy: .Equal, toItem: childView, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
+        let maskViewLeadingConstraint = NSLayoutConstraint(item: maskView, attribute: .Leading, relatedBy: .Equal, toItem: childView, attribute: .Leading, multiplier: 1.0, constant: 0.0)
+        let maskViewTrailingConstraint = NSLayoutConstraint(item: maskView, attribute: .Trailing, relatedBy: .Equal, toItem: childView, attribute: .Trailing, multiplier: 1.0, constant: 0.0)
+        let maskViewConstraints = [maskViewTopConstraint, maskViewBottomConstraint, maskViewLeadingConstraint, maskViewTrailingConstraint]
+        containerView.addConstraints(maskViewConstraints)
+
         containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[scrollView]|", options: [], metrics: nil, views: ["scrollView": scrollView]))
         containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[scrollView]|", options: [], metrics: nil, views: ["scrollView": scrollView]))
 
-        return CardLayout(constraintsAffectedByTraitChange: [childScrollTopConstraint, childContainerTopConstraint, dismissButtonTopConstraint], dismissButtonTopConstraint: dismissButtonTopConstraint)
+        return CardLayout(constraintsAffectedByTraitChange: [childScrollTopConstraint, childContainerTopConstraint, dismissButtonTopConstraint],dismissButtonTopConstraint: dismissButtonTopConstraint)
 
     }
 
