@@ -224,8 +224,13 @@ public class CardStackController: UIViewController {
         childViewConstraints.forEach { $0.priority = 1 } // Super low priority so that essentially everything (i.e. image view content hugging priority, compression resistantance) overrides it
         self.view.addConstraints(childViewConstraints)
 
-        self.constraintView(scrollView, toEdgesOfView: containerView)
-        self.constraintView(containerView, toEdgesOfView: self.view)
+        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[scrollView]|", options: [], metrics: nil, views: ["scrollView": scrollView]))
+        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[scrollView]|", options: [], metrics: nil, views: ["scrollView": scrollView]))
+
+        self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .Top, relatedBy: .Equal, toItem: self.topLayoutGuide, attribute: .Bottom, multiplier: 1.0, constant: 0.0))
+        self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .Bottom, relatedBy: .Equal, toItem: self.bottomLayoutGuide, attribute: .Top, multiplier: 1.0, constant: 0.0))
+        self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .Leading, relatedBy: .Equal, toItem: self.view, attribute: .Leading, multiplier: 1.0, constant: 0.0))
+        self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .Trailing, relatedBy: .Equal, toItem: self.view, attribute: .Trailing, multiplier: 1.0, constant: 0.0))
 
         self.view.layoutIfNeeded()
 
@@ -426,11 +431,6 @@ public class CardStackController: UIViewController {
 //        containerView.layer.masksToBounds = true
 
         return containerView
-    }
-
-    func constraintView(view: UIView, toEdgesOfView otherView: UIView) {
-        otherView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[view]|", options: [], metrics: nil, views: ["view": view]))
-        otherView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: [], metrics: nil, views: ["view": view]))
     }
 
     func makeDismissButton() -> UIButton {
