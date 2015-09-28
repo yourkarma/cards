@@ -110,10 +110,6 @@ public class CardStackController: UIViewController {
         }
     }
 
-    // The edge of the container view is slightly extended so that it's bottom rounded corners aren't visible.
-    // This has no effect on the child view controller's view because it subtracts this amount from it's height.
-    let extendedEdgeDistance: CGFloat = 10.0
-
     var panGestureRecognizer: UIPanGestureRecognizer!
 
     public override func viewDidLoad() {
@@ -209,7 +205,7 @@ public class CardStackController: UIViewController {
         if animated {
             // Applying the transform directly, instead of using fromValue, prevents a brief flash
             // where the view is visible in it's final location.
-            containerView.layer.transform = CATransform3DMakeTranslation(0.0, containerView.bounds.height - self.extendedEdgeDistance, 0.0)
+            containerView.layer.transform = CATransform3DMakeTranslation(0.0, containerView.bounds.height, 0.0)
 
             let presentAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
             presentAnimation.toValue = 0.0
@@ -291,7 +287,7 @@ public class CardStackController: UIViewController {
 
         if animated {
             let dismissAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
-            dismissAnimation.toValue = containerView.frame.height - self.extendedEdgeDistance
+            dismissAnimation.toValue = containerView.frame.height
             dismissAnimation.springSpeed = 12.0
             dismissAnimation.springBounciness = 0.0
 
@@ -479,7 +475,7 @@ public class CardStackController: UIViewController {
                 let childFrame = self.view.convertRect(childView.frame, fromView: childView)
                 let distanceFromBottom = childFrame.maxY - self.view.frame.maxY
 
-                let minHeight = containerView.frame.height - self.extendedEdgeDistance
+                let minHeight = containerView.frame.height
                 let newHeight = childView.frame.size.height - (distanceFromBottom - 2.0)
                 childView.frame.size.height = max(minHeight, newHeight)
                 containerView.transform = CGAffineTransformMakeTranslation(0.0, newY)
@@ -506,11 +502,6 @@ public class CardStackController: UIViewController {
             returnAnimation.springSpeed = 12.0
             returnAnimation.springBounciness = 1.0
             card.views.containerView.layer.pop_addAnimation(returnAnimation, forKey: "returnAnimation")
-
-            returnAnimation.completionBlock = { _ in
-                // Return the child view to it's original, unadjusted, height
-                card.viewController.view.frame.size.height = card.views.containerView.frame.height - self.extendedEdgeDistance
-            }
         }
     }
 
