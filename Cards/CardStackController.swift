@@ -537,14 +537,23 @@ extension CardStackController {
 }
 
 extension CardStackController: UIScrollViewDelegate {
+    func anchorDismissButtonToTop() {
+        self.topCard?.layout.dismissButtonTopConstraint.constant = 0.0
+    }
+
+    func moveDismissButtonWithScrollViewOffset(contentOffset: CGPoint, verticalTopOffset: CGFloat) {
+
+        self.topCard?.layout.dismissButtonTopConstraint.constant = verticalTopOffset - contentOffset.y
+    }
+
     public func scrollViewDidScroll(scrollView: UIScrollView) {
         let contentOffset = scrollView.contentOffset
         let verticalTopOffset = self.cardAppearanceCalculator.verticalTopOffsetForTraitCollection(self.traitCollection)
 
         if contentOffset.y >= verticalTopOffset {
-            self.topCard?.layout.dismissButtonTopConstraint.constant = 0.0
+            self.anchorDismissButtonToTop()
         } else {
-            self.topCard?.layout.dismissButtonTopConstraint.constant = verticalTopOffset - contentOffset.y
+            self.moveDismissButtonWithScrollViewOffset(contentOffset, verticalTopOffset: verticalTopOffset)
         }
     }
 }
