@@ -26,10 +26,20 @@ import pop
 struct Card {
     let viewController: UIViewController
 
-    let containerView: UIView
-    var topConstraint: NSLayoutConstraint
+    var views: CardHierarchy
+    var layout: CardLayout
+}
 
+struct CardHierarchy {
+    let containerView: UIView
     let dismissButton: UIButton
+    let scrollView: UIScrollView
+    let childView: UIView
+}
+
+struct CardLayout {
+    var constraintsAffectedByTraitChange: [NSLayoutConstraint]
+    var dismissButtonTopConstraint: NSLayoutConstraint
 }
 
 extension UIViewController {
@@ -49,10 +59,10 @@ public class CardStackController: UIViewController {
 
     public var topViewControllerCanBeDismissed: Bool {
         get {
-            return self.topCard?.dismissButton.enabled ?? false
+            return self.topCard?.views.dismissButton.enabled ?? false
         }
         set {
-            self.topCard?.dismissButton.enabled = newValue
+            self.topCard?.views.dismissButton.enabled = newValue
         }
     }
 
@@ -129,10 +139,9 @@ public class CardStackController: UIViewController {
             }
             topViewController?.beginAppearanceTransition(false, animated: animated)
 
-            let dismissButton = self.makeDismissButton()
-            let containerView = self.makeContainerForChildView(viewController.view, withDismissButton: dismissButton)
-            let topConstraint = NSLayoutConstraint(item: containerView, attribute: .Top, relatedBy: .Equal, toItem: self.topLayoutGuide, attribute: .Bottom, multiplier: 1.0, constant: self.cardAppearanceCalculator.verticalTopOffsetForTraitCollection(self.traitCollection))
-            let card = Card(viewController: viewController, containerView: containerView, topConstraint: topConstraint, dismissButton: dismissButton)
+            let hierarchy = self.makeHierarchyForChildView(viewController.view)
+            let layout = self.constrainHierarchy(hierarchy)
+            let card = Card(viewController: viewController, views: hierarchy, layout: layout)
 
             self.addChildViewController(viewController)
 
@@ -177,55 +186,16 @@ public class CardStackController: UIViewController {
 
     public override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
         for card in self.cards {
-            card.topConstraint.constant = self.cardAppearanceCalculator.verticalTopOffsetForTraitCollection(self.traitCollection)
+            card.layout.constraintsAffectedByTraitChange.forEach { $0.constant = self.cardAppearanceCalculator.verticalTopOffsetForTraitCollection(self.traitCollection) }
             self.view.layoutIfNeeded()
         }
     }
 
     func presentCard(card: Card, overCards cards: [Card], animated: Bool, completion: (() -> Void)) {
+        let containerView = card.views.containerView
+
         self.cards.append(card)
-
-        let containerView = card.containerView
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-
-        let scrollView = UIScrollView()
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-
-        let childView = card.viewController.view
-        childView.translatesAutoresizingMaskIntoConstraints = false
-
-        let dismissButton = card.dismissButton
-        dismissButton.translatesAutoresizingMaskIntoConstraints = false
-
-        scrollView.addSubview(childView)
-        scrollView.addSubview(dismissButton)
-        containerView.addSubview(scrollView)
         self.view.addSubview(containerView)
-
-        let verticalTopOffset = self.cardAppearanceCalculator.verticalTopOffsetForTraitCollection(self.traitCollection)
-
-        self.view.addConstraint(NSLayoutConstraint(item: dismissButton, attribute: .Top, relatedBy: .Equal, toItem: scrollView, attribute: .Top, multiplier: 1.0, constant: verticalTopOffset))
-        self.view.addConstraint(NSLayoutConstraint(item: dismissButton, attribute: .Leading, relatedBy: .Equal, toItem: containerView, attribute: .Leading, multiplier: 1.0, constant: 0.0))
-        self.view.addConstraint(NSLayoutConstraint(item: dismissButton, attribute: .Trailing, relatedBy: .Equal, toItem: containerView, attribute: .Trailing, multiplier: 1.0, constant: 0.0))
-        self.view.addConstraint(NSLayoutConstraint(item: dismissButton, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 45.0))
-
-        let childScrollTopConstraint = NSLayoutConstraint(item: childView, attribute: .Top, relatedBy: .Equal, toItem: scrollView, attribute: .Top, multiplier: 1.0, constant: verticalTopOffset)
-        let childScrollBottomConstraint = NSLayoutConstraint(item: childView, attribute: .Bottom, relatedBy: .Equal, toItem: scrollView, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
-        let childScrollLeadingConstraint = NSLayoutConstraint(item: childView, attribute: .Leading, relatedBy: .Equal, toItem: scrollView, attribute: .Leading, multiplier: 1.0, constant: 0.0)
-        let childScrollTrailingConstraint = NSLayoutConstraint(item: childView, attribute: .Trailing, relatedBy: .Equal, toItem: scrollView, attribute: .Trailing, multiplier: 1.0, constant: 0.0)
-        let childScrollConstraints = [childScrollTopConstraint, childScrollBottomConstraint, childScrollLeadingConstraint, childScrollTrailingConstraint]
-        self.view.addConstraints(childScrollConstraints)
-
-        let childViewTopConstraint = NSLayoutConstraint(item: childView, attribute: .Top, relatedBy: .Equal, toItem: containerView, attribute: .Top, multiplier: 1.0, constant: verticalTopOffset)
-        let childViewBottomConstraint = NSLayoutConstraint(item: childView, attribute: .Bottom, relatedBy: .Equal, toItem: containerView, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
-        let childViewLeadingConstraint = NSLayoutConstraint(item: childView, attribute: .Leading, relatedBy: .Equal, toItem: containerView, attribute: .Leading, multiplier: 1.0, constant: 0.0)
-        let childViewTrailingConstraint = NSLayoutConstraint(item: childView, attribute: .Trailing, relatedBy: .Equal, toItem: containerView, attribute: .Trailing, multiplier: 1.0, constant: 0.0)
-        let childViewConstraints = [childViewTopConstraint, childViewBottomConstraint, childViewLeadingConstraint, childViewTrailingConstraint]
-        childViewConstraints.forEach { $0.priority = 1 } // Super low priority so that essentially everything (i.e. image view content hugging priority, compression resistantance) overrides it
-        self.view.addConstraints(childViewConstraints)
-
-        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[scrollView]|", options: [], metrics: nil, views: ["scrollView": scrollView]))
-        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[scrollView]|", options: [], metrics: nil, views: ["scrollView": scrollView]))
 
         self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .Top, relatedBy: .Equal, toItem: self.topLayoutGuide, attribute: .Bottom, multiplier: 1.0, constant: 0.0))
         self.view.addConstraint(NSLayoutConstraint(item: containerView, attribute: .Bottom, relatedBy: .Equal, toItem: self.bottomLayoutGuide, attribute: .Top, multiplier: 1.0, constant: 0.0))
@@ -265,12 +235,12 @@ public class CardStackController: UIViewController {
         let springBounciness: CGFloat = 2.0
 
         for (i, card) in Array(cards.reverse()).enumerate() {
-            let dismissButton = card.dismissButton
+            let dismissButton = card.views.dismissButton
 
             // Disable the dismiss button without showing the disabled state
             dismissButton.userInteractionEnabled = false
 
-            let containerView = card.containerView
+            let containerView = card.views.containerView
 
             // + 1 because the first card is not part of the cards array
             let offset = self.offsetForCardAtIndex(i + 1)
@@ -316,7 +286,7 @@ public class CardStackController: UIViewController {
     func dismissCard(card: Card, remainingCards: [Card], animated: Bool, velocity: CGFloat?, completion: (() -> Void)) {
         self.cardStackTransitionCoordinator?.transitionWillBegin()
 
-        let containerView = card.containerView
+        let containerView = card.views.containerView
         self.cards.removeLast()
 
         if animated {
@@ -348,8 +318,8 @@ public class CardStackController: UIViewController {
 
     func moveCardsForward(cards: [Card], animated: Bool) {
         for (index, card) in Array(cards.reverse()).enumerate() {
-            let containerView = card.containerView
-            let dismissButton = card.dismissButton
+            let containerView = card.views.containerView
+            let dismissButton = card.views.dismissButton
 
             let offset = self.offsetForCardAtIndex(index)
             let scale = self.scaleForCardAtIndex(index)
@@ -403,34 +373,61 @@ public class CardStackController: UIViewController {
         self.popViewController(true)
     }
 
-    func makeContainerForChildView(childView: UIView, withDismissButton dismissButton: UIButton) -> UIView {
+    func makeHierarchyForChildView(childView: UIView) -> CardHierarchy {
         let containerView = UIView()
-//        containerView.translatesAutoresizingMaskIntoConstraints = false
-//
-//        let scrollView = UIScrollView()
-//        scrollView.translatesAutoresizingMaskIntoConstraints = false
-//
-//        childView.translatesAutoresizingMaskIntoConstraints = false
-//        containerView.addSubview(scrollView)
-//
-//        scrollView.addSubview(childView)
-//        self.constraintView(scrollView, toEdgesOfView: containerView)
-//
-////        dismissButton.translatesAutoresizingMaskIntoConstraints = false
-////        scrollView.addSubview(dismissButton)
-//
-////        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[button]|", options: [], metrics: nil, views: ["button": dismissButton]))
-////        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[button(==45)]", options: [], metrics: nil, views: ["button": dismissButton]))
-//
-//        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[child]-distance-|", options: [], metrics: ["distance": self.extendedEdgeDistance], views: ["child": childView]))
-//        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[child]|", options: [], metrics: nil, views: ["child": childView]))
-//
-//        containerView.layer.cornerRadius = 4.0
-//        containerView.layer.borderColor = UIColor.clearColor().CGColor
-//        containerView.layer.borderWidth = 1.0
-//        containerView.layer.masksToBounds = true
 
-        return containerView
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.delegate = self
+
+        childView.translatesAutoresizingMaskIntoConstraints = false
+
+        let dismissButton = self.makeDismissButton()
+        dismissButton.translatesAutoresizingMaskIntoConstraints = false
+
+        scrollView.addSubview(childView)
+        scrollView.addSubview(dismissButton)
+        containerView.addSubview(scrollView)
+
+        return CardHierarchy(containerView: containerView, dismissButton: dismissButton, scrollView: scrollView, childView: childView)
+    }
+
+    func constrainHierarchy(hierarchy: CardHierarchy) -> CardLayout {
+        let verticalTopOffset = self.cardAppearanceCalculator.verticalTopOffsetForTraitCollection(self.traitCollection)
+
+        let dismissButton = hierarchy.dismissButton
+        let childView = hierarchy.childView
+        let containerView = hierarchy.containerView
+        let scrollView = hierarchy.scrollView
+
+        let dismissButtonTopConstraint = NSLayoutConstraint(item: dismissButton, attribute: .Top, relatedBy: .Equal, toItem: containerView, attribute: .Top, multiplier: 1.0, constant: verticalTopOffset)
+        containerView.addConstraint(dismissButtonTopConstraint)
+        containerView.addConstraint(NSLayoutConstraint(item: dismissButton, attribute: .Leading, relatedBy: .Equal, toItem: containerView, attribute: .Leading, multiplier: 1.0, constant: 0.0))
+        containerView.addConstraint(NSLayoutConstraint(item: dismissButton, attribute: .Trailing, relatedBy: .Equal, toItem: containerView, attribute: .Trailing, multiplier: 1.0, constant: 0.0))
+        containerView.addConstraint(NSLayoutConstraint(item: dismissButton, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 45.0))
+
+        let childScrollTopConstraint = NSLayoutConstraint(item: childView, attribute: .Top, relatedBy: .Equal, toItem: scrollView, attribute: .Top, multiplier: 1.0, constant: verticalTopOffset)
+        let childScrollBottomConstraint = NSLayoutConstraint(item: childView, attribute: .Bottom, relatedBy: .Equal, toItem: scrollView, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
+        let childScrollLeadingConstraint = NSLayoutConstraint(item: childView, attribute: .Leading, relatedBy: .Equal, toItem: scrollView, attribute: .Leading, multiplier: 1.0, constant: 0.0)
+        let childScrollTrailingConstraint = NSLayoutConstraint(item: childView, attribute: .Trailing, relatedBy: .Equal, toItem: scrollView, attribute: .Trailing, multiplier: 1.0, constant: 0.0)
+        let childScrollConstraints = [childScrollTopConstraint, childScrollBottomConstraint, childScrollLeadingConstraint, childScrollTrailingConstraint]
+        containerView.addConstraints(childScrollConstraints)
+
+        let childContainerTopConstraint = NSLayoutConstraint(item: childView, attribute: .Top, relatedBy: .Equal, toItem: containerView, attribute: .Top, multiplier: 1.0, constant: verticalTopOffset)
+        let childContainerBottomConstraint = NSLayoutConstraint(item: childView, attribute: .Bottom, relatedBy: .Equal, toItem: containerView, attribute: .Bottom, multiplier: 1.0, constant: 0.0)
+        let childContainerLeadingConstraint = NSLayoutConstraint(item: childView, attribute: .Leading, relatedBy: .Equal, toItem: containerView, attribute: .Leading, multiplier: 1.0, constant: 0.0)
+        let childContainerTrailingConstraint = NSLayoutConstraint(item: childView, attribute: .Trailing, relatedBy: .Equal, toItem: containerView, attribute: .Trailing, multiplier: 1.0, constant: 0.0)
+        let childContainerConstraints = [childContainerTopConstraint, childContainerBottomConstraint, childContainerLeadingConstraint, childContainerTrailingConstraint]
+        childContainerConstraints.forEach { $0.priority = 1 } // Super low priority so that essentially everything (i.e. image view content hugging priority, compression resistantance) overrides it
+        containerView.addConstraints(childContainerConstraints)
+
+        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[scrollView]|", options: [], metrics: nil, views: ["scrollView": scrollView]))
+        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[scrollView]|", options: [], metrics: nil, views: ["scrollView": scrollView]))
+
+        return CardLayout(constraintsAffectedByTraitChange: [childScrollTopConstraint, childContainerTopConstraint, dismissButtonTopConstraint], dismissButtonTopConstraint: dismissButtonTopConstraint)
+
     }
 
     func makeDismissButton() -> UIButton {
@@ -457,7 +454,7 @@ public class CardStackController: UIViewController {
             return
         }
 
-        if let containerView = self.topCard?.containerView,
+        if let containerView = self.topCard?.views.containerView,
             let childView = self.topCard?.viewController.view {
             let translation = gestureRecognizer.translationInView(self.view)
             let velocity = gestureRecognizer.velocityInView(self.view)
@@ -506,19 +503,19 @@ public class CardStackController: UIViewController {
             returnAnimation.toValue = self.offsetForCardAtIndex(0)
             returnAnimation.springSpeed = 12.0
             returnAnimation.springBounciness = 1.0
-            card.containerView.layer.pop_addAnimation(returnAnimation, forKey: "returnAnimation")
+            card.views.containerView.layer.pop_addAnimation(returnAnimation, forKey: "returnAnimation")
 
             returnAnimation.completionBlock = { _ in
                 // Return the child view to it's original, unadjusted, height
-                card.viewController.view.frame.size.height = card.containerView.frame.height - self.extendedEdgeDistance
+                card.viewController.view.frame.size.height = card.views.containerView.frame.height - self.extendedEdgeDistance
             }
         }
     }
 
     func cancelAnimations() {
-        self.topCard?.containerView.layer.pop_removeAnimationForKey("returnAnimation")
-        self.topCard?.containerView.layer.pop_removeAnimationForKey("presentAnimation")
-        self.topCard?.containerView.layer.pop_removeAnimationForKey("dismissAnimation")
+        self.topCard?.views.containerView.layer.pop_removeAnimationForKey("returnAnimation")
+        self.topCard?.views.containerView.layer.pop_removeAnimationForKey("presentAnimation")
+        self.topCard?.views.containerView.layer.pop_removeAnimationForKey("dismissAnimation")
     }
 }
 
@@ -534,5 +531,18 @@ extension CardStackController {
 
     func opacityForCardAtIndex(i: Int) -> CGFloat {
         return self.cardAppearanceCalculator.opacityForCardAtIndex(i)
+    }
+}
+
+extension CardStackController: UIScrollViewDelegate {
+    public func scrollViewDidScroll(scrollView: UIScrollView) {
+        let contentOffset = scrollView.contentOffset
+        let verticalTopOffset = self.cardAppearanceCalculator.verticalTopOffsetForTraitCollection(self.traitCollection)
+
+        if contentOffset.y >= verticalTopOffset {
+            self.topCard?.layout.dismissButtonTopConstraint.constant = 0.0
+        } else {
+            self.topCard?.layout.dismissButtonTopConstraint.constant = verticalTopOffset - contentOffset.y
+        }
     }
 }
