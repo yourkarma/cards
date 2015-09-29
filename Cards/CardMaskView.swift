@@ -22,8 +22,13 @@ class CardMaskView: UIView {
         self.clipsToBounds = true
     }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        self.updateMask()
+    override var bounds: CGRect {
+        get {
+            return super.bounds
+        }
+        set {
+            super.bounds = newValue
+            self.updateMask()
+        }
     }
 }
