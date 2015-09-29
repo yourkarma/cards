@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="P2k-RL-8Nq">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9046" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="P2k-RL-8Nq">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9035"/>
     </dependencies>
     <scenes>
         <!--Card Stack Controller-->
@@ -34,21 +34,46 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RLa-YU-2Qa">
-                                <rect key="frame" x="274" y="285" width="53" height="30"/>
-                                <state key="normal" title="Present">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="push:" destination="BYZ-38-t0r" eventType="touchUpInside" id="9ou-v3-fKP"/>
-                                </connections>
-                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="eA4-0E-KH4">
+                                <rect key="frame" x="181" y="285" width="238" height="30"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RLa-YU-2Qa">
+                                        <rect key="frame" x="0.0" y="0.0" width="53" height="30"/>
+                                        <state key="normal" title="Present">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="push:" destination="BYZ-38-t0r" eventType="touchUpInside" id="9ou-v3-fKP"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Xb-Ok-PsA">
+                                        <rect key="frame" x="83" y="0.0" width="58" height="30"/>
+                                        <state key="normal" title="UI Scroll">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="presentUI:" destination="BYZ-38-t0r" eventType="touchUpInside" id="S5j-Dp-ikv"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L6Y-Ip-EpK">
+                                        <rect key="frame" x="156" y="0.0" width="82" height="30"/>
+                                        <state key="normal" title="Photo scroll">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="presentImage:" destination="BYZ-38-t0r" eventType="touchUpInside" id="piL-fD-6wN"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" red="0.97647058819999999" green="0.27450980390000002" blue="0.10980392160000001" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstAttribute="centerX" secondItem="RLa-YU-2Qa" secondAttribute="centerX" id="d8Z-d0-HC2"/>
-                            <constraint firstAttribute="centerY" secondItem="RLa-YU-2Qa" secondAttribute="centerY" id="wkx-d5-lTz"/>
+                            <constraint firstItem="eA4-0E-KH4" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="WTp-L8-9Nd"/>
+                            <constraint firstItem="eA4-0E-KH4" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="kbn-JG-ysX"/>
                         </constraints>
                     </view>
                     <connections>
@@ -58,6 +83,75 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="798" y="609"/>
+        </scene>
+        <!--Vertical View Controller-->
+        <scene sceneID="1jH-E9-CIa">
+            <objects>
+                <viewController storyboardIdentifier="VerticalViewController" id="dyq-Dh-Uxp" customClass="VerticalViewController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Hwc-dg-HfH"/>
+                        <viewControllerLayoutGuide type="bottom" id="Jxa-vA-oeC"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="tyC-GA-jxy">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="1000"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KCw-6U-BTo">
+                                <rect key="frame" x="150" y="40" width="300" height="82"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="300" id="7ko-dV-XN3"/>
+                                </constraints>
+                                <string key="text">This is a screen that is a bit more realistic. It is intentionally vertically large to make sure that scrolling in that direction works as expected.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Bottom Layout Guide" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ejX-fq-VmP">
+                                <rect key="frame" x="219" y="979" width="162" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1np-9v-QeI">
+                                <rect key="frame" x="150" y="147" width="300" height="345"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="300" id="Zrp-mZ-Qyd"/>
+                                </constraints>
+                                <string key="text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n1s-te-xRV">
+                                <rect key="frame" x="150" y="517" width="300" height="345"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="300" id="W3k-o2-W94"/>
+                                </constraints>
+                                <string key="text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.78039215689999997" green="0.83529411760000005" blue="0.85098039219999999" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="1np-9v-QeI" firstAttribute="top" secondItem="KCw-6U-BTo" secondAttribute="bottom" constant="25" id="6ao-my-e5g"/>
+                            <constraint firstItem="n1s-te-xRV" firstAttribute="centerX" secondItem="tyC-GA-jxy" secondAttribute="centerX" id="Fsr-Oo-xj2"/>
+                            <constraint firstItem="ejX-fq-VmP" firstAttribute="centerX" secondItem="tyC-GA-jxy" secondAttribute="centerX" id="Jf4-s4-yz6"/>
+                            <constraint firstItem="n1s-te-xRV" firstAttribute="top" secondItem="1np-9v-QeI" secondAttribute="bottom" constant="25" id="Jhp-aG-2gB"/>
+                            <constraint firstItem="Jxa-vA-oeC" firstAttribute="top" secondItem="ejX-fq-VmP" secondAttribute="bottom" id="Jov-fU-M03"/>
+                            <constraint firstItem="KCw-6U-BTo" firstAttribute="top" secondItem="Hwc-dg-HfH" secondAttribute="bottom" constant="20" id="Ldd-ZO-tVC"/>
+                            <constraint firstItem="KCw-6U-BTo" firstAttribute="centerX" secondItem="tyC-GA-jxy" secondAttribute="centerX" id="UxN-xe-hSZ"/>
+                            <constraint firstItem="ejX-fq-VmP" firstAttribute="top" secondItem="n1s-te-xRV" secondAttribute="bottom" constant="117" id="V0v-h0-AT0"/>
+                            <constraint firstItem="1np-9v-QeI" firstAttribute="centerX" secondItem="tyC-GA-jxy" secondAttribute="centerX" id="ui7-6s-pZ2"/>
+                        </constraints>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="600" height="1000"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="S1a-c7-eLC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1474" y="609"/>
         </scene>
         <!--Detail View Controller-->
         <scene sceneID="yqY-NU-m6C">
@@ -114,7 +208,7 @@
                                         </connections>
                                     </switch>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Dismissable" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H0V-C1-k7t">
-                                        <rect key="frame" x="116" y="71" width="83" height="18"/>
+                                        <rect key="frame" x="117" y="71" width="82" height="18"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -154,7 +248,7 @@
                                 </variation>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Constrained to the bottom layout guide" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jaL-y0-thI">
-                                <rect key="frame" x="150" y="579" width="301" height="21"/>
+                                <rect key="frame" x="150" y="579" width="300" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
@@ -192,7 +286,39 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1ko-jr-IU6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1454" y="609"/>
+            <point key="canvasLocation" x="1474" y="-262"/>
+        </scene>
+        <!--Image View Controller-->
+        <scene sceneID="wbb-ZB-wTn">
+            <objects>
+                <viewController storyboardIdentifier="ImageViewController" id="sRS-fD-Xe6" customClass="ImageViewController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="J05-VD-hAj"/>
+                        <viewControllerLayoutGuide type="bottom" id="DcH-ay-LvO"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8O1-sS-iPi">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Image" translatesAutoresizingMaskIntoConstraints="NO" id="iLk-xH-HRJ">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="iLk-xH-HRJ" firstAttribute="top" secondItem="8O1-sS-iPi" secondAttribute="top" id="0Lj-5E-1tB"/>
+                            <constraint firstItem="DcH-ay-LvO" firstAttribute="top" secondItem="iLk-xH-HRJ" secondAttribute="bottom" id="JiK-8f-183"/>
+                            <constraint firstAttribute="trailing" secondItem="iLk-xH-HRJ" secondAttribute="trailing" id="ULz-Ww-GVm"/>
+                            <constraint firstItem="iLk-xH-HRJ" firstAttribute="leading" secondItem="8O1-sS-iPi" secondAttribute="leading" id="e3T-99-gom"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="izm-KS-t1K" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1474" y="1473"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Image" width="4752" height="3168"/>
+    </resources>
 </document>

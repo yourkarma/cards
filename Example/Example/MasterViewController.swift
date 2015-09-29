@@ -50,4 +50,14 @@ class MasterViewController: UIViewController {
         let viewController = self.storyboard?.instantiateViewControllerWithIdentifier("DetailViewController") as! DetailViewController
         self.cardStackController?.pushViewController(viewController, animated: true, completion: nil)
     }
+
+    @IBAction func presentImage(sender: AnyObject) {
+        let viewController = self.storyboard?.instantiateViewControllerWithIdentifier("ImageViewController") as! ImageViewController
+        self.cardStackController?.pushViewController(viewController, animated: true, completion: nil)
+    }
+
+    @IBAction func presentUI(sender: AnyObject) {
+        let viewController = self.storyboard?.instantiateViewControllerWithIdentifier("VerticalViewController") as! VerticalViewController
+        self.cardStackController?.pushViewController(viewController, animated: true, completion: nil)
+    }
 }
