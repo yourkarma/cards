@@ -488,10 +488,17 @@ extension CardStackController: UIScrollViewDelegate {
             self.moveDismissButtonWithScrollViewOffset(contentOffset, verticalTopOffset: verticalTopOffset)
         }
 
-
         let bottomOffset = scrollView.bounds.maxY - scrollView.contentSize.height
         if bottomOffset >= 0 {
             self.makeBackgroundExtendOffset(bottomOffset)
+        }
+    }
+
+    public func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        let contentOffset = scrollView.contentOffset
+        let velocity = scrollView.panGestureRecognizer.velocityInView(self.view)
+        if (contentOffset.y <= 25.0 && velocity.y > 0.0) || velocity.y >= 4000.0 {
+            self.popViewController(true, velocity: velocity.y)
         }
     }
 }
