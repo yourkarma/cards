@@ -3,6 +3,15 @@ import UIKit
 class CardMaskView: UIView {
     let maskLayer: CardMaskShapeLayer
 
+    var willAnimate: Bool {
+        get {
+            return self.maskLayer.willAnimate
+        }
+        set {
+            self.maskLayer.willAnimate = newValue
+        }
+    }
+
     override init(frame: CGRect) {
         self.maskLayer = CardMaskShapeLayer()
         super.init(frame: frame)

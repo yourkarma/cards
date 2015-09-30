@@ -184,6 +184,11 @@ public class CardStackController: UIViewController {
             }
             card.layout.childHeightConstraint.constant = -self.cardAppearanceCalculator.verticalTopOffsetForTraitCollection(newCollection)
         }
+
+        self.topCard?.views.maskView.willAnimate = true
+        coordinator.animateAlongsideTransition(nil, completion: { _ in
+            self.topCard?.views.maskView.willAnimate = false
+        })
     }
 
     func presentCard(card: Card, overCards cards: [Card], animated: Bool, completion: (() -> Void)) {
