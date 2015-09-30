@@ -485,6 +485,8 @@ extension CardStackController: UIScrollViewDelegate {
     }
 
     public func scrollViewDidScroll(scrollView: UIScrollView) {
+        guard scrollView == self.topCard?.views.scrollView else { return }
+
         let contentOffset = scrollView.contentOffset
         let verticalTopOffset = self.cardAppearanceCalculator.verticalTopOffsetForTraitCollection(self.traitCollection)
 
