@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0B925C3B290B2F464A0179B5 /* Pods_CardsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAF90A8ED716DFC34AD99228 /* Pods_CardsTests.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		A11BFEBD1BBC69F000F942DE /* CardMaskShapeLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11BFEBC1BBC69F000F942DE /* CardMaskShapeLayer.swift */; };
 		A120414A1B9A385D00E80140 /* CardStackControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12041491B9A385D00E80140 /* CardStackControllerSpec.swift */; };
 		A120414C1B9A3DFC00E80140 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A120414B1B9A3DFC00E80140 /* Images.xcassets */; };
 		A12A0A411B9F8E6300C8930E /* CardAppearanceCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12A0A401B9F8E6300C8930E /* CardAppearanceCalculator.swift */; };
@@ -34,6 +35,7 @@
 		36BD65B5210BAC561249A776 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		41D7D97EC3B83314AF246FBC /* Pods-CardsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CardsTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CardsTests/Pods-CardsTests.debug.xcconfig"; sourceTree = "<group>"; };
 		44996BFBA025280F2D05C819 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		A11BFEBC1BBC69F000F942DE /* CardMaskShapeLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardMaskShapeLayer.swift; sourceTree = "<group>"; };
 		A12041491B9A385D00E80140 /* CardStackControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardStackControllerSpec.swift; sourceTree = "<group>"; };
 		A120414B1B9A3DFC00E80140 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		A12A0A401B9F8E6300C8930E /* CardAppearanceCalculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardAppearanceCalculator.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 				A1CC90541BA7344400054E8D /* TransitionCoordinator.swift */,
 				A12F392B1BB9EF6400E376C1 /* CardMaskView.swift */,
 				A16056A31BBB3627003FC640 /* CardScrollView.swift */,
+				A11BFEBC1BBC69F000F942DE /* CardMaskShapeLayer.swift */,
 			);
 			path = Cards;
 			sourceTree = "<group>";
@@ -305,6 +308,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A16056A41BBB3627003FC640 /* CardScrollView.swift in Sources */,
+				A11BFEBD1BBC69F000F942DE /* CardMaskShapeLayer.swift in Sources */,
 				A12A0A411B9F8E6300C8930E /* CardAppearanceCalculator.swift in Sources */,
 				A1CC90551BA7344400054E8D /* TransitionCoordinator.swift in Sources */,
 				A12F392C1BB9EF6400E376C1 /* CardMaskView.swift in Sources */,

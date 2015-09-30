@@ -174,10 +174,11 @@ public class CardStackController: UIViewController {
         }
     }
 
-    public override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+    public override func willTransitionToTraitCollection(newCollection: UITraitCollection, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        super.willTransitionToTraitCollection(newCollection, withTransitionCoordinator: coordinator)
+
         for card in self.cards {
-            card.layout.constraintsAffectedByTraitChange.forEach { $0.constant = self.cardAppearanceCalculator.verticalTopOffsetForTraitCollection(self.traitCollection) }
-            self.view.layoutIfNeeded()
+            card.layout.constraintsAffectedByTraitChange.forEach { $0.constant = self.cardAppearanceCalculator.verticalTopOffsetForTraitCollection(newCollection) }
         }
     }
 
