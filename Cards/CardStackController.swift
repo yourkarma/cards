@@ -42,6 +42,7 @@ struct CardLayout {
     var constraintsAffectedByTraitChange: [NSLayoutConstraint]
     var dismissButtonTopConstraint: NSLayoutConstraint
     var maskViewBottomConstraint: NSLayoutConstraint
+    var childHeightConstraint: NSLayoutConstraint
 }
 
 extension UIViewController {
@@ -178,7 +179,10 @@ public class CardStackController: UIViewController {
         super.willTransitionToTraitCollection(newCollection, withTransitionCoordinator: coordinator)
 
         for card in self.cards {
-            card.layout.constraintsAffectedByTraitChange.forEach { $0.constant = self.cardAppearanceCalculator.verticalTopOffsetForTraitCollection(newCollection) }
+            card.layout.constraintsAffectedByTraitChange.forEach {
+                $0.constant = self.cardAppearanceCalculator.verticalTopOffsetForTraitCollection(newCollection)
+            }
+            card.layout.childHeightConstraint.constant = -self.cardAppearanceCalculator.verticalTopOffsetForTraitCollection(newCollection)
         }
     }
 
@@ -431,7 +435,7 @@ public class CardStackController: UIViewController {
         containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[scrollView]|", options: [], metrics: nil, views: ["scrollView": scrollView]))
         containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[scrollView]|", options: [], metrics: nil, views: ["scrollView": scrollView]))
 
-        return CardLayout(constraintsAffectedByTraitChange: [childScrollTopConstraint, dismissButtonTopConstraint],dismissButtonTopConstraint: dismissButtonTopConstraint, maskViewBottomConstraint: maskViewBottomConstraint)
+        return CardLayout(constraintsAffectedByTraitChange: [childScrollTopConstraint, dismissButtonTopConstraint], dismissButtonTopConstraint: dismissButtonTopConstraint, maskViewBottomConstraint: maskViewBottomConstraint, childHeightConstraint: childScrollHeightConstraint)
 
     }
 
