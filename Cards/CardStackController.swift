@@ -33,7 +33,7 @@ struct Card {
 struct CardHierarchy {
     let containerView: UIView
     let dismissButton: UIButton
-    let scrollView: UIScrollView
+    let scrollView: CardScrollView
     let maskView: CardMaskView
     let childView: UIView
 }
@@ -368,12 +368,13 @@ public class CardStackController: UIViewController {
 
         containerView.translatesAutoresizingMaskIntoConstraints = false
 
-        let scrollView = UIScrollView()
+        let scrollView = CardScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = false
         scrollView.alwaysBounceVertical = true
         scrollView.delegate = self
+        scrollView.delaysContentTouches = false
 
         let maskView = CardMaskView()
         maskView.translatesAutoresizingMaskIntoConstraints = false
