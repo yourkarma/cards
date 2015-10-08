@@ -69,6 +69,10 @@ public class CardStackController: UIViewController {
         }
     }
 
+    public var topScrollView: UIScrollView? {
+        return self.topCard?.views.scrollView
+    }
+
     public var cardTopOffset: CGFloat {
         get {
             return self.cardAppearanceCalculator.topOffset
