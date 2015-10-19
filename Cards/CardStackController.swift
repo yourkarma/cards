@@ -429,7 +429,7 @@ public class CardStackController: UIViewController {
         let childScrollConstraints = [childScrollTopConstraint, childScrollBottomConstraint, childScrollLeadingConstraint, childScrollTrailingConstraint]
         containerView.addConstraints(childScrollConstraints)
 
-        let childScrollWidthConstraint = NSLayoutConstraint(item: childView, attribute: .Width, relatedBy: .GreaterThanOrEqual, toItem: containerView, attribute: .Width, multiplier: 1.0, constant: 0.0)
+        let childScrollWidthConstraint = NSLayoutConstraint(item: childView, attribute: .Width, relatedBy: .Equal, toItem: containerView, attribute: .Width, multiplier: 1.0, constant: 0.0)
         let childScrollHeightConstraint = NSLayoutConstraint(item: childView, attribute: .Height, relatedBy: .GreaterThanOrEqual, toItem: containerView, attribute: .Height, multiplier: 1.0, constant: -verticalTopOffset)
         let childSizeConstraints = [childScrollWidthConstraint, childScrollHeightConstraint]
         containerView.addConstraints(childSizeConstraints)
