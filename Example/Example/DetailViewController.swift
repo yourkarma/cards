@@ -79,4 +79,9 @@ class DetailViewController: UIViewController {
     @IBAction func pop(sender: AnyObject) {
         self.cardStackController?.popViewController(self.animated)
     }
+
+    @IBAction func presentCurrentContext(sender: AnyObject) {
+        let viewController = self.storyboard!.instantiateViewControllerWithIdentifier("VerticalViewController")
+        self.showDetailViewController(viewController, sender: sender)
+    }
 }

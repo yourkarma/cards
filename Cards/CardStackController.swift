@@ -195,6 +195,47 @@ public class CardStackController: UIViewController {
         })
     }
 
+    public override func showDetailViewController(viewController: UIViewController, sender: AnyObject?) {
+        let topViewController: UIViewController?
+        let topContainerView: UIView?
+
+        if let topCard = self.topCard {
+            topViewController = topCard.viewController
+            topContainerView = topCard.views.containerView
+        } else {
+            topViewController = self.rootViewController
+            topContainerView = topViewController?.view
+        }
+        topViewController?.beginAppearanceTransition(false, animated: false)
+
+        let hierarchy = self.makeHierarchyForChildView(viewController.view)
+        let layout = self.constrainHierarchy(hierarchy)
+
+        let replacementCard = Card(viewController: viewController, views: hierarchy, layout: layout)
+        replacementCard.views.maskView.backgroundColor = .clearColor()
+
+        self.cards.removeLast()
+
+        self.addChildViewController(viewController)
+        self.presentCard(replacementCard, overCards: self.cards, animated: false) {
+            let replacementContainerView = replacementCard.views.containerView
+             replacementContainerView.transform = CGAffineTransformMakeTranslation(0.0, self.view.frame.height)
+
+            let transformAnimation = POPBasicAnimation(propertyNamed: kPOPLayerTranslationY)
+            transformAnimation.duration = 0.25
+            transformAnimation.toValue = 0.0
+            replacementContainerView.layer.pop_addAnimation(transformAnimation, forKey: "transformAnimation")
+            replacementCard.views.maskView.backgroundColor = viewController.view.backgroundColor
+
+            transformAnimation.completionBlock = { _ in
+                topContainerView?.removeFromSuperview()
+                viewController.didMoveToParentViewController(self)
+                topViewController?.endAppearanceTransition()
+            }
+        }
+
+    }
+
     func presentCard(card: Card, overCards cards: [Card], animated: Bool, completion: (() -> Void)) {
         let containerView = card.views.containerView
 

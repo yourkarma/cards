@@ -13,3 +13,11 @@ target "Example" do
   workspace "Cards.xcworkspace"
   pod "Cards", path: "./"
 end
+
+def fix_non_modular_header_error
+  `find Pods -regex 'Pods/pop.*\\.h' -print0 | xargs -0 sed -i '' 's/\\(<\\)pop\\/\\(.*\\)\\(>\\)/\\"\\2\\"/'`
+end
+
+post_install do |installer|
+  fix_non_modular_header_error
+end
