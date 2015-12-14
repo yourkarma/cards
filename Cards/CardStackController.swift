@@ -23,29 +23,93 @@
 import UIKit
 import pop
 
+/**
+ A representation of a card used internally by the view controller.
+ */
 struct Card {
+    /**
+     The child view controller represented by this card.
+     */
     let viewController: UIViewController
 
+    /**
+     The views required to visualy represent the card.
+     */
     var views: CardHierarchy
+
+    /**
+     The constraints on the card that can be changed during it's lifetime.
+     */
     var layout: CardLayout
 }
 
 struct CardHierarchy {
+    /**
+     The view that is added directly to the card stack controller's view.
+     It is the superview of all the other views.
+     */
     let containerView: UIView
+
+    /**
+     The dismiss button displayed at the top of each card.
+     It is automatically configured to dismiss the card.
+     */
     let dismissButton: UIButton
+
+    /**
+     The scroll view that makes each card's content vertically scrollable.
+     */
     let scrollView: CardScrollView
+
+    /**
+     The view that is responsible for giving each card the top rounded corners.
+     */
     let maskView: CardMaskView
+
+    /**
+     A reference to the child view controller's view property.
+     */
     let childView: UIView
 }
 
+/**
+ Hold the constraints for each card that can change during it's lifetime.
+ */
 struct CardLayout {
+    /**
+     The contraints that are affected by a trait change.
+     */
     var constraintsAffectedByTraitChange: [NSLayoutConstraint]
+
+    /**
+     Constraint that holds to dismiss button at the top of the card.
+     Used to keep the dismiss button at the top, it's constant is changed to keep
+     the dimiss button visible while scrolling.
+     */
     var dismissButtonTopConstraint: NSLayoutConstraint
+
+    /**
+     Constraint that keeps the mask view stuck to the bottom of the card.
+     Used to make it appear as if the card is infinitely long when rubber
+     bounding passed it's bounds.
+     */
     var maskViewBottomConstraint: NSLayoutConstraint
+
+
+    /**
+     Not used anymore
+     */
     var childHeightConstraint: NSLayoutConstraint
 }
 
 extension UIViewController {
+
+
+    /**
+     The nearest ancestor in the view controller hierarchy that is a card stack controller.
+     If the view controller or one of its ancestors is a child of a card stack controller, this property contains the owning card stack controller.
+     This property is nil if the view controller is not embedded inside a card stack controller.
+     */
     public var cardStackController: CardStackController? {
         if let cardStackController = self.parentViewController as? CardStackController {
             return cardStackController
@@ -56,10 +120,17 @@ extension UIViewController {
 }
 
 public class CardStackController: UIViewController {
+    /**
+     The view controller at the top of the card stack.
+     */
     public var topViewController: UIViewController? {
         return self.topCard?.viewController
     }
 
+    /**
+     Wether the top view controller can be dismissed using the dismiss button.
+     Note: A view controller can still be dismissed using `popViewControllerAnimated:completion:`.
+     */
     public var topViewControllerCanBeDismissed: Bool {
         get {
             return self.topCard?.views.dismissButton.enabled ?? false
@@ -69,10 +140,16 @@ public class CardStackController: UIViewController {
         }
     }
 
+    /**
+     A reference to the top card's scroll view.
+     */
     public var topScrollView: UIScrollView? {
         return self.topCard?.views.scrollView
     }
 
+    /**
+     The first card's vertical offset from the top of the receiver's view.
+     */
     public var cardTopOffset: CGFloat {
         get {
             return self.cardAppearanceCalculator.topOffset
@@ -117,6 +194,14 @@ public class CardStackController: UIViewController {
         }
     }
 
+    /**
+     Pushes a view controller onto the receiver’s stack and updates the display.
+
+     Parameters:
+     - viewController: The view controller to push onto the stack.
+     - animated: Specify true to animate the transition or false if you do not want the transition to be animated. You might specify false if you are setting up the card stack controller at launch time.
+     - completion: The block to execute after the presentation finishes.
+     */
     public func pushViewController(viewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
         self.cancelAnimations()
 
@@ -148,13 +233,20 @@ public class CardStackController: UIViewController {
         }
     }
 
+    /**
+     Pops the top view controller from the card stack and updates the display.
+     Parameters:
+     - animated: Set this value to true to animate the transition. Pass false if you are setting up a card stack controller before its view is displayed.
+     - completion: The block to execute after the view controller is dismissed.
+
+     */
     public func popViewController(animated: Bool, completion: (() -> Void)? = nil) {
         self.popViewController(animated, velocity: nil, completion: completion)
     }
 
     func popViewController(animated: Bool, velocity: CGFloat?, completion: (() -> Void)? = nil) {
         self.cancelAnimations()
-        
+
         if let topCard = self.topCard {
             self.cardStackTransitionCoordinator = TransitionCoordinator()
 
@@ -219,7 +311,7 @@ public class CardStackController: UIViewController {
         self.addChildViewController(viewController)
         self.presentCard(replacementCard, overCards: self.cards, animated: false) {
             let replacementContainerView = replacementCard.views.containerView
-             replacementContainerView.transform = CGAffineTransformMakeTranslation(0.0, self.view.frame.height)
+            replacementContainerView.transform = CGAffineTransformMakeTranslation(0.0, self.view.frame.height)
 
             let transformAnimation = POPBasicAnimation(propertyNamed: kPOPLayerTranslationY)
             transformAnimation.duration = 0.25
@@ -544,18 +636,18 @@ extension CardStackController: UIScrollViewDelegate {
             self.anchorDismissButtonToTop()
         } else {
             self.moveDismissButtonWithScrollViewOffset(contentOffset, verticalTopOffset: verticalTopOffset)
-
+            
             if !self.topViewControllerCanBeDismissed {
                 scrollView.contentOffset.y = 0.0
             }
         }
-
+        
         let bottomOffset = scrollView.bounds.maxY - scrollView.contentSize.height
         if bottomOffset >= 0 {
             self.makeBackgroundExtendOffset(bottomOffset)
         }
     }
-
+    
     public func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         let contentOffset = scrollView.contentOffset
         let velocity = scrollView.panGestureRecognizer.velocityInView(self.view)
