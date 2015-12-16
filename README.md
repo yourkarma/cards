@@ -2,6 +2,8 @@
 
 A container view controller controlling a stack of cards.
 
+![example gif](https://raw.githubusercontent.com/yourkarma/cards/master/Example/example.gif)
+
 # Installation
 
 Add the following to your Podfile:
