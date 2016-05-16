@@ -1,11 +1,12 @@
 {
   "name": "Cards",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "summary": "A card stack container view controller",
   "homepage": "https://github.com/yourkarma/Cards",
   "license": "MIT",
   "authors": {
-    "Klaas Pieter Annema": "klaaspieter@annema.me"
+    "Klaas Pieter Annema": "klaaspieter@annema.me",
+    "Andrew Sowers": "andrew.sowers@yourkarma.com"
   },
   "social_media_url": "http://twitter.com/klaaspieter",
   "platforms": {

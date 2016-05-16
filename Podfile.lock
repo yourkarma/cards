@@ -1,5 +1,5 @@
 PODS:
-  - Cards (0.0.1):
+  - Cards (0.1.0):
     - pop (~> 1.0)
   - Nimble (2.0.0-rc.3)
   - pop (1.0.8)
@@ -16,7 +16,7 @@ EXTERNAL SOURCES:
     :path: "./"
 
 SPEC CHECKSUMS:
-  Cards: 99b9e61a964163f9f06d6288eb2a46f81ce9685f
+  Cards: 8050517f027dd801667b26b6fa9df2379df1c713
   Nimble: 9dff98ee195ffe7351d3b2fb01d3a1420fd97948
   pop: bb773ae2c791ca2629de13b347e7a8b450fa6a57
   Quick: 563686dbcf0ae0f9f7401ac9cd2d786ee1b7f3d7
