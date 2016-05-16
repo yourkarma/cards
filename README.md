@@ -24,7 +24,7 @@ determined by the internal [`CardAppearanceCalculator`](https://github.com/yourk
 Like `UITabBarController` and `UINavigationController` a convenience [`cardStackController`](https://github.com/yourkarma/cards/blob/master/Cards/CardStackController.swift#L49) property is provided as an extension on `UIViewController`.
 
 If side effects are necesarry before, during or after a transtion the
-[`CardStackTransitionCoordinator`](https://github.com/yourkarma/cards/blob/master/Cards/TransitionCoordinator.swift) can be used to get notified of these events.
+[`CardStackTransitionCoordinator`](https://github.com/yourkarma/cards/blob/master/Cards/TransitionCoordinator.swift) can be used to get notified of these events. Additionally, a delegate is provided on CardStackController that notifies when cards will appear/disappear and did appear/disappear.
 
 The `CardViewController` uses an internal [`Card`](https://github.com/yourkarma/cards/blob/master/Cards/CardStackController.swift#L26) struct to keep track of which
 view controllers are being presented as cards and the associated view hierarchy and it's constraint. The card uses three custom `UIKit` subclasses to manage the appearance of the cards:
