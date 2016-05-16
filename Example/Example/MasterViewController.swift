@@ -23,39 +23,62 @@
 import UIKit
 import Cards
 
-class MasterViewController: UIViewController {
+class MasterViewController: UIViewController, CardStackControllerDelegate {
     @IBOutlet weak var presentButton: UIButton!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.cardStackController?.delegate = self
+    }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         print("master will appear")
     }
-
+    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        print("master did appear", terminator: "")
+        print("master did appear", terminator: " ")
     }
-
+    
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        print("master will disappear", terminator: "")
+        print("master will disappear", terminator: " ")
     }
-
+    
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        print("master did disappear", terminator: "")
+        print("master did disappear", terminator: " ")
     }
-
+    
+    // CardStackController delegate methods
+    
+    func cardWillAppear() {
+        print("cardWillAppear:", terminator: " ")
+    }
+    
+    func cardDidAppear() {
+        print("cardDidAppear:", terminator: " ")
+    }
+    
+    func cardWillDisappear() {
+        print("cardWillDisappear:", terminator: " ")
+    }
+    
+    func cardDidDisappear() {
+        print("cardDidDisappear:", terminator: " ")
+    }
+    
     @IBAction func push(sender: AnyObject) {
         let viewController = self.storyboard?.instantiateViewControllerWithIdentifier("DetailViewController") as! DetailViewController
         self.cardStackController?.pushViewController(viewController, animated: true, completion: nil)
     }
-
+    
     @IBAction func presentImage(sender: AnyObject) {
         let viewController = self.storyboard?.instantiateViewControllerWithIdentifier("ImageViewController") as! ImageViewController
         self.cardStackController?.pushViewController(viewController, animated: true, completion: nil)
     }
-
+    
     @IBAction func presentUI(sender: AnyObject) {
         let viewController = self.storyboard?.instantiateViewControllerWithIdentifier("VerticalViewController") as! VerticalViewController
         self.cardStackController?.pushViewController(viewController, animated: true, completion: nil)
