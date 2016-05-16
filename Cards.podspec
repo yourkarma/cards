@@ -1,10 +1,10 @@
 Pod::Spec.new do |s|
   s.name             =  "Cards"
-  s.version          =  "0.0.1"
+  s.version          =  "0.1.0"
   s.summary          =  "A card stack container view controller"
   s.homepage         =  "https://github.com/yourkarma/Cards"
   s.license          =  "MIT"
-  s.author           =  { "Klaas Pieter Annema" => "klaaspieter@annema.me" }
+  s.author           =  { "Klaas Pieter Annema" => "klaaspieter@annema.me", "Andrew Sowers" => "andrew.sowers@yourkarma.com" }
   s.social_media_url =  "http://twitter.com/klaaspieter"
   s.platform         =  :ios, "8.0"
   s.source           =  { :git => "https://github.com/yourkarma/Cards.git", :commit => "db92f1d" }
