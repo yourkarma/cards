@@ -9,7 +9,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "POPAnimationEvent.h"
+#import <pop/POPAnimationEvent.h>
 
 @class POPAnimation;
 

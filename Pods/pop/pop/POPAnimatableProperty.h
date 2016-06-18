@@ -11,7 +11,7 @@
 
 #import <Foundation/NSObject.h>
 
-#import "POPDefines.h"
+#import <pop/POPDefines.h>
 
 @class POPMutableAnimatableProperty;
 

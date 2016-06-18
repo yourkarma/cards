@@ -9,7 +9,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "POPAnimationTracer.h"
+#import <pop/POPAnimationTracer.h>
 
 @interface POPAnimationTracer (Internal)
 

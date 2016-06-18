@@ -41,6 +41,8 @@ struct Card {
      The constraints on the card that can be changed during it's lifetime.
      */
     var layout: CardLayout
+    
+    var baseBackgroundColor: UIColor
 }
 
 struct CardHierarchy {
@@ -233,7 +235,7 @@ public class CardStackController: UIViewController {
             
             let hierarchy = self.makeHierarchyForChildView(viewController.view)
             let layout = self.constrainHierarchy(hierarchy)
-            let card = Card(viewController: viewController, views: hierarchy, layout: layout)
+            let card = Card(viewController: viewController, views: hierarchy, layout: layout, baseBackgroundColor: viewController.view?.backgroundColor ?? UIColor.whiteColor())
             
             self.addChildViewController(viewController)
             
@@ -315,7 +317,7 @@ public class CardStackController: UIViewController {
         let hierarchy = self.makeHierarchyForChildView(viewController.view)
         let layout = self.constrainHierarchy(hierarchy)
         
-        let replacementCard = Card(viewController: viewController, views: hierarchy, layout: layout)
+        let replacementCard = Card(viewController: viewController, views: hierarchy, layout: layout, baseBackgroundColor: viewController.view?.backgroundColor ?? UIColor.whiteColor())
         replacementCard.views.maskView.backgroundColor = .clearColor()
         
         self.cards.removeLast()
@@ -398,6 +400,8 @@ public class CardStackController: UIViewController {
             let offset = self.offsetForCardAtIndex(i + 1)
             let scale = self.scaleForCardAtIndex(i + 1)
             let opacity = self.opacityForCardAtIndex(i + 1)
+            let oldBackgroundColor = card.viewController.view.backgroundColor ?? UIColor.whiteColor()
+            let newBackgroundColor = self.darkerBackground(forColor: oldBackgroundColor, atIndex: i + 1)
             
             if animated {
                 let moveUpAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationY)
@@ -411,7 +415,15 @@ public class CardStackController: UIViewController {
                 scaleBackAnimation.springSpeed = springSpeed
                 scaleBackAnimation.springBounciness = springBounciness
                 containerView.layer.pop_addAnimation(scaleBackAnimation, forKey: "scaleDownAnimation")
-                
+
+//               This is experimental
+//
+//                let backgroundColorShiftAnimation = POPSpringAnimation(propertyNamed: kPOPViewBackgroundColor)
+//                backgroundColorShiftAnimation.toValue = newBackgroundColor.CGColor
+//                backgroundColorShiftAnimation.springSpeed = springSpeed
+//                backgroundColorShiftAnimation.springBounciness = springBounciness
+//                card.viewController.view?.pop_addAnimation(backgroundColorShiftAnimation, forKey: "backgroundColorDarkerAnimation")
+//                
                 let opacityDownAnimation = POPSpringAnimation(propertyNamed: kPOPViewAlpha)
                 opacityDownAnimation.toValue = opacity
                 opacityDownAnimation.springSpeed = springSpeed
@@ -478,6 +490,8 @@ public class CardStackController: UIViewController {
             let offset = self.offsetForCardAtIndex(index)
             let scale = self.scaleForCardAtIndex(index)
             let opacity = self.opacityForCardAtIndex(index)
+            let oldBackgroundColor = card.viewController.view.backgroundColor ?? UIColor.whiteColor()
+            let newBackgroundColor = self.ligherBackground(forColor: oldBackgroundColor, atIndex: index)
             
             if animated {
                 let springSpeed: CGFloat = 12.0
@@ -494,7 +508,17 @@ public class CardStackController: UIViewController {
                 scaleBackAnimation.springSpeed = springSpeed
                 scaleBackAnimation.springBounciness = springBounciness
                 containerView.layer.pop_addAnimation(scaleBackAnimation, forKey: "scaleUpAnimation")
+
                 
+//               This is experimental
+//
+//
+//                let backgroundColorShiftAnimation = POPSpringAnimation(propertyNamed: kPOPViewBackgroundColor)
+//                backgroundColorShiftAnimation.toValue = newBackgroundColor.CGColor
+//                backgroundColorShiftAnimation.springSpeed = springSpeed
+//                backgroundColorShiftAnimation.springBounciness = springBounciness
+//                card.viewController.view?.pop_addAnimation(backgroundColorShiftAnimation, forKey: "backgroundColorLighterAnimation")
+//                
                 let opacityDownAnimation = POPSpringAnimation(propertyNamed: kPOPViewAlpha)
                 opacityDownAnimation.toValue = opacity
                 opacityDownAnimation.springSpeed = springSpeed
@@ -601,8 +625,8 @@ public class CardStackController: UIViewController {
     func makeDismissButton() -> UIButton {
         let dismissButton = UIButton()
         dismissButton.translatesAutoresizingMaskIntoConstraints = false
-        let bundle = NSBundle(forClass: CardStackController.self)
-        let image = UIImage(named: "Cards.bundle/dismiss-arrow.png", inBundle: bundle, compatibleWithTraitCollection: nil)
+        let bundle = NSBundle.mainBundle()
+        let image = UIImage(named: "dismiss-arrow.png", inBundle: bundle, compatibleWithTraitCollection: nil)
         dismissButton.setImage(image, forState: .Normal)
         dismissButton.addTarget(self, action: "popViewController:", forControlEvents: .TouchUpInside)
         return dismissButton
@@ -631,6 +655,16 @@ extension CardStackController {
     
     func opacityForCardAtIndex(i: Int) -> CGFloat {
         return self.cardAppearanceCalculator.opacityForCardAtIndex(i)
+    }
+    
+    func darkerBackground(forColor color: UIColor, atIndex i: Int) -> UIColor {
+        let index = CGFloat(i)
+        return color.darker(1 - index * 0.75)
+    }
+    
+    func ligherBackground(forColor color: UIColor, atIndex i: Int) -> UIColor {
+        let index = CGFloat(i)
+        return color.lighter(1 + index * 0.75)
     }
 }
 
