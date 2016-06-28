@@ -625,8 +625,7 @@ public class CardStackController: UIViewController {
     func makeDismissButton() -> UIButton {
         let dismissButton = UIButton()
         dismissButton.translatesAutoresizingMaskIntoConstraints = false
-        let bundle = NSBundle.mainBundle()
-        let image = UIImage(named: "dismiss-arrow.png", inBundle: bundle, compatibleWithTraitCollection: nil)
+        let image = UIImage(named: "dismiss-arrow")
         dismissButton.setImage(image, forState: .Normal)
         dismissButton.addTarget(self, action: "popViewController:", forControlEvents: .TouchUpInside)
         return dismissButton
