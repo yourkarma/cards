@@ -22,15 +22,15 @@
 
 import Foundation
 
-public class TransitionCoordinator {
+open class TransitionCoordinator {
     var willBeginCallbacks: [() -> Void] = []
     var didEndCallbacks: [() -> Void] = []
 
-    public func notifyWhenTransitionWillBegin(callback: () -> Void) {
+    open func notifyWhenTransitionWillBegin(_ callback: @escaping () -> Void) {
         self.willBeginCallbacks.append(callback)
     }
 
-    public func notifyWhenTransitionDidEnd(callback: () -> Void) {
+    open func notifyWhenTransitionDidEnd(_ callback: @escaping () -> Void) {
         self.didEndCallbacks.append(callback)
     }
 

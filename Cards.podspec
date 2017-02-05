@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             =  "Cards"
-  s.version          =  "0.1.0"
+  s.version          =  "0.2.0"
   s.summary          =  "A card stack container view controller"
   s.homepage         =  "https://github.com/yourkarma/Cards"
   s.license          =  "MIT"

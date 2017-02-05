@@ -23,10 +23,10 @@
 import UIKit
 
 class CardScrollView: UIScrollView {
-    override func touchesShouldCancelInContentView(view: UIView) -> Bool {
+    override func touchesShouldCancel(in view: UIView) -> Bool {
         if view is UIButton {
             return true
         }
-        return super.touchesShouldCancelInContentView(view)
+        return super.touchesShouldCancel(in: view)
     }
 }
