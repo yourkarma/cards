@@ -35,7 +35,7 @@ struct CardAppearanceCalculator {
 
     var topOffset: CGFloat = 45.0
 
-    func offsetForCardAtIndex(i: Int) -> CGFloat {
+    func offsetForCardAtIndex(_ i: Int) -> CGFloat {
         let index = CGFloat(i)
 
         if i == 0 {
@@ -45,7 +45,7 @@ struct CardAppearanceCalculator {
         }
     }
 
-    func scaleForCardAtIndex(i: Int) -> CGFloat {
+    func scaleForCardAtIndex(_ i: Int) -> CGFloat {
         let index = CGFloat(i)
 
         if index == 0 {
@@ -55,7 +55,7 @@ struct CardAppearanceCalculator {
         }
     }
 
-    func opacityForCardAtIndex(i: Int) -> CGFloat {
+    func opacityForCardAtIndex(_ i: Int) -> CGFloat {
         let index = CGFloat(i)
 
         if i == 0 {
@@ -65,8 +65,8 @@ struct CardAppearanceCalculator {
         }
     }
 
-    func verticalTopOffsetForTraitCollection(traitCollection: UITraitCollection) -> CGFloat {
-        if traitCollection.verticalSizeClass == .Compact {
+    func verticalTopOffsetForTraitCollection(_ traitCollection: UITraitCollection) -> CGFloat {
+        if traitCollection.verticalSizeClass == .compact {
             return 0.0
         } else {
             return self.topOffset
@@ -76,15 +76,15 @@ struct CardAppearanceCalculator {
 
 extension UIColor {
     
-    func lighter(amount : CGFloat = 0.25) -> UIColor {
+    func lighter(_ amount : CGFloat = 0.25) -> UIColor {
         return hueColorWithBrightnessAmount(1 + amount)
     }
     
-    func darker(amount : CGFloat = 0.25) -> UIColor {
+    func darker(_ amount : CGFloat = 0.25) -> UIColor {
         return hueColorWithBrightnessAmount(1 - amount)
     }
     
-    private func hueColorWithBrightnessAmount(amount: CGFloat) -> UIColor {
+    fileprivate func hueColorWithBrightnessAmount(_ amount: CGFloat) -> UIColor {
         var hue         : CGFloat = 0
         var saturation  : CGFloat = 0
         var brightness  : CGFloat = 0

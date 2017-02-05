@@ -36,52 +36,52 @@ class DetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.addConstraint(NSLayoutConstraint(item: bottomView, attribute: .Bottom, relatedBy: .Equal, toItem: self.view, attribute: .Bottom, multiplier: 1.0, constant: 0.0))
+        self.view.addConstraint(NSLayoutConstraint(item: bottomView, attribute: .bottom, relatedBy: .equal, toItem: self.view, attribute: .bottom, multiplier: 1.0, constant: 0.0))
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         print("detail will appear")
 
-        self.animated = self.animatedToggle.on
-        self.dismissableToggle.on = self.cardStackController?.topViewControllerCanBeDismissed ?? true
+        self.animated = self.animatedToggle.isOn
+        self.dismissableToggle.isOn = self.cardStackController?.topViewControllerCanBeDismissed ?? true
      }
 
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         print("detail did appear")
     }
 
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         print("detail will disappear")
     }
 
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         print("detail did disappear")
     }
 
-    @IBAction func toggleAnimation(sender: UISwitch) {
-        self.animated = sender.on
+    @IBAction func toggleAnimation(_ sender: UISwitch) {
+        self.animated = sender.isOn
     }
 
-    @IBAction func toggleDismissable(sender: UISwitch) {
-        self.cardStackController?.topViewControllerCanBeDismissed = sender.on
+    @IBAction func toggleDismissable(_ sender: UISwitch) {
+        self.cardStackController?.topViewControllerCanBeDismissed = sender.isOn
     }
 
-    @IBAction func push(sender: AnyObject) {
-        let viewController = self.storyboard?.instantiateViewControllerWithIdentifier("DetailViewController") as! DetailViewController
+    @IBAction func push(_ sender: AnyObject) {
+        let viewController = self.storyboard?.instantiateViewController(withIdentifier: "DetailViewController") as! DetailViewController
         self.cardStackController?.pushViewController(viewController, animated: self.animated)
     }
 
-    @IBAction func pop(sender: AnyObject) {
+    @IBAction func pop(_ sender: AnyObject) {
         self.cardStackController?.popViewController(self.animated)
     }
 
-    @IBAction func presentCurrentContext(sender: AnyObject) {
-        let viewController = self.storyboard!.instantiateViewControllerWithIdentifier("VerticalViewController")
+    @IBAction func presentCurrentContext(_ sender: AnyObject) {
+        let viewController = self.storyboard!.instantiateViewController(withIdentifier: "VerticalViewController")
         self.showDetailViewController(viewController, sender: sender)
     }
 }

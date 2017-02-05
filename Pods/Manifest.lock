@@ -1,26 +1,26 @@
 PODS:
   - Cards (0.1.0):
     - pop (~> 1.0)
-  - Nimble (2.0.0-rc.3)
+  - Nimble (6.0.1)
   - pop (1.0.8)
   - Quick (0.6.0)
 
 DEPENDENCIES:
   - Cards (from `./`)
-  - Nimble (= 2.0.0-rc.3)
+  - Nimble
   - pop
   - Quick
 
 EXTERNAL SOURCES:
   Cards:
-    :path: "./"
+    :path: ./
 
 SPEC CHECKSUMS:
   Cards: 8050517f027dd801667b26b6fa9df2379df1c713
-  Nimble: 9dff98ee195ffe7351d3b2fb01d3a1420fd97948
+  Nimble: 1527fd1bd2b4cf0636251a36bc8ab37e81da8347
   pop: bb773ae2c791ca2629de13b347e7a8b450fa6a57
   Quick: 563686dbcf0ae0f9f7401ac9cd2d786ee1b7f3d7
 
-PODFILE CHECKSUM: 35b58947e3b724c884dafe0cd8edd4c73318083c
+PODFILE CHECKSUM: c45e8e168e8b6fbd1fea5a979e2b449dd961ed3f
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.1.1

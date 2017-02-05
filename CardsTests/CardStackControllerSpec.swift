@@ -25,17 +25,17 @@ import Nimble
 import Cards
 
 private class FakeViewController: UIViewController {
-    private override func loadView() {
+    fileprivate override func loadView() {
         self.view = UIView()
     }
 
     var willMoveToParentViewController: UIViewController? = nil
-    private override func willMoveToParentViewController(parent: UIViewController?) {
+    fileprivate override func willMoveToParentViewController(_ parent: UIViewController?) {
         self.willMoveToParentViewController = parent
     }
 
     var didMoveToParentViewController: UIViewController? = nil
-    private override func didMoveToParentViewController(parent: UIViewController?) {
+    fileprivate override func didMoveToParentViewController(_ parent: UIViewController?) {
         self.didMoveToParentViewController = parent
     }
 }

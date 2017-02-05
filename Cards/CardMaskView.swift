@@ -54,7 +54,7 @@ class CardMaskView: UIView {
     }
 
     func updateMask() {
-        let maskPath = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: [.TopLeft, .TopRight], cornerRadii: CGSize(width: 4.0, height: 4.0)).CGPath
+        let maskPath = UIBezierPath(roundedRect: self.bounds, byRoundingCorners: [.topLeft, .topRight], cornerRadii: CGSize(width: 4.0, height: 4.0)).cgPath
         self.maskLayer.path = maskPath
         self.maskLayer.frame = self.layer.bounds
     }
