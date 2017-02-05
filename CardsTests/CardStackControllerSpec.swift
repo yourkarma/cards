@@ -30,12 +30,12 @@ private class FakeViewController: UIViewController {
     }
 
     var willMoveToParentViewController: UIViewController? = nil
-    fileprivate override func willMoveToParentViewController(_ parent: UIViewController?) {
+    fileprivate override func willMove(toParentViewController parent: UIViewController?) {
         self.willMoveToParentViewController = parent
     }
 
     var didMoveToParentViewController: UIViewController? = nil
-    fileprivate override func didMoveToParentViewController(_ parent: UIViewController?) {
+    fileprivate override func didMove(toParentViewController parent: UIViewController?) {
         self.didMoveToParentViewController = parent
     }
 }
@@ -54,7 +54,7 @@ class CardStackControllerSpec: QuickSpec {
             let grandChildViewController = FakeViewController()
 
             childViewController.addChildViewController(grandChildViewController)
-            grandChildViewController.didMoveToParentViewController(childViewController)
+            grandChildViewController.didMove(toParentViewController: childViewController)
 
             self.viewController.pushViewController(childViewController, animated: false)
 
@@ -71,7 +71,7 @@ class CardStackControllerSpec: QuickSpec {
             it("adds the view as a subview") {
                 let childViewController = FakeViewController()
                 self.viewController.pushViewController(childViewController, animated: false)
-                expect(childViewController.view.isDescendantOfView(self.viewController.view)) == true
+                expect(childViewController.view.isDescendant(of: self.viewController.view)) == true
             }
 
             it("notifies the child that it was moved to a parent") {
@@ -108,7 +108,7 @@ class CardStackControllerSpec: QuickSpec {
                 let childViewController = FakeViewController()
                 self.viewController.pushViewController(childViewController, animated: false)
                 self.viewController.popViewController(false)
-                expect(childViewController.view.isDescendantOfView(self.viewController.view)) == false
+                expect(childViewController.view.isDescendant(of: self.viewController.view)) == false
             }
 
             it("notifies the child that is being removed as a child") {

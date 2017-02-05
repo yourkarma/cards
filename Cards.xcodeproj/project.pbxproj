@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6787F0F6D798D8CF1E9E55C6 /* Pods_Cards.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B22AF379D885992BD98B591 /* Pods_Cards.framework */; };
 		7517D55FE27B69F60536B170 /* Pods_CardsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49B13447AF46476B7CC61B3E /* Pods_CardsTests.framework */; };
 		A11BFEBD1BBC69F000F942DE /* CardMaskShapeLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11BFEBC1BBC69F000F942DE /* CardMaskShapeLayer.swift */; };
 		A120414A1B9A385D00E80140 /* CardStackControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = A12041491B9A385D00E80140 /* CardStackControllerSpec.swift */; };
@@ -32,6 +33,7 @@
 
 /* Begin PBXFileReference section */
 		0AC2B1A11A59860B88FD4362 /* Pods-CardsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CardsTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-CardsTests/Pods-CardsTests.release.xcconfig"; sourceTree = "<group>"; };
+		37FF83F8B99884FC37F67A03 /* Pods-Cards.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cards.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Cards/Pods-Cards.debug.xcconfig"; sourceTree = "<group>"; };
 		49B13447AF46476B7CC61B3E /* Pods_CardsTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CardsTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B22AF379D885992BD98B591 /* Pods_Cards.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Cards.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A11BFEBC1BBC69F000F942DE /* CardMaskShapeLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardMaskShapeLayer.swift; sourceTree = "<group>"; };
@@ -49,6 +51,7 @@
 		A1CC90541BA7344400054E8D /* TransitionCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransitionCoordinator.swift; sourceTree = "<group>"; };
 		B6DC48E30BC60897D960C335 /* Pods-CardsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CardsTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CardsTests/Pods-CardsTests.debug.xcconfig"; sourceTree = "<group>"; };
 		BEB8E482A2DDB115DF77AD73 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6A20F4801600AA09FABA9A0 /* Pods-Cards.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Cards.release.xcconfig"; path = "Pods/Target Support Files/Pods-Cards/Pods-Cards.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6787F0F6D798D8CF1E9E55C6 /* Pods_Cards.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,6 +80,8 @@
 			children = (
 				B6DC48E30BC60897D960C335 /* Pods-CardsTests.debug.xcconfig */,
 				0AC2B1A11A59860B88FD4362 /* Pods-CardsTests.release.xcconfig */,
+				37FF83F8B99884FC37F67A03 /* Pods-Cards.debug.xcconfig */,
+				C6A20F4801600AA09FABA9A0 /* Pods-Cards.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -171,10 +177,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A19D72DC1A5B3E7D003DDC63 /* Build configuration list for PBXNativeTarget "Cards" */;
 			buildPhases = (
+				7DF57BDE4729448CD0B8596E /* [CP] Check Pods Manifest.lock */,
 				A19D72C11A5B3E7D003DDC63 /* Sources */,
 				A19D72C21A5B3E7D003DDC63 /* Frameworks */,
 				A19D72C31A5B3E7D003DDC63 /* Headers */,
 				A19D72C41A5B3E7D003DDC63 /* Resources */,
+				ECEDE886D9AC32EE6E4FB086 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -270,6 +278,21 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		7DF57BDE4729448CD0B8596E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 		95CD4A11513AA19A5238D200 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -298,6 +321,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CardsTests/Pods-CardsTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		ECEDE886D9AC32EE6E4FB086 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Cards/Pods-Cards-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -430,6 +468,7 @@
 		};
 		A19D72DD1A5B3E7D003DDC63 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 37FF83F8B99884FC37F67A03 /* Pods-Cards.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -454,6 +493,7 @@
 		};
 		A19D72DE1A5B3E7D003DDC63 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C6A20F4801600AA09FABA9A0 /* Pods-Cards.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
